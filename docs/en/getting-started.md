@@ -25,7 +25,6 @@ On a local network the IP and port also work:
 http://192.168.1.50:8080
 ```
 
-
 ## 2. Organization slug
 
 Dependably groups packages by organization. The slug is the short name in your

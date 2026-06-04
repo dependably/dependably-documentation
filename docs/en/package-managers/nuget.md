@@ -50,6 +50,7 @@ Add `*.user` and any `.env` file you use to `.gitignore`.
 
 > **Plain HTTP:** modern `dotnet` refuses HTTP feeds. Add
 > `allowInsecureConnections="true"` to the source element:
+>
 > ```xml
 > <add key="dependably"
 >      value="http://repo.example.com/o/default/nuget/v3/index.json"

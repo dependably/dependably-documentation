@@ -1,0 +1,39 @@
+stages:
+  - check
+
+default:
+  interruptible: true
+
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+    - if: '$CI_COMMIT_TAG'
+
+spell:
+  stage: check
+  image: python:3.12-alpine
+  script:
+    - pip install --quiet codespell
+    - codespell docs/ README.md
+
+markdownlint:
+  stage: check
+  image: node:20-alpine
+  script:
+    - npx -y markdownlint-cli2 "docs/**/*.md" "README.md"
+
+links:
+  stage: check
+  image: lycheeverse/lychee:latest
+  script:
+    # Internal-only — external HTTP(S) checks are flaky in CI.
+    - lychee --no-progress --exclude '^https?://' docs/ README.md
+
+secrets:
+  stage: check
+  image:
+    name: zricethezav/gitleaks:latest
+    entrypoint: [""]
+  script:
+    - gitleaks detect --source . --no-banner --redact -v
