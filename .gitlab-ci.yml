@@ -1,5 +1,6 @@
 stages:
   - check
+  - publish
 
 default:
   interruptible: true
@@ -39,3 +40,18 @@ secrets:
     entrypoint: [""]
   script:
     - gitleaks detect --source . --no-banner --redact -v
+
+publish:github:
+  stage: publish
+  image: alpine/git:latest
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      when: manual
+  variables:
+    GIT_STRATEGY: clone
+    GIT_DEPTH: 0
+  script:
+    - '[ -n "$GITHUB_TOKEN" ] || { echo "GITHUB_TOKEN not set in CI/CD variables"; exit 1; }'
+    - echo "Mirroring $CI_COMMIT_SHA to github.com/dependably/dependably-documentation"
+    - git remote add github "https://x-access-token:${GITHUB_TOKEN}@github.com/dependably/dependably-documentation.git"
+    - git push github HEAD:refs/heads/main
