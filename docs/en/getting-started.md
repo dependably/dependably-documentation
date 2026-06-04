@@ -8,10 +8,18 @@ in this site asks for the same three.
 The address of your Dependably instance, for example:
 
 ```
-https://acme.example.com
+https://repo.example.com
 ```
 
-or, on a local network:
+for a single-tenant deployment, or
+
+```
+https://acme.repo.example.com
+```
+
+for multi-tenant (the org is a subdomain).
+
+On a local network the IP and port also work:
 
 ```
 http://192.168.1.50:8080

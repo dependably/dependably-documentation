@@ -1,11 +1,11 @@
-# RPM (dnf / yum) — Beta
+# RPM (dnf) — Beta
 
 > **Beta.** Repository serving and upload work, but behaviour and configuration
 > may change.
 
 Install RPM packages through your Dependably organization. Dependably serves a
-standard `dnf` / `yum` repository, caching packages on first fetch and
-verifying them before storage.
+standard `dnf` repository, caching packages on first fetch and verifying them
+before storage.
 
 You will need your **base URL**, **org slug**, and a **token** — see
 [Getting started](../getting-started.md). The examples below use
@@ -75,9 +75,9 @@ curl --user user:<your token> \
   https://repo.example.com/o/default/rpm/upload
 ```
 
-Uploading requires a token with publish permission. (On an instance running in
-upstream-proxy mode, uploads are refused so they cannot shadow upstream
-packages.)
+Uploading requires a token with publish permission. If your instance has an
+RPM upstream configured in passthrough mode (`Rpm:UpstreamMode=passthrough`),
+uploads are refused so they cannot shadow upstream packages.
 
 ---
 

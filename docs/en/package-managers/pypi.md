@@ -1,7 +1,7 @@
-# PyPI (pip, Poetry, uv)
+# PyPI (pip, uv)
 
 Point your Python tooling at your Dependably organization. This guide covers
-raw **pip**, **Poetry**, and **uv**.
+raw **pip** and **uv**.
 
 You will need your **base URL**, **org slug**, and a **token** — see
 [Getting started](../getting-started.md). The examples below use
@@ -36,23 +36,6 @@ export DEPENDABLY_TOKEN=<your token>
 PIP_CONFIG_FILE=./pip.conf pip install requests
 ```
 
-### Poetry
-
-Add the source to `pyproject.toml`:
-
-```toml
-[[tool.poetry.source]]
-name = "dependably"
-url = "https://repo.example.com/o/default/simple/"
-priority = "primary"
-```
-
-Then store the token (Poetry keeps it in your keyring, not the project):
-
-```bash
-poetry config http-basic.dependably user <your token>
-```
-
 ### uv
 
 Add the index to `pyproject.toml`:
@@ -75,9 +58,9 @@ export UV_INDEX_DEPENDABLY_PASSWORD=<your token>
 > `--allow-insecure-host repo.example.com` (uv). TLS-strict is the default;
 > override it deliberately.
 
-If your tooling writes credentials to a local file (`poetry.toml`, `.pypirc`,
-`.env`), add it to `.gitignore`. The `pip.conf` above is safe to commit only
-because it references `${DEPENDABLY_TOKEN}` rather than the literal value.
+If your tooling writes credentials to a local file (`.pypirc`, `.env`), add
+it to `.gitignore`. The `pip.conf` above is safe to commit only because it
+references `${DEPENDABLY_TOKEN}` rather than the literal value.
 
 ---
 
@@ -104,9 +87,9 @@ Keep its permissions tight:
 chmod 600 ~/.config/pip/pip.conf
 ```
 
-Poetry and uv keep their own config independent of pip. For a global default,
-run the same `poetry config` / `export UV_INDEX_*` commands from your shell
-profile (`~/.bashrc`, `~/.zshrc`).
+uv keeps its own config independent of pip. For a global default, set the
+`UV_INDEX_DEPENDABLY_*` variables in your shell profile (`~/.bashrc`,
+`~/.zshrc`).
 
 ---
 
@@ -114,7 +97,7 @@ profile (`~/.bashrc`, `~/.zshrc`).
 
 ```bash
 pip config list           # should show your Dependably index-url
-pip install requests      # or: poetry add requests / uv add requests
+pip install requests      # or: uv add requests
 ```
 
 The first install records a `first_fetch` entry on the **Activity** page in the

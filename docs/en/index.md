@@ -33,11 +33,11 @@ as before — they just talk to your registry instead of the public one.
 | Tool                       | Use it for                          | Guide |
 | -------------------------- | ----------------------------------- | ----- |
 | **npm** / yarn / pnpm      | JavaScript & Node.js packages       | [npm](package-managers/npm.md) |
-| **pip** / Poetry / uv      | Python packages (PyPI)              | [PyPI](package-managers/pypi.md) |
-| **dotnet** / nuget         | .NET packages (NuGet)               | [NuGet](package-managers/nuget.md) |
+| **pip** / uv               | Python packages (PyPI)              | [PyPI](package-managers/pypi.md) |
+| **dotnet**                 | C# / .NET packages (NuGet)          | [NuGet](package-managers/nuget.md) |
 | **Maven** / Gradle         | Java & JVM artifacts                | [Maven](package-managers/maven.md) |
-| **docker** / podman        | Container images (OCI)              | [Docker](containers-and-system/docker.md) _(Beta)_ |
-| **dnf** / yum              | RPM packages                        | [RPM](containers-and-system/rpm.md) _(Beta)_ |
+| **docker**                 | Container images (OCI)              | [Docker](containers-and-system/docker.md) _(Beta)_ |
+| **dnf**                    | RPM packages (Linux)                | [RPM](containers-and-system/rpm.md) _(Beta)_ |
 
 ---
 

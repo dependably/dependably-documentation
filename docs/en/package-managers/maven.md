@@ -109,8 +109,10 @@ The first download records a `first_fetch` entry on the **Activity** page in
 the web UI.
 
 > **Plain HTTP:** Maven and Gradle both accept `http://` repository URLs
-> without an extra flag, but your network may still block plaintext. Prefer
-> HTTPS where you can.
+> without an extra flag. Note that Maven 3.8.1+ blocks HTTP repos via a
+> default `maven-default-http-blocker` mirror — remove or shadow it in
+> `~/.m2/settings.xml` if you hit a "blocked mirror" error. Prefer HTTPS
+> where you can.
 
 ---
 

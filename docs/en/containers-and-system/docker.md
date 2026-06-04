@@ -5,7 +5,7 @@
 > yet supported.
 
 Pull container images through your Dependably organization. Dependably
-implements the OCI Distribution Spec, so `docker` and `podman` work against it
+implements the OCI Distribution Spec, so the `docker` CLI works against it
 unchanged.
 
 You will need your **base URL** and a **token** — see
