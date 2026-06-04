@@ -25,7 +25,9 @@ markdownlint:
 
 links:
   stage: check
-  image: lycheeverse/lychee:latest
+  image:
+    name: lycheeverse/lychee:latest
+    entrypoint: [""]
   script:
     # Internal-only — external HTTP(S) checks are flaky in CI.
     - lychee --no-progress --exclude '^https?://' docs/ README.md
