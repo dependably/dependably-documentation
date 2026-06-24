@@ -41,6 +41,7 @@ latest version 8.0.1 is not cached here*).
 | Column | Meaning |
 | ------ | ------- |
 | **Version** | The version string. A small badge marks how many advisories affect it. |
+| **Tag** | *(OCI images only)* The image tag for this version. |
 | **Latest** | Whether this is the latest upstream version. |
 | **Origin** | **Proxy** (cached from an upstream) or **Hosted** (published to your registry). |
 | **Checksum** | The verified content hash, truncated. |
@@ -49,15 +50,16 @@ latest version 8.0.1 is not cached here*).
 | **License** | The detected SPDX license, when known. |
 | **Downloads** | Download count for this version. |
 | **Status** | One of **No advisories**, **Vulnerable**, **Allowed (vulnerable)**, **Malicious**, **Deprecated**, **Unscanned**, or **Blocked**. |
-| **Actions** | A menu to **Download** the artifact. |
+| **Actions** | **Download** the artifact. Multi-file versions (e.g. a Maven jar + pom, or a PyPI wheel + sdist) have no single download — expand the row to download each file individually. |
 
 ## Override the same-version push policy for one package
 
 Your organization sets a default policy for whether a version may be re-pushed
 over an existing one. From the **⋯** menu on a package's row in the list you can
-override that default for a single package — choose **Allow same-version push**,
-or **Inherit (org default)** to drop the override and follow the organization
-setting again.
+override that default for a single package: the menu offers the option opposite
+to your org default — **Allow same-version push** when the default blocks, or
+**Block same-version push** when it allows — plus **Inherit (org default)** to
+drop the override and follow the organization setting again.
 
 The organization-wide setting (`versionOverwritePolicy`) and exactly when a
 per-package override applies — the default `block` allows no exceptions, while

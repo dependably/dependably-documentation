@@ -62,3 +62,7 @@ Publishing requires a token with the `publish:pypi` capability.
 ```bash
 pip config unset --user global.index-url
 ```
+
+uv took the index per-command (`--default-index`), so there is nothing
+persistent to undo unless you exported it as `UV_DEFAULT_INDEX` — in which case
+unset that too.

@@ -22,8 +22,9 @@ HTTPS in production. Everything else has a working default and starts
 immediately.
 
 On **first boot**, Dependably creates your organization and an owner account,
-and prints the owner's one-time password to the container logs. Sign in with it,
-change the password, and you are ready to administer the instance.
+and prints the owner's email and a generated temporary password to the container
+logs. Sign in with those, change the password, and you are ready to administer
+the instance.
 
 ## Manage the instance in the app
 
