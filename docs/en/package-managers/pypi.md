@@ -1,81 +1,72 @@
 # PyPI (pip, uv)
 
-Point your Python tooling at your Dependably organization. This guide covers
-raw **pip** and **uv**.
+Point your Python tooling at Dependably. This guide covers both **pip** and
+**uv**.
 
-You will need your **base URL**, **org slug**, and a **token** — see
+You will need your **base URL** and a **token** — see
 [Getting started](../getting-started.md). The examples below use
-`repo.example.com` and the org `default`; substitute your own.
+`repo.example.com`; substitute your own. On a multi-tenant instance your
+organization is a subdomain, so use `https://default.repo.example.com/simple/`
+instead — the path is always just `/simple/`.
 
-Python tools authenticate with **HTTP Basic**: username `user`, password your
-token. Your package index URL is:
+Python tools authenticate with **HTTP Basic**: the token goes in the password
+field and the username is ignored, so any username works (the examples use
+`user`). Your package index URL is:
 
 ```
-https://repo.example.com/o/default/simple/
+https://repo.example.com/simple/
 ```
 
----
+## Configure
 
-## Per-project
+### Per-project
 
-### pip
-
-Create `pip.conf` next to your `pyproject.toml` or `requirements.txt`:
+For pip, create `pip.conf` next to your `pyproject.toml` or `requirements.txt`:
 
 ```ini
 [global]
-index-url = https://user:${DEPENDABLY_TOKEN}@repo.example.com/o/default/simple/
+index-url = https://user:${DEPENDABLY_TOKEN}@repo.example.com/simple/
 # Uncomment if your instance is served over plain HTTP:
 # trusted-host = repo.example.com
 ```
 
-Run pip pointed at the local file so it does not pick up your global config:
+Run pip pointed at that file so it does not pick up your global config:
 
 ```bash
 export DEPENDABLY_TOKEN=<your token>
 PIP_CONFIG_FILE=./pip.conf pip install requests
 ```
 
-### uv
-
-Add the index to `pyproject.toml`:
+For uv, add the index to `pyproject.toml` and supply credentials from the
+environment (uv reads them per index name):
 
 ```toml
 [[tool.uv.index]]
 name = "dependably"
-url = "https://repo.example.com/o/default/simple/"
+url = "https://repo.example.com/simple/"
 default = true
 ```
-
-Provide credentials via environment variables (uv reads them per index name):
 
 ```bash
 export UV_INDEX_DEPENDABLY_USERNAME=user
 export UV_INDEX_DEPENDABLY_PASSWORD=<your token>
 ```
 
-> **Plain HTTP:** add `trusted-host` (pip, shown above) or
-> `--allow-insecure-host repo.example.com` (uv). TLS-strict is the default;
-> override it deliberately.
+The `pip.conf` above is safe to commit only because it references
+`${DEPENDABLY_TOKEN}` rather than the literal value. If your tooling writes
+credentials to a local file (`.pypirc`, `.env`), add it to `.gitignore`.
 
-If your tooling writes credentials to a local file (`.pypirc`, `.env`), add
-it to `.gitignore`. The `pip.conf` above is safe to commit only because it
-references `${DEPENDABLY_TOKEN}` rather than the literal value.
+### Global (per-machine)
 
----
+Make Dependably the default index for every Python tool on your machine. Choose
+the pip config path for your OS:
 
-## Global (per-machine)
-
-Make Dependably the default index for every Python tool on your machine.
-
-Choose the pip config path for your OS:
-
-- **Linux / macOS:** `~/.config/pip/pip.conf` (newer pip) or `~/.pip/pip.conf`
+- **Linux / macOS:** `~/.config/pip/pip.conf`
 - **Windows:** `%APPDATA%\pip\pip.ini`
 
 ```ini
 [global]
-index-url = https://user:<your token>@repo.example.com/o/default/simple/
+index-url = https://user:<your token>@repo.example.com/simple/
 # Uncomment if your instance is served over plain HTTP:
 # trusted-host = repo.example.com
 ```
@@ -91,7 +82,9 @@ uv keeps its own config independent of pip. For a global default, set the
 `UV_INDEX_DEPENDABLY_*` variables in your shell profile (`~/.bashrc`,
 `~/.zshrc`).
 
----
+> **Plain HTTP:** add `trusted-host` (pip, shown above) or pass
+> `--allow-insecure-host repo.example.com` (uv). TLS-strict is the default;
+> override it deliberately.
 
 ## Verify
 
@@ -100,23 +93,21 @@ pip config list           # should show your Dependably index-url
 pip install requests      # or: uv add requests
 ```
 
-The first install records a `first_fetch` entry on the **Activity** page in the
-web UI.
-
----
+The first install records an entry on the **Activity** page in the web UI.
 
 ## Publishing
 
-Build your distribution, then upload with twine:
+Build your distribution, then upload with twine. The upload endpoint is
+`/pypi/legacy/`:
 
 ```bash
 twine upload \
-  --repository-url https://repo.example.com/o/default/pypi/legacy/ \
+  --repository-url https://repo.example.com/pypi/legacy/ \
   -u user -p <your token> \
   dist/*
 ```
 
----
+Publishing requires a token with the `publish:pypi` capability.
 
 ## Revert
 
