@@ -1,16 +1,11 @@
 # npm
 
-Point npm (and yarn / pnpm, which read the same `.npmrc`) at your Dependably
-organization to install private packages, proxy public ones, and publish your
-own.
+Point npm (and yarn / pnpm, which read the same config) at Dependably to install
+private packages, proxy public ones, and publish your own.
 
 You will need your **base URL** and a **token** — see
-[Getting started](../getting-started.md). The examples below use
-`repo.example.com`; substitute your own. On a multi-tenant instance your
-organization is a subdomain, so use `https://default.repo.example.com/npm/`
-instead — the path is always just `/npm/`.
-
-Your npm registry URL is:
+[Getting started](../getting-started.md). The examples use `repo.example.com`;
+substitute your own. Your npm registry URL is:
 
 ```
 https://repo.example.com/npm/
@@ -18,50 +13,19 @@ https://repo.example.com/npm/
 
 ## Configure
 
-npm sends your token as an `Authorization: Bearer` header — that is exactly what
-the `_authToken` line below does. The token is matched to your organization by
-the server, so a token issued for a different org is treated as no token at all.
-
-### Per-project
-
-Create `.npmrc` in the repository root, next to `package.json`:
-
-```ini
-registry=https://repo.example.com/npm/
-//repo.example.com/npm/:_authToken=${NPM_TOKEN}
-# Uncomment if your instance is served over plain HTTP:
-# strict-ssl=false
-```
-
-The token is read from the environment, so this file is safe to commit. Each
-developer sets the variable in their shell before installing:
+Use npm's own commands — they store everything in npm's config for you, so there
+are no files to edit by hand. npm sends the token as a Bearer credential:
 
 ```bash
-export NPM_TOKEN=<your token>
+npm config set registry https://repo.example.com/npm/
+npm config set //repo.example.com/npm/:_authToken <your token>
 ```
 
-If you load `NPM_TOKEN` from a `.env` file, add `.env` to `.gitignore`.
+> **Plain HTTP:** if your instance is served over `http://`, also run
+> `npm config set strict-ssl false`. Prefer HTTPS where you can.
 
-### Global (per-machine)
-
-Point every project on your machine at Dependably by default.
-
-- **Linux / macOS:** `~/.npmrc`
-- **Windows:** `%USERPROFILE%\.npmrc`
-
-```ini
-registry=https://repo.example.com/npm/
-//repo.example.com/npm/:_authToken=<your token>
-# Uncomment if your instance is served over plain HTTP:
-# strict-ssl=false
-```
-
-This file is not in source control, so the literal token goes here directly.
-Keep its permissions tight:
-
-```bash
-chmod 600 ~/.npmrc
-```
+To point a single project (rather than your whole machine) at Dependably, run the
+same commands with `--location=project`; npm scopes them to that project.
 
 ## Verify
 
@@ -74,9 +38,8 @@ npm install is-odd        # a public package, proxied through Dependably
 
 Run `npm ping` first to confirm the URL and TLS are right, then `npm whoami` to
 confirm your token authenticates. `npm ping` is always anonymous; if it succeeds
-but `npm whoami` returns `ENEEDAUTH`, the `_authToken` line is missing or
-malformed. A service token reports its identity as `service:<name>` rather than
-an email — handy to echo into CI logs.
+but `npm whoami` returns `ENEEDAUTH`, the token was not set. A service token
+reports its identity as `service:<name>` rather than an email.
 
 Your first install records an entry on the **Activity** page in the web UI —
 check there to confirm packages are flowing through Dependably.
@@ -113,8 +76,6 @@ the npm CLI — use the web UI or management API for that.
 To stop using Dependably as your registry:
 
 ```bash
-npm config delete registry --location=user
-npm config delete //repo.example.com/npm/:_authToken --location=user
+npm config delete registry
+npm config delete //repo.example.com/npm/:_authToken
 ```
-
-Or delete the `.npmrc` file.

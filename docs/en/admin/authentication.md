@@ -1,19 +1,19 @@
 # Authentication
 
-Dependably gives every organization two ways for its people to sign in:
-**forms login** (email and password, with optional multi-factor authentication)
-and **SAML 2.0 single sign-on**. With SAML 2.0, each organization connects its
-own identity provider — Okta, Microsoft Entra ID (Azure AD), OneLogin, or any
-SAML-compliant IdP — and manages access centrally, with role assignment driven
-straight from your existing groups.
+Dependably gives your team two ways to sign in: **forms login** (email and
+password, with optional multi-factor authentication) and **SAML 2.0 single
+sign-on**. With SAML 2.0 you connect your own identity provider — Okta,
+Microsoft Entra ID (Azure AD), OneLogin, or any SAML-compliant IdP — and manage
+access centrally, with role assignment driven straight from your existing
+groups.
 
 ## Login methods
 
 ### Forms login (email + password)
 
 Users sign in at `POST /api/v1/auth/login` with their email and password. Login
-is rate-limited. Forms login is enabled by default for every organization, and
-you can switch it off once SSO is verified (see *Set up single sign-on*).
+is rate-limited. Forms login is enabled by default, and you can switch it off
+once SSO is verified (see *Set up single sign-on*).
 
 ### Multi-factor authentication (TOTP)
 
@@ -34,8 +34,8 @@ With MFA enabled, login is two steps: `POST /api/v1/auth/login` returns
   the device, which sets a cookie that skips the TOTP step next time. Disabling
   MFA revokes all trusted devices.
 
-To enforce MFA for everyone, an operator sets `REQUIRE_MFA` instance-wide or an
-admin sets `requireMfa` per organization (see [Settings](settings.md)).
+To require MFA for everyone in your organization, turn on `requireMfa` in
+[Settings](settings.md).
 
 ## Set up single sign-on
 
@@ -99,8 +99,8 @@ several match, the highest-ranked role wins (`owner` > `admin` > `auditor` >
   cases.
 - **`admin` requires opt-in** — the IdP can assign `admin` only when
   `idpCanAssignAdmin` is `true`; otherwise the ceiling is `member`.
-- **`system_admin` can never be assigned via SSO** — any mapping to it (or to an
-  unknown role) is stripped.
+- **Unknown roles are stripped** — any mapping to a role Dependably does not
+  recognize is ignored.
 - These ceilings apply to first-time provisioning, linking an existing account,
   and role re-sync on every login. The last remaining owner is never demoted,
   and blocked assignments are recorded in the audit log.

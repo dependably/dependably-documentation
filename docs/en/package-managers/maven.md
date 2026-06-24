@@ -1,15 +1,13 @@
 # Maven (Maven & Gradle)
 
-Point Maven or Gradle at your Dependably organization.
+Point Maven or Gradle at Dependably to install private artifacts, proxy public
+ones, and publish your own.
 
-You will need your **base URL** and a **token** — see
-[Getting started](../getting-started.md). The examples below use
-`repo.example.com`; substitute your own. On a multi-tenant instance your
-organization is a subdomain, so use `https://default.repo.example.com/maven/`
-instead — the path is always just `/maven/`.
-
-Maven and Gradle authenticate with **HTTP Basic**: username `user` (any value
-works — it is ignored), password your token. Your repository URL is:
+You will need your **token** — create one in the web UI; see
+[Getting started](../getting-started.md). The examples use `repo.example.com`;
+substitute your own. Maven and Gradle authenticate with **HTTP Basic**: the
+username `user` (any value works — it is ignored) and your token as the
+password. Your repository URL is:
 
 ```
 https://repo.example.com/maven/
@@ -20,12 +18,13 @@ package can never be silently replaced by a public one of the same coordinates.
 
 ## Configure
 
+Maven and Gradle are configured through files — there is no CLI config command.
+The blocks below are the minimum you need. The token lives in a user-level file
+outside your project (so it is never committed); put it there directly.
+
 ### Maven
 
-Maven keeps credentials separate from the project: reference the repository in
-the project `pom.xml`, but put the token in your user `settings.xml`.
-
-In `pom.xml`:
+Reference the repository in the project `pom.xml`:
 
 ```xml
 <repositories>
@@ -36,7 +35,8 @@ In `pom.xml`:
 </repositories>
 ```
 
-In `~/.m2/settings.xml` (the `<id>` must match the one in `pom.xml`):
+Put the token in your user `~/.m2/settings.xml` (the `<id>` must match the one
+in `pom.xml`):
 
 ```xml
 <settings>
@@ -44,20 +44,14 @@ In `~/.m2/settings.xml` (the `<id>` must match the one in `pom.xml`):
     <server>
       <id>dependably</id>
       <username>user</username>
-      <password>${env.DEPENDABLY_TOKEN}</password>
+      <password><your token></password>
     </server>
   </servers>
 </settings>
 ```
 
-```bash
-export DEPENDABLY_TOKEN=<your token>
-```
-
-The `pom.xml` is safe to commit; the token stays in `settings.xml`, outside the
-project. To route every dependency through Dependably, add a catch-all
-`<mirror>` in `settings.xml` (it reuses the `<server>` credentials because the
-`<id>` matches):
+To route every dependency through Dependably, add a catch-all `<mirror>` to
+`settings.xml`. It reuses the `<server>` credentials because the `<id>` matches:
 
 ```xml
 <mirrors>
@@ -71,8 +65,7 @@ project. To route every dependency through Dependably, add a catch-all
 
 ### Gradle
 
-In `build.gradle`, read credentials from a property or environment variable —
-never a literal token:
+In `build.gradle`:
 
 ```groovy
 repositories {
@@ -80,28 +73,11 @@ repositories {
         url = uri("https://repo.example.com/maven/")
         credentials {
             username = "user"
-            password = System.getenv("DEPENDABLY_TOKEN")
+            password = "<your token>"
         }
     }
 }
 ```
-
-Alternatively keep the token in `~/.gradle/gradle.properties` (in your home
-directory, not the project) and read it with `findProperty`:
-
-```properties
-dependablyToken=<your token>
-```
-
-```bash
-chmod 600 ~/.gradle/gradle.properties
-```
-
-> **Plain HTTP:** if your instance is served over `http://`, Gradle rejects the
-> repository unless you add `allowInsecureProtocol = true` inside the
-> `maven { }` block. Maven 3.8.1+ blocks HTTP repositories via the default
-> `maven-default-http-blocker` mirror — remove or shadow it in `settings.xml`
-> if you hit a "blocked mirror" error. Prefer HTTPS where you can.
 
 ## Verify
 

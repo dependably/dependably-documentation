@@ -1,15 +1,10 @@
 # Go
 
-Point the Go toolchain at your Dependably organization so `go get` and
-`go mod download` resolve and download modules through Dependably's module
-proxy cache.
+Point the Go toolchain at Dependably so `go get` and `go mod download` resolve
+and download modules through Dependably's module proxy cache.
 
-You will need your **base URL** and — if your instance requires authenticated
-pulls — a **token**. See [Getting started](../getting-started.md). The examples
-below use `repo.example.com`; substitute your own. On a multi-tenant instance
-your organization is a subdomain, so use
-`https://default.repo.example.com/go,direct` instead — the path is always just
-`/go`.
+You will need your **base URL** — see [Getting started](../getting-started.md).
+The examples below use `repo.example.com`; substitute your own.
 
 Dependably implements the standard Go module proxy (GOPROXY) protocol under the
 `/go` path. Set `GOPROXY` to:
@@ -20,15 +15,15 @@ https://repo.example.com/go,direct
 
 The trailing `,direct` lets the toolchain fall back to fetching directly from a
 module's source when Dependably has no cached copy. Drop it
-(`GOPROXY=https://repo.example.com/go`) to force all fetches through Dependably.
+(`https://repo.example.com/go`) to force all fetches through Dependably.
 
 ## Configure
 
-The Go toolchain is configured with **environment variables**, not a config
-file. Set them in your shell profile (or per-project via `go env -w`).
+Use Go's own `go env -w` command, which persists the setting in Go's
+environment file — no shell profile or hand-edited config required:
 
 ```bash
-export GOPROXY=https://repo.example.com/go,direct
+go env -w GOPROXY=https://repo.example.com/go,direct
 ```
 
 Dependably also proxies the Go checksum database, so the default checksum
@@ -41,29 +36,8 @@ deployment.
 > toolchain skips the public checksum DB for them:
 >
 > ```bash
-> export GOPRIVATE=example.com/internal,corp.example.com
+> go env -w GOPRIVATE=example.com/internal,corp.example.com
 > ```
-
-### Private modules (authenticated pulls)
-
-If your instance requires a token to pull (anonymous pull disabled), Go sends
-credentials over HTTPS from your `~/.netrc`. Dependably accepts the token as the
-**password** with any username (the literal `user` is conventional):
-
-```text
-machine repo.example.com
-login user
-password <your token>
-```
-
-Keep the file private:
-
-```bash
-chmod 600 ~/.netrc
-```
-
-If anonymous pull is enabled on your instance (a common default for read
-access), no credentials are needed and you can skip `~/.netrc`.
 
 ## Verify
 
@@ -86,11 +60,9 @@ everything else. Tag the release in source and Dependably handles the rest.
 
 ## Revert
 
-Unset the environment variables to return to Go's defaults:
+Unset the values with Go's own command to return to its defaults:
 
 ```bash
 go env -u GOPROXY
-unset GOPROXY GOPRIVATE
+go env -u GOPRIVATE
 ```
-
-Or remove the `machine repo.example.com` block from `~/.netrc`.

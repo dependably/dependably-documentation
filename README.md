@@ -37,8 +37,7 @@ docs/
 - One topic per file; keep pages short and task-focused.
 - Developer guides follow a shared template: intro + prerequisites, the registry
   URL, **Configure**, **Verify**, **Publishing**, **Revert**.
-- Examples use `repo.example.com` as the base URL. The organization is resolved
-  from the host (a subdomain on multi-tenant instances), never from a path —
-  there is no `/o/<org>/` prefix in any registry URL.
-- Tokens are never shown literally — guides use placeholders or environment
-  variables.
+- Examples use `repo.example.com` as the base URL. Registry URLs are built
+  directly onto the host (`<base>/npm/`, `<base>/simple/`, …).
+- Tokens are never shown literally — guides use placeholders and let each tool
+  store the token in its own credential store.

@@ -5,23 +5,20 @@ Dependably's permission model has three layers:
 - **Capabilities** are the atoms — fine-grained `<domain>:<action>` permission
   strings such as `publish:npm` or `read:audit`. They are the single source of
   truth for every permission check.
-- **Roles** are fixed bundles of capabilities. Four roles are *per-organization*
-  (`member`, `admin`, `owner`, `auditor`); every user belongs to exactly one
-  organization, so these apply within it only. One role, `system_admin`, is
-  *platform-level* — the operator role used on multi-tenant deployments.
+- **Roles** are fixed bundles of capabilities. There are four: `member`,
+  `admin`, `owner`, and `auditor`.
 - **Tokens can be narrowed.** An API token carries an explicit subset of the
   capabilities held by the user who created it, validated at creation so a token
   can never exceed the role that minted it.
 
 ## Roles
 
-| Role | Scope | Purpose |
-| ---- | ----- | ------- |
-| `member` | Organization | Read-only consumer: read package metadata, artifacts, packages, and claims; manage their own tokens. |
-| `admin` | Organization | Day-to-day administrator: publish / import / yank across all ecosystems, manage claims, configure the organization, read tenant config and the audit log. |
-| `owner` | Organization | Everything an admin can do **plus** `tenant:admin` — the one capability reserved to the owner (managing other owners). |
-| `auditor` | Organization | Compliance role: read the audit log and manage their own tokens — nothing else (no package reads). |
-| `system_admin` | Platform | Operator role. Reads platform-wide and runs the system control plane; to write an organization's data it temporarily assumes a tenant role through an audited flow. |
+| Role | Purpose |
+| ---- | ------- |
+| `member` | Read-only consumer: read package metadata, artifacts, packages, and claims; manage their own tokens. |
+| `admin` | Day-to-day administrator: publish / import / yank across all ecosystems, manage claims, configure the organization, read tenant config and the audit log. |
+| `owner` | Everything an admin can do **plus** `tenant:admin` — the one capability reserved to the owner (managing other owners). |
+| `auditor` | Compliance role: read the audit log and manage their own tokens — nothing else (no package reads). |
 
 ## Role → capabilities
 
@@ -38,11 +35,6 @@ Dependably's permission model has three layers:
 
 **`auditor`**
 : `read:audit`, `tokens:manage_own`
-
-**`system_admin`**
-: `platform:*`, plus the read capabilities (`read:metadata`, `read:artifact`,
-  `read:packages`, `read:claims`, `read:audit`, `read:tenant`) and
-  `tokens:manage_own`
 
 ## Capability reference
 
@@ -65,7 +57,6 @@ Dependably's permission model has three layers:
 | `tenant:configure` | Change organization configuration, manage users and tokens |
 | `tenant:admin` | Owner-only administration — the capability that distinguishes owner from admin |
 | `tokens:manage_own` | Create and manage one's own API tokens |
-| `platform:*` | Operator override (`system_admin` only; cannot be requested on a token) |
 
 A **family wildcard** satisfies its leaves: a token granted `publish:*` may
 publish to npm. The `<eco>` placeholders above are the exact ecosystems
@@ -81,8 +72,8 @@ when the token was narrowed, otherwise from the user's role.
 ## Narrowing a token
 
 When a user mints an API token they pass a capability list. It must be
-non-empty, drawn only from the requestable vocabulary (which excludes
-`platform:*` and the global `*`), free of duplicates, and a subset of the
+non-empty, drawn only from the requestable vocabulary (which excludes the
+global `*` wildcard), free of duplicates, and a subset of the
 creator's own capabilities. A request for more than the creator holds is
 rejected with "Requested capabilities exceed your role." See
 [Users & tokens](users-and-tokens.md) for how to create them.
