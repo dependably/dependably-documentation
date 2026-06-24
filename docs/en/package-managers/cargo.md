@@ -103,11 +103,12 @@ version is rejected. Yank a bad version with `cargo yank --registry dependably
 --version <x.y.z>` (and `--undo` to reverse it), which needs the `yank:cargo`
 capability.
 
-**Owner management is not available.** `cargo owner --add` and
-`cargo owner --remove` return **501 Not Implemented**: who can publish is
-governed by your Dependably **organization membership**, not per-crate owners.
-Manage access through the registry's [user-management](../admin/users-and-tokens.md)
-tools instead. (`cargo owner --list` works and reports your org's members.)
+**Access is managed centrally, through your organization.** Who can publish is
+governed by your Dependably [roles and tokens](../admin/users-and-tokens.md), so
+there are no per-crate owner lists to maintain — change access once, in one
+place, instead of crate by crate. `cargo owner --list` reports your org's
+members. (Because access lives in Dependably rather than on the crate, Cargo's
+`cargo owner --add` / `--remove` return `501 Not Implemented`.)
 
 ## Revert
 
