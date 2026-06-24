@@ -3,6 +3,8 @@
 The **Profile** page is your personal account settings — your password,
 two-factor authentication, and how the console looks to you.
 
+![The Profile page with sections for Password, Two-factor authentication, Theme, Language, and About.](images/profile.png)
+
 ## Change your password
 
 Select **Change password**, then enter your current password and a new one

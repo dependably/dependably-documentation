@@ -5,6 +5,8 @@ version cached in your registry, so you can see your exposure across all
 ecosystems in one place. Each entry is matched against the
 [OSV](https://osv.dev) database.
 
+![The Vulnerabilities page: a search box, an ecosystem filter, and a table of advisories with package, version, severity, CVSS score, OSV ID, summary, and published columns.](images/vulnerabilities.png)
+
 ## Find an advisory
 
 - **Search** by package name, OSV ID, or summary text.
