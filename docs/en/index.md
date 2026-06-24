@@ -18,8 +18,8 @@ public one.
 ## What it does
 
 - **Pull-through cache** — the first request for a package is fetched from
-  upstream, verified by SHA-256, and stored. Every later request is served
-  locally, even if upstream is down or the package is removed.
+  upstream, verified against its published checksum, and stored. Every later
+  request is served locally, even if upstream is down or the package is removed.
 - **Supply-chain controls** — first-fetch detection, per-version checksum
   verification, allowlists, and policy gates for vulnerabilities, malware,
   deprecation, and unsigned artifacts.
@@ -88,3 +88,10 @@ If you operate the instance or administer an organization, see
 [**Administration**](admin/index.md): deployment and configuration, access
 control (RBAC), users and tokens, organization settings, authentication
 (SAML SSO), and upstream registries.
+
+---
+
+## Reference
+
+- [**Glossary**](glossary.md) — PURL, CVSS, EPSS, KEV, OSV, SPDX, and the other
+  terms used across the UI and the supply-chain gates.

@@ -37,5 +37,6 @@ ecosystem's share of the total package count.
 A bar chart of download volume per hour over the last day, with the running
 total beneath it — a quick read on whether traffic is flowing as expected.
 
-> The numbers reflect your **current organization** only. The label next to the
-> **Dependably** logo shows which organization you are viewing.
+> The numbers reflect your **current organization** only. In multi-tenant mode,
+> the label next to the **Dependably** logo shows which organization you are
+> viewing.

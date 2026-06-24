@@ -3,13 +3,14 @@
 The **Vulnerabilities** page lists every known security advisory affecting a
 version cached in your registry, so you can see your exposure across all
 ecosystems in one place. Each entry is matched against the
-[OSV](https://osv.dev) database.
+[OSV](https://osv.dev) database. For CVSS, EPSS, KEV, and other terms, see the
+[Glossary](../glossary.md).
 
 ![The Vulnerabilities page: a search box, an ecosystem filter, and a table of advisories with package, version, severity, CVSS score, OSV ID, summary, and published columns.](images/vulnerabilities.png)
 
 ## Find an advisory
 
-- **Search** by package name, OSV ID, or summary text.
+- **Search** by package name, version, OSV ID, or summary text.
 - **Filter by ecosystem** with the dropdown.
 - **Sort** by selecting a column header — the list opens sorted by **Severity**,
   most serious first.
