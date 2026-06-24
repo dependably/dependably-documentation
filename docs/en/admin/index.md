@@ -18,3 +18,8 @@ or config files are needed for day-to-day administration.
 | [Settings](settings.md) | Org settings, retention, proxy & supply-chain security gates |
 | [Authentication](authentication.md) | Forms login, MFA, SAML 2.0 single sign-on, role mapping |
 | [Upstreams](upstreams.md) | Upstream registries Dependably proxies, and OCI routing |
+
+Day-to-day review happens in the web console: work the
+[Quarantine](../web-ui/quarantine.md) queue and read the
+[Audit log](../web-ui/audit.md). See [The web UI](../web-ui/index.md) for the
+full console tour.

@@ -22,6 +22,17 @@ docs/
     ├── containers-and-system/       ← containers & system packages
     │   ├── docker.md
     │   └── rpm.md
+    ├── web-ui/                      ← the built-in web console
+    │   ├── index.md
+    │   ├── dashboard.md
+    │   ├── packages.md
+    │   ├── vulnerabilities.md
+    │   ├── license-policy.md
+    │   ├── tokens.md
+    │   ├── setup.md
+    │   ├── profile.md
+    │   ├── quarantine.md
+    │   └── audit.md
     └── admin/                       ← operators & organization admins
         ├── index.md
         ├── configuration.md
