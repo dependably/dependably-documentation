@@ -23,25 +23,26 @@ that is the OS's own mechanism, and there's no CLI or in-app alternative. Create
 
 ```ini
 [dependably]
-name=Dependably
-baseurl=https://user:<your token>@repo.example.com/rpm/
+name=dependably
+baseurl=https://repo.example.com/rpm/
 enabled=1
-gpgcheck=1
-gpgkey=https://repo.example.com/rpm/repodata/RPM-GPG-KEY
-sslverify=1
+gpgcheck=0
+username=user
+password=<your token>
 ```
 
-`dnf` authenticates with **HTTP Basic**. The token is the password; the username
-can be anything (`user` is conventional), so the credentials are embedded in
-`baseurl` as `user:<your token>@`. Because this file holds the literal token,
-keep its permissions tight:
+`dnf` authenticates with **HTTP Basic**: the token is the password and the
+username can be anything (`user` is conventional), set with the `username` and
+`password` keys. `gpgcheck=0` is the default — turn it on once you have package
+signing wired up. Because this file holds the literal token, keep its
+permissions tight:
 
 ```bash
 sudo chmod 600 /etc/yum.repos.d/dependably.repo
 ```
 
-If your instance allows anonymous pulls, you can drop the `user:<your token>@`
-credentials from `baseurl` and read without a token.
+If your instance allows anonymous pulls, you can drop the `username` and
+`password` lines and read without a token.
 
 ## Verify
 

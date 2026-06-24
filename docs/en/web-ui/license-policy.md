@@ -11,12 +11,15 @@ information is always available even when enforcement is off.
 
 ## Enforcement
 
-The **Enforcement** indicator at the top reads **OFF** or **ON**:
+The **Enforcement** indicator at the top shows one of three modes:
 
-- **OFF** — licenses are recorded but never block a pull. The allow and block
-  lists below show what *would* happen if you turned enforcement on, so you can
-  preview a policy before committing to it.
-- **ON** — the lists are applied to pulls.
+- **Off** — licenses are recorded but never affect a pull. The allow and block
+  lists below show what *would* happen under enforcement, so you can preview a
+  policy before committing to it.
+- **Warn** — the policy is evaluated and violations are flagged, but pulls are
+  still served.
+- **Block** — the policy is enforced: a pull of a non-allowed or blocked license
+  is refused.
 
 ## Allowed and blocked licenses
 

@@ -36,10 +36,11 @@ The top navigation is the same on every page:
 | [**Setup**](setup.md) | Copy a ready-made configuration snippet for npm, pip, NuGet, Maven, Cargo, Go, Docker, or RPM. |
 | [**Profile**](profile.md) | Your account — change your password, enable two-factor authentication, switch theme or language. |
 
-Two further pages open from inside the console rather than the top bar:
+Two further pages sit in the top navigation bar (they require elevated
+permissions — a member account sees a Forbidden notice):
 
 - [**Quarantine**](quarantine.md) — the review queue for versions a policy gate
-  blocked. Open it from the **Quarantine pending** card on the Overview.
+  blocked. Also reachable from the **Quarantine pending** card on the Overview.
 - [**Audit log**](audit.md) — a searchable, exportable record of every event in
   your organization.
 

@@ -21,6 +21,9 @@ Add a second factor with an authenticator app (TOTP):
    key** by hand.
 3. Enter the 6-digit code your app shows and select **Enable two-factor
    authentication**.
+4. Dependably shows **10 recovery codes**. Save them somewhere safe — each is
+   single-use and lets you sign in if you lose your authenticator. They are
+   shown only once.
 
 From then on you enter a code at sign-in. If your organization requires MFA, set
 this up before it is enforced. See [Authentication](../admin/authentication.md)
