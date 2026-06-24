@@ -32,7 +32,8 @@ docs/
     │   ├── setup.md
     │   ├── profile.md
     │   ├── quarantine.md
-    │   └── audit.md
+    │   ├── audit.md
+    │   └── images/                  ← screenshots embedded in the pages above
     └── admin/                       ← operators & organization admins
         ├── index.md
         ├── configuration.md

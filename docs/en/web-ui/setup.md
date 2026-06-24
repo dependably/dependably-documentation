@@ -7,6 +7,8 @@ ecosystem, already filled in with your instance's host. Find your tool, select
 You will still need a [token](tokens.md) to drop into the snippet where it says
 `<token>`.
 
+![The Setup page showing per-ecosystem configuration snippets, each with a Copy button.](images/setup.png)
+
 ## What each snippet sets up
 
 The examples below use `repo.example.com`; the page shows your real host.

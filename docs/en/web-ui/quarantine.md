@@ -8,6 +8,8 @@ for a human decision. Open it from the **Quarantine pending** card on the
 > this page sees a **Forbidden** notice instead of entries — see
 > [Access control (RBAC)](../admin/rbac.md).
 
+![The Quarantine page with a decision-state filter and an explanation of the review queue; a member account sees a Forbidden notice and no entries.](images/quarantine.png)
+
 ## What lands here
 
 Every automatic policy block lands in the queue for review while downloads of

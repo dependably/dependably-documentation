@@ -4,6 +4,8 @@ The **Overview** is the first page after sign-in (and the page the **Dependably*
 logo returns you to). It answers, at a glance: how much is in the registry, how
 much disk it uses, what's being pulled, and what's being blocked.
 
+![The Overview dashboard: a row of metric cards, a packages-by-ecosystem table with per-severity vulnerability counts, and a downloads chart.](images/overview.png)
+
 ## Headline metrics
 
 A row of cards across the top summarizes the organization:

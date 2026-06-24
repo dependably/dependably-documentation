@@ -7,6 +7,8 @@ enforced.
 Dependably records the SPDX license of every package it caches, so this
 information is always available even when enforcement is off.
 
+![The License policy page showing the Enforcement indicator set to OFF and empty Allowed and Blocked license lists.](images/license-policy.png)
+
 ## Enforcement
 
 The **Enforcement** indicator at the top reads **OFF** or **ON**:

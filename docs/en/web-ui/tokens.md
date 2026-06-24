@@ -9,6 +9,8 @@ CI and shared automation, use a **service token** instead — see
 
 ## Create a token
 
+![The New Access Token dialog with a Description field, a Scope dropdown, and an optional Expires at date.](images/new-token.png)
+
 1. Open **Tokens** and select **New token**.
 2. Optionally enter a **Description** (for example, *Local dev laptop*) so you
    can tell your tokens apart later.

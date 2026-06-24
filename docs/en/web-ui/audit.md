@@ -8,6 +8,8 @@ organization — every fetch, push, block, login, and configuration change.
 > page sees a **Forbidden** notice instead of events — see
 > [Access control (RBAC)](../admin/rbac.md).
 
+![The Audit log with Activity and Configuration tabs, a search box, an event-type filter, and an Export CSV button; a member account sees a Forbidden notice and no events.](images/audit.png)
+
 ## Two views
 
 The page has two tabs:

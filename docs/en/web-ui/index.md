@@ -11,6 +11,8 @@ needs.
 
 ## Signing in
 
+![Dependably sign-in screen with Email and Password fields and a Sign in button.](images/login.png)
+
 The base URL opens a sign-in screen. Enter your **email** and **password** and
 select **Sign in**. If your organization requires multi-factor authentication
 you are prompted for your 6-digit code on the way in; if it uses SAML single

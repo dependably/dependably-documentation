@@ -4,6 +4,8 @@ The **Packages** page lists every package your registry holds — both the ones 
 published and the ones proxied from upstream — and lets you drill into any one to
 see its versions, where each came from, and whether it carries an advisory.
 
+![The Packages page: a search box, an ecosystem filter, and a sortable table of packages with ecosystem, PURL, versions, downloads, latest-cached, vulnerabilities, and created columns.](images/packages-list.png)
+
 ## Find a package
 
 - **Search by name** with the box at the top.
@@ -33,6 +35,8 @@ Select any row to open the package.
 The package page lists every cached version. If a newer version exists upstream
 that you have not cached, a banner notes it (for example, *Behind upstream —
 latest version 8.0.1 is not cached here*).
+
+![A package detail page for @babel/core showing a behind-upstream banner and a per-version table with Origin, Checksum, Size, License, Downloads, and Status columns.](images/package-detail.png)
 
 | Column | Meaning |
 | ------ | ------- |
