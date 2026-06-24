@@ -1,116 +1,100 @@
-# Docker (OCI images) — Beta
+# Docker / OCI images — Beta
 
-> **Beta.** Docker / OCI support is functional for pulling images, but the
-> protocol surface and configuration may change. Pushing your own images is not
-> yet supported.
+> **Beta.** Docker / OCI container image support is functional but the protocol
+> surface and configuration may still change.
 
-Pull container images through your Dependably organization. Dependably
-implements the OCI Distribution Spec, so the `docker` CLI works against it
-unchanged.
+Dependably implements the OCI Distribution Spec (`/v2/`), so `docker` (and
+`podman`) work against it unchanged for both pulling and pushing images.
 
-You will need your **base URL** and a **token** — see
-[Getting started](../getting-started.md). The examples below use
-`repo.example.com`; substitute your own.
+You will need your registry **host** and a **token** — see
+[Getting started](../getting-started.md). The Docker protocol owns the URL:
+every client talks to `/v2/` at the registry root, so there is no org slug in
+the path. Your organization is resolved from the host you log in to.
 
-> **Pull-through only.** Dependably caches and serves images you pull from
-> upstream registries. Pushing your own images to Dependably is not yet
-> supported.
+```text
+# Single-org instance (most common): the host is your registry
+repo.example.com/myimage:tag
 
----
+# Multi-org instance: your org is the subdomain
+default.repo.example.com/myimage:tag
+```
 
-## How the image name maps to your org
+The examples below use the single-org form `repo.example.com`; substitute your
+own host. If you are unsure which form applies, ask your administrator.
 
-Unlike npm or Maven, the Docker protocol owns the URL — every client talks to
-`/v2/` at the registry root and cannot put an org slug in the path. Which org
-serves a pull therefore depends on how your instance is deployed:
+## Configure
 
-- **Single-org instance (most common):** the instance serves its one
-  organization at the root. Prefix the image with the host:
-
-  ```bash
-  docker pull repo.example.com/library/ubuntu:22.04
-  ```
-
-- **Multi-org instance:** the org is the subdomain. Prefix the image with
-  `<org>.<host>`:
-
-  ```bash
-  docker pull default.repo.example.com/library/ubuntu:22.04
-  ```
-
-If you are unsure which applies, ask your administrator. The rest of this guide
-uses the single-org form.
-
----
-
-## Authenticate
-
-Log in once; Docker stores the credentials and reuses them. The username is
-`user` and the password is your token:
+Log in once to the registry **host**. Docker stores the credentials in
+`~/.docker/config.json` and reuses them. The username can be anything (use
+`user`); the password is your token:
 
 ```bash
 docker login repo.example.com -u user
 # paste your token when prompted for a password
 ```
 
-To avoid the token appearing in your shell history, pipe it from stdin:
+To keep the token out of your shell history, pipe it from stdin:
 
 ```bash
 echo "<your token>" | docker login repo.example.com -u user --password-stdin
 ```
 
----
+`podman login repo.example.com` works the same way.
 
-## Pull an image
-
-Prefix any image with your registry host so Docker resolves it through
-Dependably instead of Docker Hub:
-
-```bash
-docker pull repo.example.com/library/ubuntu:22.04
-docker pull repo.example.com/library/nginx:latest
-```
-
-The first pull of each image is fetched from upstream, verified by digest, and
-cached. Later pulls of the same digest are served locally.
-
-To make Dependably the default for *unprefixed* image names (so `docker pull
-ubuntu` is routed through it), an administrator configures it as a registry
-mirror at the daemon level — that is a server-side setting, not something you
-change per machine.
-
----
+> **Plain HTTP:** if your instance is served over plain HTTP, Docker refuses it
+> until you add the host to the daemon's insecure-registries list. Edit
+> `/etc/docker/daemon.json` (Linux) or the equivalent in Docker Desktop
+> settings, then restart the daemon. Prefer HTTPS wherever you can.
+>
+> ```json
+> {
+>   "insecure-registries": ["repo.example.com"]
+> }
+> ```
 
 ## Verify
 
+Pull a small image through Dependably by prefixing it with your host:
+
 ```bash
+docker login repo.example.com -u user
 docker pull repo.example.com/library/hello-world:latest
 docker run --rm repo.example.com/library/hello-world:latest
 ```
 
-The first pull records a `first_fetch` entry on the **Activity** page in the
-web UI.
+The first pull of an image is fetched from upstream, verified by digest, and
+cached; later pulls of the same digest are served locally. Pulls appear as
+`download` activity for your organization on the **Activity** page in the web
+UI.
 
----
+New organizations are seeded with two upstream registries: Microsoft Container
+Registry (`mcr.microsoft.com`, for `dotnet/` and `playwright` images) and Docker
+Hub (everything else). Pulls proxy through these automatically — see
+[Upstreams](../admin/upstreams.md) to add or change them.
 
-## Plain HTTP
+## Publishing
 
-If your instance is served over plain HTTP, Docker refuses it until you add the
-host to the daemon's insecure-registries list. Edit
-`/etc/docker/daemon.json` (Linux) or the equivalent in Docker Desktop settings:
+Pushing requires a token with the `publish:oci` capability. Tag your image with
+the registry host and repository, then push:
 
-```json
-{
-  "insecure-registries": ["repo.example.com"]
-}
+```bash
+docker tag myimage:1.0 repo.example.com/myimage:1.0
+docker push repo.example.com/myimage:1.0
 ```
 
-Restart the Docker daemon afterward. Prefer HTTPS wherever you can.
+Each layer blob and the manifest are verified by SHA-256 digest on upload; a
+mismatch is rejected. Pushed images appear as `push` activity on the
+**Activity** page.
 
----
+## Revert
 
-## Log out
+Remove stored credentials for the host:
 
 ```bash
 docker logout repo.example.com
 ```
+
+To remove a pushed tag or manifest, delete it with a token that has the
+`yank:oci` capability (for example via `skopeo delete`, or the management UI).
+Blob deletion over the `/v2/` API is not supported — unreferenced blobs are
+reclaimed by garbage collection.

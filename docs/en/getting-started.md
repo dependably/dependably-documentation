@@ -1,7 +1,7 @@
 # Getting started
 
-Before you configure any tool, gather three pieces of information. Every guide
-in this site asks for the same three.
+Before you configure any tool, gather the information every guide in this site
+asks for: your **base URL** and a **token**.
 
 ## 1. Base URL
 
@@ -11,13 +11,13 @@ The address of your Dependably instance, for example:
 https://repo.example.com
 ```
 
-for a single-tenant deployment, or
+for a single-organization deployment, or
 
 ```
 https://acme.repo.example.com
 ```
 
-for multi-tenant (the org is a subdomain).
+for multi-tenant (the organization is a subdomain).
 
 On a local network the IP and port also work:
 
@@ -25,32 +25,49 @@ On a local network the IP and port also work:
 http://192.168.1.50:8080
 ```
 
-## 2. Organization slug
+The organization is resolved from the **host**, never from a path — registry
+URLs are always `<base>/npm/`, `<base>/simple/`, and so on, with no `/o/<org>/`
+prefix.
 
-Dependably groups packages by organization. The slug is the short name in your
-registry URLs — often `default`, or your team's name such as `acme`. You can
-see it in the address bar when you are logged into the web UI.
+## 2. How your organization appears
+
+Dependably groups packages by organization. How the organization shows up
+depends on how your instance is deployed:
+
+- **Single-organization instance (most common):** the bare host serves the one
+  organization. You do not put the organization anywhere in your URLs.
+- **Multi-tenant instance:** the organization is the subdomain — for the org
+  `acme`, every URL is under `https://acme.repo.example.com/`. You can see your
+  organization in the address bar when logged into the web UI.
+
+Each ecosystem guide uses `repo.example.com` (single-organization form) in its
+examples; substitute your own host.
 
 ## 3. Token
 
 Every guide authenticates with a token. Create one in the web UI:
 
 - **Tokens** — a personal token tied to your account. Best for your own machine.
-- **Settings → Service tokens** — a long-lived token not tied to a person.
-  Best for CI and shared automation.
+- **Settings → Service tokens** — a long-lived token not tied to a person. Best
+  for CI and shared automation.
 
-Most tools authenticate with **HTTP Basic**: the username is the literal word
-`user` and the password is your token.
+How the token is sent depends on the tool, and each guide shows the exact form:
+
+- **HTTP Basic** (pip, uv, NuGet, Maven, Gradle, `dnf`, `docker`) — the token is
+  the password; the username is ignored, so any value works (the guides use
+  `user`).
+- **Bearer token** (npm, Cargo) — the token is sent directly, via npm's
+  `_authToken` or Cargo's `CARGO_REGISTRIES_<NAME>_TOKEN`.
 
 > **Keep tokens secret.** Never commit a token to source control. The
-> per-project recipes in each guide reference an environment variable instead
-> of pasting the literal value.
+> per-project recipes in each guide reference an environment variable instead of
+> pasting the literal value.
 
 ---
 
 ## Project vs. global configuration
 
-Each guide shows two ways to point a tool at Dependably:
+Most guides show two ways to point a tool at Dependably:
 
 - **Per-project** — config lives in the repository, so everyone who clones it
   uses Dependably automatically. The token is read from an environment variable
@@ -65,17 +82,18 @@ Each guide shows two ways to point a tool at Dependably:
 
 Self-hosted registries are often served over plain **HTTP** on an internal
 network (a URL starting with `http://`, not `https://`). Most package managers
-refuse to talk to a plaintext registry by default — this is intentional, and
-you override it deliberately per tool:
+refuse to talk to a plaintext registry by default — this is intentional, and you
+override it deliberately per tool:
 
-| Tool   | Override |
-| ------ | -------- |
-| npm    | `strict-ssl=false` |
-| pip    | `trusted-host = <host>` |
-| uv     | `--allow-insecure-host <host>` |
-| NuGet  | `allowInsecureConnections="true"` (or `--allow-insecure-connections`) |
-| docker | add the host to `insecure-registries` in the daemon config |
-| dnf    | `sslverify=0` |
+| Tool          | Override |
+| ------------- | -------- |
+| npm           | `strict-ssl=false` |
+| pip           | `trusted-host = <host>` |
+| uv            | `--allow-insecure-host <host>` |
+| NuGet         | `allowInsecureConnections="true"` (or `--allow-insecure-connections`) |
+| Maven / Gradle| Gradle needs `allowInsecureProtocol = true`; Maven 3.8.1+ blocks HTTP repos by default |
+| docker        | add the host to `insecure-registries` in the daemon config |
+| dnf           | `sslverify=0` |
 
 Each guide repeats the exact line you need. If your instance is served over
 HTTPS, ignore this section entirely.
@@ -96,5 +114,7 @@ Once that succeeds, head to the guide for your tool:
 - [PyPI](package-managers/pypi.md)
 - [NuGet](package-managers/nuget.md)
 - [Maven](package-managers/maven.md)
+- [Cargo](package-managers/cargo.md)
+- [Go](package-managers/go.md)
 - [Docker](containers-and-system/docker.md)
 - [RPM](containers-and-system/rpm.md)

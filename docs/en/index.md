@@ -9,8 +9,9 @@ package disappears from the internet, and nothing enters your codebase
 unnoticed.
 
 It speaks the native protocol of each tool you already use. Point npm, pip,
-NuGet, Maven, `dnf`, or `docker` at your Dependably URL and they behave exactly
-as before — they just talk to your registry instead of the public one.
+NuGet, Maven, Cargo, `go`, `dnf`, or `docker` at your Dependably URL and they
+behave exactly as before — they just talk to your registry instead of the
+public one.
 
 ---
 
@@ -20,9 +21,10 @@ as before — they just talk to your registry instead of the public one.
   upstream, verified by SHA-256, and stored. Every later request is served
   locally, even if upstream is down or the package is removed.
 - **Supply-chain controls** — first-fetch detection, per-version checksum
-  verification, allowlists for which packages may be pulled or published.
-- **One URL per ecosystem** — npm, PyPI, NuGet, Maven, RPM, and Docker, all
-  from a single self-hosted instance.
+  verification, allowlists, and policy gates for vulnerabilities, malware,
+  deprecation, and unsigned artifacts.
+- **One URL per ecosystem** — npm, PyPI, NuGet, Maven, Cargo, Go, RPM, and
+  Docker, all from a single self-hosted instance.
 - **No cloud account, no per-seat licence** — a single self-contained binary
   you run on your own infrastructure.
 
@@ -36,23 +38,36 @@ as before — they just talk to your registry instead of the public one.
 | **pip** / uv               | Python packages (PyPI)              | [PyPI](package-managers/pypi.md) |
 | **dotnet**                 | C# / .NET packages (NuGet)          | [NuGet](package-managers/nuget.md) |
 | **Maven** / Gradle         | Java & JVM artifacts                | [Maven](package-managers/maven.md) |
-| **docker**                 | Container images (OCI)              | [Docker](containers-and-system/docker.md) _(Beta)_ |
-| **dnf**                    | RPM packages (Linux)                | [RPM](containers-and-system/rpm.md) _(Beta)_ |
+| **cargo**                  | Rust crates                         | [Cargo](package-managers/cargo.md) |
+| **go**                     | Go modules                          | [Go](package-managers/go.md) |
+| **docker** / podman        | Container images (OCI)              | [Docker](containers-and-system/docker.md) _(Beta)_ |
+| **dnf** / yum              | RPM packages (Linux)                | [RPM](containers-and-system/rpm.md) _(Beta)_ |
 
 ---
 
 ## Getting started
 
-Every guide needs the same three pieces of information about your instance.
-[**Start here**](getting-started.md) to gather them once, then jump to the
-guide for your tool:
+Every guide needs the same information about your instance.
+[**Start here**](getting-started.md) to gather it once, then jump to the guide
+for your tool:
 
 **Developer package managers**
 [npm](package-managers/npm.md) ·
 [PyPI](package-managers/pypi.md) ·
 [NuGet](package-managers/nuget.md) ·
-[Maven](package-managers/maven.md)
+[Maven](package-managers/maven.md) ·
+[Cargo](package-managers/cargo.md) ·
+[Go](package-managers/go.md)
 
 **Containers & system packages**
 [Docker](containers-and-system/docker.md) _(Beta)_ ·
 [RPM](containers-and-system/rpm.md) _(Beta)_
+
+---
+
+## Running Dependably
+
+If you operate the instance or administer an organization, see
+[**Administration**](admin/index.md): deployment and configuration, access
+control (RBAC), users and tokens, organization settings, authentication
+(SAML SSO), and upstream registries.
