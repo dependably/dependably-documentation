@@ -66,6 +66,22 @@ for your tool:
 
 ---
 
+## The web UI
+
+Dependably has a built-in web console. Open your base URL in a browser to browse
+packages, see which versions carry advisories, create the token your tools need,
+and copy a ready-made setup snippet. See [**The web UI**](web-ui/index.md) for a
+tour of every page:
+[Overview](web-ui/dashboard.md) ·
+[Packages](web-ui/packages.md) ·
+[Vulnerabilities](web-ui/vulnerabilities.md) ·
+[Licenses](web-ui/license-policy.md) ·
+[Tokens](web-ui/tokens.md) ·
+[Setup](web-ui/setup.md) ·
+[Profile](web-ui/profile.md)
+
+---
+
 ## Running Dependably
 
 If you operate the instance or administer an organization, see
