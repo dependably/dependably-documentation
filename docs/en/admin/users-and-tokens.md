@@ -1,13 +1,8 @@
 # Users & tokens
 
-This page covers managing the people and machine credentials inside one
-organization, plus the operator account actions available on multi-tenant
-deployments. The capabilities named below (`tenant:configure`, `tenant:admin`,
+This page covers managing the people and machine credentials in your
+organization. The capabilities named below (`tenant:configure`, `tenant:admin`,
 `tokens:manage_own`) are explained in [Access control](rbac.md).
-
-Each user belongs to exactly one organization. The same email address can exist
-as a separate, independent account in another organization; there is no shared
-cross-organization identity.
 
 ## Managing members & roles
 
@@ -45,7 +40,7 @@ organization has a cap on outstanding pending invites — cancel unused ones
 
 When SMTP is configured the invite is emailed automatically. If SMTP is
 unconfigured or delivery fails, the API response returns the invite link
-(`https://default.repo.example.com/join?token=…`) so you can deliver it
+(`https://repo.example.com/join?token=…`) so you can deliver it
 yourself. The raw token is never written to logs. The invitee follows the
 `/join` link to validate the invite and set their password.
 
@@ -107,14 +102,3 @@ Any signed-in user can rotate their own password with
 `POST /api/v1/users/me/password` (current password required; the new one must
 pass the password policy). A successful change invalidates the user's other
 sessions and revokes their API tokens.
-
-On multi-tenant deployments a platform operator (`system_admin`, working from
-the apex control plane) can assist users without seeing organization business
-data. These routes are keyed by **email + `tenantSlug`** and are all audited:
-
-- **Look up a user** — `GET /api/v1/system/users?email=…&tenantSlug=…`.
-- **Force a password reset** — `POST /api/v1/system/users/{email}/password-reset`
-  with `{ "tenantSlug": … }`. Returns a temporary password to hand over
-  out-of-band; the user must change it at next login.
-- **Lock / unlock / disable** — `PATCH /api/v1/system/users/{email}/account-status`
-  with `{ "accountStatus": "locked" | "active" | "disabled", "tenantSlug": … }`.

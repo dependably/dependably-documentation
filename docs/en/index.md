@@ -25,8 +25,9 @@ public one.
   deprecation, and unsigned artifacts.
 - **One URL per ecosystem** — npm, PyPI, NuGet, Maven, Cargo, Go, RPM, and
   Docker, all from a single self-hosted instance.
-- **No cloud account, no per-seat licence** — a single self-contained binary
-  you run on your own infrastructure.
+- **No cloud account, no per-seat licence** — runs on your own infrastructure as
+  a container (or a single self-contained binary), with no external services
+  required.
 
 ---
 

@@ -7,13 +7,9 @@ Dependably serves a standard `dnf`/`yum` repository: it caches upstream packages
 on first fetch, verifies them before storage, and can host your own `.rpm`
 builds.
 
-You will need your **base URL** and a **token** — see
-[Getting started](../getting-started.md). The examples below use
-`repo.example.com`; substitute your own. On a multi-tenant instance your
-organization is a subdomain, so use `https://default.repo.example.com/rpm/`
-instead — the path is always just `/rpm/`.
-
-Your repository base URL is:
+Create a token in the web UI — see [Getting started](../getting-started.md) —
+and use it where the examples below show `<your token>`. Your repository base
+URL is:
 
 ```
 https://repo.example.com/rpm/
@@ -21,8 +17,8 @@ https://repo.example.com/rpm/
 
 ## Configure
 
-RPM configuration is machine-level by design — `dnf` repositories live in
-`/etc/yum.repos.d/` and apply to the whole system. Create
+`dnf`/`yum` reads its repositories from `.repo` files in `/etc/yum.repos.d/` —
+that is the OS's own mechanism, and there's no CLI or in-app alternative. Create
 `/etc/yum.repos.d/dependably.repo`:
 
 ```ini
@@ -44,16 +40,8 @@ keep its permissions tight:
 sudo chmod 600 /etc/yum.repos.d/dependably.repo
 ```
 
-If your org allows anonymous pulls, you can drop the `user:<your token>@`
+If your instance allows anonymous pulls, you can drop the `user:<your token>@`
 credentials from `baseurl` and read without a token.
-
-> **GPG signing:** `gpgkey` serves the upstream signing key Dependably proxies.
-> A **local-only** registry (no upstream configured) has no upstream key to
-> serve — set `gpgcheck=0`, omit the `gpgkey` line, or point `gpgkey` at your
-> own key.
-
-> **Plain HTTP:** if your instance is served over `http://`, set `sslverify=0`
-> in the `[dependably]` block. Prefer HTTPS where you can.
 
 ## Verify
 
@@ -69,16 +57,6 @@ in the web UI.
 
 ## Publishing
 
-Whether you can upload `.rpm` files depends on the instance's upstream mode:
-
-- **Merged mode** (`Rpm:UpstreamMode=merged`), or **no upstream configured** —
-  hosted publishing is allowed. Locally published packages are served alongside
-  (and shadow) any upstream packages.
-- **Passthrough mode** (`Rpm:UpstreamMode=passthrough`, the default) **with an
-  upstream registry configured for your org** — uploads are refused with **409
-  Conflict**, because a locally published package would silently shadow upstream
-  content and break dependency resolution for `dnf` clients.
-
 Upload an `.rpm` with an HTTP PUT (HTTP Basic; the token is the password):
 
 ```bash
@@ -87,10 +65,7 @@ curl --user user:<your token> \
   https://repo.example.com/rpm/upload
 ```
 
-Uploading requires a token with the `publish:rpm` capability. To enable hosted
-publishing on a passthrough instance, an operator must switch `Rpm:UpstreamMode`
-to `merged` or remove your org's RPM upstream — see
-[Upstreams](../admin/upstreams.md).
+Uploading requires a token with the `publish:rpm` capability.
 
 ## Revert
 
