@@ -13,16 +13,8 @@ for a human decision. Open it from the **Quarantine pending** card on the
 ## What lands here
 
 Every automatic policy block lands in the queue for review while downloads of
-that version keep returning `403`. A version can be held by any of the gates:
-
-- deprecated
-- release age (a supply-chain hold on brand-new versions)
-- malicious (an OSV `MAL-` advisory)
-- KEV (CISA Known Exploited Vulnerabilities)
-- EPSS (exploit-probability score)
-- vulnerability score (CVSS)
-
-These gates and their thresholds are configured in
+that version keep returning `403`. A version can be held by any of the
+supply-chain gates — the full set and their thresholds are defined in
 [Settings](../admin/settings.md).
 
 ## Filter the queue

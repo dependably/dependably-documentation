@@ -118,8 +118,10 @@ same URL, then `./gradlew publish`.
 Dependably validates every uploaded checksum (`.sha1`, `.md5`) against the bytes
 it received and rejects a mismatch. Versions ending in `-SNAPSHOT` are mutable —
 each deploy stores a new timestamped build and a request for the plain
-`-SNAPSHOT` filename always resolves to the latest. Release versions are
-immutable.
+`-SNAPSHOT` filename always resolves to the latest. For release versions, whether
+re-publishing the same version overwrites the existing one is governed by your
+organization's same-version push policy (`versionOverwritePolicy`, `block` by
+default); see [Settings](../admin/settings.md).
 
 ## Revert
 

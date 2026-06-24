@@ -25,7 +25,7 @@ Each row shows:
 | **Versions** | How many versions are cached locally. |
 | **Downloads** | All-time download count. |
 | **Latest** | Whether the newest upstream version is cached. A check means the latest upstream version is here; a cross means a newer upstream version exists but is not cached. |
-| **Vulns** | A badge with the number of versions carrying an advisory, when any do. |
+| **Vulns** | A badge with the count of distinct vulnerabilities affecting the package, grouped by severity, when any apply. |
 | **Created** | When the package first appeared in your registry. |
 
 Select any row to open the package.
@@ -48,7 +48,7 @@ latest version 8.0.1 is not cached here*).
 | **Pushed** | When this version landed in your registry. |
 | **License** | The detected SPDX license, when known. |
 | **Downloads** | Download count for this version. |
-| **Status** | **No advisories**, or **Vulnerable** when an advisory applies. |
+| **Status** | One of **No advisories**, **Vulnerable**, **Allowed (vulnerable)**, **Malicious**, **Deprecated**, **Unscanned**, or **Blocked**. |
 | **Actions** | A menu to **Download** the artifact. |
 
 ## Override the same-version push policy for one package

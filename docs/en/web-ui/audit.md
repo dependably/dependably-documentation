@@ -16,8 +16,8 @@ The page has two tabs:
 
 - **Activity** — package- and access-level events: first fetches, pushes,
   imports, downloads, vulnerability scans, deletes, manual block / unblock,
-  every kind of policy block (manual, release age, malicious, KEV, EPSS, vuln
-  score, deprecated), and login success / failure / lockout.
+  every kind of supply-chain policy block (the gates are defined in
+  [Settings](../admin/settings.md)), and login success / failure / lockout.
 - **Configuration** — administrative changes: organization, retention, and proxy
   settings; SAML configuration and logins; token and service-token lifecycle;
   member role changes, removals, and invites; allow/block-list and license-policy
