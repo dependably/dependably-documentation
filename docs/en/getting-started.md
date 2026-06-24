@@ -34,8 +34,9 @@ Each tool then stores the token in its own credential store when you log in or
 configure it; the guides show the exact command. You never need to paste a token
 into a file you commit.
 
-> **Keep tokens secret.** Treat a token like a password. Create a separate token
-> per machine or pipeline so you can revoke one without disrupting the others.
+> **Keep tokens secret.** A token is a credential — store it in your tool's
+> credential store or CI secret manager, and never commit it. See
+> [Access tokens](web-ui/tokens.md) for creating, rotating, and revoking them.
 
 ## 3. Verify you can reach the instance
 
