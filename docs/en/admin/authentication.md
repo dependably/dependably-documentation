@@ -1,18 +1,19 @@
 # Authentication
 
-Dependably supports two ways for users to sign in to an organization: **forms
-login** (email and password, with optional multi-factor authentication) and
-**SAML 2.0 single sign-on**. SAML is the only SSO protocol — there is no OIDC,
-OAuth, or LDAP login. Each organization configures its own identity provider
-independently.
+Dependably gives every organization two ways for its people to sign in:
+**forms login** (email and password, with optional multi-factor authentication)
+and **SAML 2.0 single sign-on**. With SAML 2.0, each organization connects its
+own identity provider — Okta, Microsoft Entra ID (Azure AD), OneLogin, or any
+SAML-compliant IdP — and manages access centrally, with role assignment driven
+straight from your existing groups.
 
 ## Login methods
 
 ### Forms login (email + password)
 
 Users sign in at `POST /api/v1/auth/login` with their email and password. Login
-is rate-limited. Forms login is enabled by default for every organization and
-can be turned off once SAML is fully configured (see *Disabling forms login*).
+is rate-limited. Forms login is enabled by default for every organization, and
+you can switch it off once SSO is verified (see *Set up single sign-on*).
 
 ### Multi-factor authentication (TOTP)
 
@@ -36,30 +37,33 @@ With MFA enabled, login is two steps: `POST /api/v1/auth/login` returns
 To enforce MFA for everyone, an operator sets `REQUIRE_MFA` instance-wide or an
 admin sets `requireMfa` per organization (see [Settings](settings.md)).
 
-## Setting up SSO (SAML 2.0)
+## Set up single sign-on
 
-SSO configuration lives under `api/v1/auth-config` and requires
-`tenant:configure`.
+Connecting your identity provider is a short, guided flow in **Settings →
+Authentication** — most teams finish it in a few minutes:
 
-**1. Register the service provider with your IdP.** Give your IdP these
-service-provider URLs (host shown as `repo.example.com`):
+1. **Hand your IdP the two service-provider URLs** Dependably shows you: the
+   sign-in (ACS) URL `https://repo.example.com/saml/acs` and the metadata URL
+   `https://repo.example.com/saml/metadata`. Many IdPs accept the metadata URL
+   and configure themselves.
+2. **Upload your IdP's metadata XML.** Dependably reads the entity ID, sign-in
+   URL, and signing certificate from it automatically — nothing to copy by hand.
+3. **Test the connection.** Dependably runs a round-trip against your IdP and
+   shows you the result. No session is created, so you can confirm everything
+   works before going live.
+4. **Turn SSO on.** Once the test passes, enable it — your team signs in through
+   your IdP from then on.
 
-| SP value | URL |
-| -------- | --- |
-| ACS (Assertion Consumer Service) | `https://repo.example.com/saml/acs` |
-| SP metadata / default entity ID | `https://repo.example.com/saml/metadata` |
+Role assignment works out of the box: new users land on the default role, and
+you can map IdP groups to Dependably roles whenever you're ready (see
+[Role mapping](#role-mapping)). Once SSO is verified you can optionally switch
+off password login so everyone goes through your IdP — Dependably keeps password
+login available until a successful SSO test confirms you won't be locked out.
 
-**2. Upload IdP metadata.** Send your IdP's metadata XML to
-`POST /api/v1/auth-config/metadata`. Dependably parses it and stores the IdP
-entity ID, SSO URL, and signing certificate. You may optionally pin a signing
-certificate explicitly with `POST /api/v1/auth-config/signing-cert`; a pinned
-override becomes the sole trust anchor.
+### Configuration reference
 
-**3. Test, then enable.** Run a test round-trip against your IdP (admin/owner
-only); it records the result without creating a session. Once a test succeeds,
-set `enabled: true`.
-
-### Configuration fields
+The guided flow fills these in for you from the uploaded metadata. Adjust them
+only if you want to fine-tune the integration:
 
 | Field | Purpose |
 | ----- | ------- |
@@ -75,14 +79,6 @@ set `enabled: true`.
 | `defaultRole` | Role assigned when no mapping matches (default `member`). |
 | `idpCanAssignAdmin` | When `true`, the IdP may assign `admin`; otherwise the ceiling is `member`. |
 | `buttonLabel` | Label shown on the SSO sign-in button. |
-
-### Disabling forms login
-
-Forms login stays on by default. You may disable it only when **all** of these
-hold, to avoid locking the organization out of a misconfigured IdP: SAML is
-enabled, IdP metadata (entity ID + signing certificate) is uploaded, and a SAML
-test has succeeded within the last 10 minutes. Deleting the SAML config
-(`DELETE /api/v1/auth-config`) re-enables forms login.
 
 ## Role mapping
 

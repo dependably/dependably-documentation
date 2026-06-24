@@ -78,12 +78,11 @@ web UI — check there to confirm modules are flowing through Dependably.
 
 ## Publishing
 
-Go modules are **not published to a registry**. A module is published by tagging
-a version in its source repository (a VCS tag like `v1.2.3`); the proxy then
-discovers it from there. Dependably is a **proxy-only** surface for Go — it
-serves and caches modules fetched from upstream, and there is no push or upload
-endpoint. To make an internal module available, tag it in its source repo and
-let Dependably proxy it.
+Go modules are published the Go-native way — by tagging a release in the
+module's source repository (a VCS tag like `v1.2.3`). The first time anyone
+requests that version, Dependably discovers it, fetches it, verifies it, and
+caches it automatically, so your internal modules flow through the same proxy as
+everything else. Tag the release in source and Dependably handles the rest.
 
 ## Revert
 
