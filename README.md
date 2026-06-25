@@ -34,14 +34,18 @@ docs/
     │   ├── quarantine.md
     │   ├── audit.md
     │   └── images/                  ← screenshots embedded in the pages above
-    └── admin/                       ← operators & organization admins
+    ├── admin/                       ← operators & organization admins
+    │   ├── index.md
+    │   ├── configuration.md
+    │   ├── rbac.md
+    │   ├── users-and-tokens.md
+    │   ├── settings.md
+    │   ├── authentication.md
+    │   └── upstreams.md
+    └── integrations/                ← monitoring & third-party integrations
         ├── index.md
-        ├── configuration.md
-        ├── rbac.md
-        ├── users-and-tokens.md
-        ├── settings.md
-        ├── authentication.md
-        └── upstreams.md
+        ├── grafana.md
+        └── dashboards/              ← downloadable Grafana dashboard JSON
 ```
 
 ## Conventions

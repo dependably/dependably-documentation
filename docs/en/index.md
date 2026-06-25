@@ -91,6 +91,15 @@ control (RBAC), users and tokens, organization settings, authentication
 
 ---
 
+## Integrations
+
+Connect Dependably to your existing monitoring stack. Metrics are published in
+Prometheus format, and a ready-made [**Grafana dashboard**](integrations/grafana.md)
+gives a single-instance admin an at-a-glance health view. See
+[**Integrations**](integrations/index.md).
+
+---
+
 ## Reference
 
 - [**Glossary**](glossary.md) — PURL, CVSS, EPSS, KEV, OSV, SPDX, and the other
