@@ -23,3 +23,7 @@ Day-to-day review happens in the web console: work the
 [Quarantine](../web-ui/quarantine.md) queue and read the
 [Audit log](../web-ui/audit.md). See [The web UI](../web-ui/index.md) for the
 full console tour.
+
+To monitor the instance from your own observability stack, expose metrics to
+Prometheus and import the ready-made
+[Grafana dashboard](../integrations/grafana.md).
