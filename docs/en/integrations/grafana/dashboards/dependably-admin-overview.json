@@ -1,7 +1,7 @@
 {
   "uid": "dependably-admin-overview",
   "title": "Dependably: Admin Overview",
-  "description": "Single instance admin view for a self hosted Dependably registry. Leads with supply chain value (advisories tracked, critical findings, blocks, packages monitored), then traffic health, vulnerability posture, proxy and cache activity, identity, storage and background job freshness. Queries Prometheus only. See dependably-documentation/docs/en/integrations/grafana.md.",
+  "description": "Single instance admin view for a self hosted Dependably registry. Leads with supply chain value (advisories tracked, critical findings, blocks, packages monitored), then traffic health, vulnerability posture, proxy and cache activity, identity, storage and background job freshness. Queries Prometheus only. See dependably-documentation/docs/en/integrations/grafana/index.md.",
   "tags": ["dependably", "integrations", "admin"],
   "timezone": "",
   "editable": true,
