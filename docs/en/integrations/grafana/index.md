@@ -186,4 +186,4 @@ By design, the metrics behind this dashboard carry no high-cardinality labels â€
 no per-tenant, per-user, or per-package breakdowns. The numbers here are
 instance-wide. For in-product counts (total packages, active users, recent
 downloads, blocked pulls), use the built-in
-[Overview](../web-ui/dashboard.md) page in the web console.
+[Overview](../../web-ui/dashboard.md) page in the web console.

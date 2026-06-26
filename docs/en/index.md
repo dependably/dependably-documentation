@@ -94,7 +94,7 @@ control (RBAC), users and tokens, organization settings, authentication
 ## Integrations
 
 Connect Dependably to your existing monitoring stack. Metrics are published in
-Prometheus format, and a ready-made [**Grafana dashboard**](integrations/grafana.md)
+Prometheus format, and a ready-made [**Grafana dashboard**](integrations/grafana/index.md)
 gives a single-instance admin an at-a-glance health view. See
 [**Integrations**](integrations/index.md).
 

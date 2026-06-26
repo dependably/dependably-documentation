@@ -44,8 +44,10 @@ docs/
     │   └── upstreams.md
     └── integrations/                ← monitoring & third-party integrations
         ├── index.md
-        ├── grafana.md
-        └── dashboards/              ← downloadable Grafana dashboard JSON
+        └── grafana/                 ← one folder per integration
+            ├── index.md             ← Grafana dashboard guide
+            ├── dashboards/          ← downloadable dashboard JSON
+            └── images/              ← dashboard screenshot
 ```
 
 ## Conventions

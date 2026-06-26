@@ -26,4 +26,4 @@ full console tour.
 
 To monitor the instance from your own observability stack, expose metrics to
 Prometheus and import the ready-made
-[Grafana dashboard](../integrations/grafana.md).
+[Grafana dashboard](../integrations/grafana/index.md).
