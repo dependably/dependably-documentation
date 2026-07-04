@@ -3,8 +3,8 @@
 The **Audit log** is a searchable, exportable record of what happened in your
 organization — every fetch, push, block, login, and configuration change.
 
-> Reading the audit log requires the `read:audit` capability, held by the
-> **admin**, **owner**, and **auditor** roles. A member account that opens this
+> Reading the audit log requires the **Admin**, **Owner**, or **Auditor**
+> role. A Member account that opens this
 > page sees a **Forbidden** notice instead of events — see
 > [Access control (RBAC)](../admin/rbac.md).
 

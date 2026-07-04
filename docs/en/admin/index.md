@@ -13,7 +13,7 @@ or config files are needed for day-to-day administration.
 | Page | Covers |
 | ---- | ------ |
 | [Configuration](configuration.md) | Deploy the instance and set its base URL |
-| [Access control (RBAC)](rbac.md) | Roles, capabilities, how permissions are enforced and narrowed |
+| [Access control (RBAC)](rbac.md) | The four roles, token scopes, and how permissions are enforced |
 | [Users & tokens](users-and-tokens.md) | Members, invitations, personal vs service tokens, account actions |
 | [Settings](settings.md) | Org settings, retention, proxy & supply-chain security gates |
 | [Authentication](authentication.md) | Forms login, MFA, SAML 2.0 single sign-on, role mapping |

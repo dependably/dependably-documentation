@@ -66,7 +66,8 @@ curl --user user:<your token> \
   https://repo.example.com/rpm/upload
 ```
 
-Uploading requires a token with the `publish:rpm` capability.
+Uploading requires a token with a push scope (**push only** or
+**push & pull**) — see [Access tokens](../web-ui/tokens.md).
 
 ## Revert
 

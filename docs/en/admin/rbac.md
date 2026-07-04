@@ -1,79 +1,37 @@
 # Access control (RBAC)
 
-Dependably's permission model has three layers:
+Dependably's permission model is built from two pre-defined sets — there is
+nothing to design or maintain yourself:
 
-- **Capabilities** are the atoms — fine-grained `<domain>:<action>` permission
-  strings such as `publish:npm` or `read:audit`. They are the single source of
-  truth for every permission check.
-- **Roles** are fixed bundles of capabilities. There are four: `member`,
-  `admin`, `owner`, and `auditor`.
-- **Tokens can be narrowed.** An API token carries an explicit subset of the
-  capabilities held by the user who created it, validated at creation so a token
-  can never exceed the role that minted it.
+- **Roles.** Every member of an organization has exactly one of four roles,
+  which determines everything they may do.
+- **Token scopes.** Every access token carries one of five pre-defined scopes,
+  and a token never grants more than the role of the person who created it —
+  see [Users & tokens](users-and-tokens.md) for the scopes and how to create
+  tokens.
 
 ## Roles
 
-| Role | Purpose |
-| ---- | ------- |
-| `member` | Read-only consumer: read package metadata, artifacts, packages, and claims; manage their own tokens. |
-| `admin` | Day-to-day administrator: publish / import / yank across all ecosystems, manage claims, configure the organization, read tenant config and the audit log. |
-| `owner` | Everything an admin can do **plus** `tenant:admin` — the one capability reserved to the owner (managing other owners). |
-| `auditor` | Compliance role: read the audit log and manage their own tokens — nothing else (no package reads). |
+| Role | What it allows |
+| ---- | -------------- |
+| **Member** | Read-only consumer: browse, search, install, and download packages; manage their own access tokens. |
+| **Admin** | Day-to-day administrator: everything a Member can, plus publish, import, and yank packages in every ecosystem, manage package claims, manage members and invitations, change organization settings, and read the audit log. |
+| **Owner** | Everything an Admin can, plus managing Owners: promoting someone to Owner, or changing an existing Owner's role, is reserved to Owners. An organization always keeps at least one Owner. |
+| **Auditor** | Compliance role: read the audit log and manage their own access tokens — nothing else, including no package access. |
 
-## Role → capabilities
-
-**`member`**
-: `read:metadata`, `read:artifact`, `read:packages`, `read:claims`,
-  `tokens:manage_own`
-
-**`admin`**
-: everything `member` has, plus `publish:*`, `import:*`, `yank:*`,
-  `claim:manage`, `read:tenant`, `read:audit`, `tenant:configure`
-
-**`owner`**
-: everything `admin` has, plus `tenant:admin`
-
-**`auditor`**
-: `read:audit`, `tokens:manage_own`
-
-## Capability reference
-
-| Capability | Grants |
-| ---------- | ------ |
-| `read:metadata` | Read package metadata |
-| `read:artifact` | Read / download artifacts (also covers OCI pull for non-OCI ecosystems) |
-| `read:packages` | Read the package list |
-| `read:claims` | Read claims |
-| `read:audit` | Read the audit log |
-| `read:tenant` | Read organization configuration |
-| `publish:<eco>` | Publish to that ecosystem (`npm`, `pypi`, `nuget`, `maven`, `rpm`, `oci`, `cargo`) |
-| `publish:*` | Publish to any ecosystem |
-| `import:<eco>` | Import / proxy from that ecosystem (`npm`, `pypi`, `nuget`, `maven`, `rpm`, `oci`) |
-| `import:*` | Import from any ecosystem |
-| `pull:oci` | Pull OCI images via the proxy path |
-| `yank:<eco>` | Yank (unpublish) in that ecosystem (`npm`, `pypi`, `nuget`, `maven`, `rpm`, `oci`, `cargo`) |
-| `yank:*` | Yank in any ecosystem |
-| `claim:manage` | Manage package / namespace claims |
-| `tenant:configure` | Change organization configuration, manage users and tokens |
-| `tenant:admin` | Owner-only administration — the capability that distinguishes owner from admin |
-| `tokens:manage_own` | Create and manage one's own API tokens |
-
-A **family wildcard** satisfies its leaves: a token granted `publish:*` may
-publish to npm. The `<eco>` placeholders above are the exact ecosystems
-implemented — there is, for example, no `import:cargo`.
+Assign and change roles on the **Users** page — see
+[Users & tokens](users-and-tokens.md). With SAML single sign-on, roles can
+also be mapped automatically from your identity provider — see
+[Authentication](authentication.md).
 
 ## How it is enforced
 
-Each protected action requires a named capability. The check grants when the
-caller's **effective** capabilities satisfy the requested one (with wildcard
-matching). Effective capabilities come from the token's explicit capability list
-when the token was narrowed, otherwise from the user's role.
+Every action checks the caller's permissions on the server:
 
-## Narrowing a token
+- Signed in to the web UI, you act with your **role**.
+- Authenticating with a token (from a package manager or CI), you act with the
+  token's **scope** — which is at most what its creator's role allowed at
+  creation time.
 
-When a user mints an API token they pass a capability list. It must be
-non-empty, drawn only from the requestable vocabulary (which excludes the
-global `*` wildcard), free of duplicates, and a subset of the
-creator's own capabilities. A request for more than the creator holds is
-rejected with "Requested capabilities exceed your role." See
-[Users & tokens](users-and-tokens.md) for how to create them.
+The same rules apply to everyone and every token; there are no per-user
+exceptions to configure.

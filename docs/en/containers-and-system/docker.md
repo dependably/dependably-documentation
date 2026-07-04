@@ -56,8 +56,9 @@ Hub (everything else). Pulls proxy through these automatically — see
 
 ## Publishing
 
-Pushing requires a token with the `publish:oci` capability. Tag your image with
-the registry host and repository, then push:
+Pushing requires a token with a push scope (**push only** or **push & pull**)
+— see [Access tokens](../web-ui/tokens.md). Tag your image with the registry
+host and repository, then push:
 
 ```bash
 docker tag myimage:1.0 repo.example.com/myimage:1.0
@@ -76,7 +77,8 @@ Remove stored credentials for the host:
 docker logout repo.example.com
 ```
 
-To remove a pushed tag or manifest, delete it with a token that has the
-`yank:oci` capability (for example via `skopeo delete`, or the management UI).
-Blob deletion over the `/v2/` API is not supported — unreferenced blobs are
-reclaimed by garbage collection.
+Removing a pushed image is an Admin or Owner action done in the web UI: open
+the image's version list and select **Delete**. Removal via the registry API
+(for example `skopeo delete`) needs permission that the pre-defined token
+scopes do not include. Blob deletion over the `/v2/` API is not supported —
+unreferenced blobs are reclaimed by garbage collection.

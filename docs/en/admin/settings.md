@@ -1,59 +1,114 @@
 # Settings
 
-These are the per-organization settings an owner or admin configures in the web
-UI (or the API). All writes require the `tenant:configure` capability; reads
-require `read:tenant`.
+These are the per-organization settings an Owner or Admin configures on the
+**Settings** page in the web UI. Each section below matches a tab on that page.
 
-Settings fall into three groups: **general**, **retention**, and **proxy &
-security gates**.
-
-## General settings
+## General
 
 Organization-wide switches every member inherits.
 
 | Setting | Values | Default | What it does |
 | ------- | ------ | ------- | ------------ |
-| `anonymousPull` | `true` / `false` | `false` | Allow unauthenticated clients to pull from this org's registries. |
-| `allowlistMode` | `true` / `false` | `false` | Restrict proxying to packages on the org allowlist (deny-by-default ingest). |
-| `maxUploadBytes` | bytes, or empty | none | Org-wide upload size ceiling. |
-| `maxUploadBytes{PyPi,Npm,NuGet,Maven,Rpm,Oci,Cargo}` | bytes, or empty | none | Per-ecosystem upload ceiling, overriding the org-wide value. |
-| `defaultLanguage` | `en`, `fr` | `en` | Default UI language new users inherit. |
-| `versionOverwritePolicy` | `block`, `exception`, `allow` | `block` | Same-version re-push policy. `block` always rejects duplicates; `exception` rejects by default but a package may opt in; `allow` accepts by default but a package may opt out. |
-| `airGapped` | `true` / `false` | `false` | Air-gap the organization: no outbound requests; proxy passthrough forced off. |
-| `requireMfa` | `true` / `false` | `false` | Require every user in this org to complete MFA enrollment. |
+| **Anonymous pull** | on / off | off | Allow unauthenticated clients to install and download packages from this organization's registries. |
+| **Default language** | English, French | English | UI language new users start with. Each user can override it in their profile. |
+| **Air-gapped environment** | on / off | off | Stop all outbound requests for this organization: uncached upstream packages return 404 and vulnerability scanning skips this organization. When the operator sets `AIR_GAPPED` on the instance, this is enforced instance-wide and cannot be changed here. |
+| **Require MFA enrollment** | on / off | off | Every user in the organization must complete MFA enrollment before using the API or UI. |
 
-## Retention
+## Storage
 
-Per-organization retention budgets. An empty field means that dimension is
-unbounded. Enforcement runs in the scheduled GC pass.
+**Upload limits** — a size ceiling for package uploads, in bytes: one value for
+all ecosystems plus optional per-ecosystem overrides (npm, PyPI, NuGet, Maven,
+RPM, OCI, Cargo). Empty fields inherit from the instance; no limit may exceed
+the instance ceiling.
 
-| Setting | Values | Default | What it does |
-| ------- | ------ | ------- | ------------ |
-| `keepVersions` | integer, or empty | unbounded | Maximum versions to retain per package; older versions become eligible for cleanup. |
-| `keepDays` | days, or empty | unbounded | Age ceiling for retained versions. |
-| `activityRetentionDays` | days, or empty | unbounded | How long per-org activity-log entries are kept. All-time download counts survive pruning. |
+**Retention** — per-organization retention budgets. An empty field means that
+dimension is unbounded; enforcement runs in the scheduled cleanup pass.
 
-## Proxy & security gates
+| Setting | Default | What it does |
+| ------- | ------- | ------------ |
+| **Keep versions** | unlimited | Maximum versions to retain per package; older versions become eligible for cleanup. |
+| **Keep days (proxy blobs)** | unlimited | Evict proxy-cached artifacts unused for this many days. |
+| **Activity retention days** | unlimited | How long activity-log entries are kept. All-time download counts survive pruning. |
+| **Purge unlisted after (days)** | off | Hard-delete uploaded versions that have been unlisted longer than this. |
+
+## Proxy
+
+Controls what the registry fetches from upstream sources.
+
+| Setting | Default | What it does |
+| ------- | ------- | ------------ |
+| **Proxy passthrough enabled** | on | Master switch for fetching uncached versions from upstreams. When disabled, only packages already cached are served. Forced off while air-gapped. |
+| **Proxy: allowlist & blocklist only** | off | Restrict proxying to packages on the allowlist (deny-by-default ingest). |
+
+The tab also manages the **Allowlist** and **Blocklist** entries themselves,
+and the per-ecosystem **upstream registries** the proxy fetches from — see
+[Upstreams](upstreams.md).
+
+## Gates
 
 The supply-chain enforcement layer applied to **proxy-fetched** (upstream)
-versions: whether to proxy at all, plus independent gates keyed on vulnerability
-score, exploit signals, malware advisories, deprecation, install scripts,
-release age, and per-ecosystem signature verification. Most gates are tri-state:
-`off` (allow), `warn` (surface in the UI only), `block` (fail closed — refuse to
-fetch, cache, or serve). A manual per-version allow override always wins.
+versions. Most gates are tri-state: **Off** (allow), **Warn** (flag in the UI
+only), **Block** (fail closed — refuse to fetch, cache, or serve). A manual
+per-version allow override always wins.
 
 | Setting | Values | Default | What it does |
 | ------- | ------ | ------- | ------------ |
-| `proxyPassthroughEnabled` | `true` / `false` | `true` | Master switch for fetching uncached versions from upstreams. Forced off when air-gapped. |
-| `maxOsvScoreTolerance` | 0.0–10.0 (CVSS) | `10.0` | Block a version whose max OSV/CVSS score exceeds this. `10.0` blocks nothing on score. |
-| `minReleaseAgeHours` | 0–8760, or empty | off | Supply-chain hold: block an upstream version until it is at least this many hours old. |
-| `blockDeprecated` | `off`, `warn`, `block_new`, `block_all` | `off` | Gate deprecated versions. `block_new` refuses on cache miss but keeps serving cached; `block_all` also denies cached. |
-| `blockMalicious` | `off`, `warn`, `block` | `block` | Gate versions carrying an OSV `MAL-` (malicious-package) advisory. |
-| `blockKev` | `off`, `warn`, `block` | `off` | Gate versions matching a CISA Known-Exploited-Vulnerabilities entry. |
-| `maxEpssTolerance` | 0.0–1.0 (EPSS), or empty | off | Block a version whose max advisory EPSS exploit probability exceeds this. |
-| `blockInstallScripts` | `off`, `warn`, `block` | `off` | Gate artifacts that ship an install / lifecycle script. |
-| `verifyNpmSignatures` | `off`, `warn`, `block` | `off` | Verify npm registry signatures on proxied versions. |
-| `verifyNuGetSignatures` | `off`, `warn`, `block` | `off` | Verify NuGet `.nupkg` signatures. |
-| `verifyPyPiAttestations` | `off`, `warn`, `block` | `off` | Verify PyPI PEP 740 attestations. |
-| `verifyRpmSignatures` | `off`, `warn`, `block` | `off` | Verify RPM GPG header signatures. |
-| `verifyMavenSignatures` | `off`, `warn`, `block` | `off` | Verify Maven detached `.asc` signatures. |
+| **Version overwrite policy** | Block, Exception, Allow | Block | Same-version re-push policy (applies to your own publishes). Block rejects all duplicates; Exception rejects by default with per-package overrides; Allow permits overwrites. |
+| **Max OSV score tolerance** | 0.0–10.0 (CVSS) | 10.0 | Block a version whose highest vulnerability score exceeds this. 10.0 blocks nothing on score. |
+| **EPSS probability ceiling** | 0.0–1.0, or empty | off | Block a version whose highest EPSS exploit probability exceeds this. |
+| **Known-exploited (KEV) policy** | Off, Warn, Block | Off | Gate versions whose advisories match a CVE in the CISA Known Exploited Vulnerabilities catalog. |
+| **Malicious package policy** | Off, Warn, Block | Block | Gate versions carrying a malicious-package advisory (OpenSSF malicious-packages feed). |
+| **Deprecated package policy** | Off, Warn, Block new, Block all | Off | Gate upstream-deprecated versions. Block new refuses uncached deprecated versions but keeps serving cached ones; Block all also stops serving cached. |
+| **Revoked (removed upstream) policy** | Off, Warn, Block | Warn | Gate versions removed from the upstream registry (npm unpublish, PyPI delete, a takedown of a compromised release). |
+| **Minimum release age** | hours or days, or empty | off | Supply-chain hold: block an upstream version until it is at least this old, giving the community time to catch bad releases. Held versions serve automatically once they age past the threshold. |
+| **Install-script policy** | Off, Warn, Block | Off | Gate artifacts that ship an install / lifecycle script (such scripts run automatically on install). The **install-script allowlist** on the same tab exempts named packages from the block. |
+
+## Signatures
+
+Origin verification for proxy-fetched artifacts, per ecosystem — each is
+**Off** (default), **Warn** (verify and flag), or **Block** (refuse versions
+that fail verification or are unsigned):
+
+- **npm** — the registry's signature on each version.
+- **NuGet** — the signature embedded in each `.nupkg`.
+- **PyPI** — PEP 740 digital attestations.
+- **RPM** — the GPG signature in each package header.
+- **Maven** — the detached `.asc` signature for each artifact.
+
+Verification checks against **trust anchors** — per-organization public key
+material (registry keys, signing certificates, Sigstore roots and trusted
+publishers, GPG keys) managed on the same tab. Warn and Block only take effect
+once the matching anchor is configured.
+
+## Namespaces
+
+**Reserved namespaces** — a dependency-confusion guard. Names matching these
+per-ecosystem patterns are never fetched or merged from upstream, so a public
+package can't shadow your internal names.
+
+## Webhooks
+
+Subscribe HTTPS endpoints to organization events — package publish, replace,
+import, unlist, yank, and new vulnerability. Dependably posts a signed JSON
+payload to each URL when a matching event occurs; an optional signing secret
+adds an HMAC-SHA-256 `X-Dependably-Signature` header (storing secrets requires
+the operator to configure a master key — see
+[Configuration](configuration.md)). Use **Send test** to verify an endpoint.
+
+## Banners
+
+Post announcement banners to your organization's users: message, severity,
+optional link, an optional target role, and a start/end window.
+
+## Other tabs
+
+- **Authentication** — sign-in methods, MFA, and SAML single sign-on; see
+  [Authentication](authentication.md).
+- **Licenses** — the SPDX license policy; see
+  [License policy](../web-ui/license-policy.md).
+- **Service tokens** — credentials for CI and automation; see
+  [Users & tokens](users-and-tokens.md).
+- **Instance settings** and **Metrics access** — instance-wide limits,
+  schedules, and Prometheus metrics exposure. Shown to the operator (in a
+  single-organization deployment, the owner is also the operator). For metrics,
+  see the [Grafana integration](../integrations/grafana/index.md).

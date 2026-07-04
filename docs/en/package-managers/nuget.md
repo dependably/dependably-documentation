@@ -58,8 +58,9 @@ dotnet nuget push MyPackage.1.0.0.nupkg \
   --api-key <your token>
 ```
 
-Symbol packages (`.snupkg`) push the same way. Publishing requires a token with
-the `publish:nuget` capability.
+Symbol packages (`.snupkg`) push the same way. Publishing requires a token
+with a push scope (**push only** or **push & pull**) — see
+[Access tokens](../web-ui/tokens.md).
 
 ### Unlisting a version
 
@@ -72,7 +73,10 @@ dotnet nuget delete MyPackage 1.0.0 \
   --api-key <your token>
 ```
 
-This requires a token with the `yank:nuget` capability.
+Unlisting needs removal permission that the pre-defined token scopes do not
+include. An Admin or Owner can instead delete the version in the web UI (open
+the package's version list and select **Delete**) — note that deleting removes
+the version entirely rather than unlisting it.
 
 ## Revert
 
