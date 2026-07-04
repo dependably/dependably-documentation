@@ -51,7 +51,8 @@ npm publish --registry https://repo.example.com/npm/
 ```
 
 Both scoped (`@scope/name`) and unscoped packages are supported. Publishing
-requires a token with the `publish:npm` capability.
+requires a token with a push scope (**push only** or **push & pull**) — see
+[Access tokens](../web-ui/tokens.md).
 
 You can also manage dist-tags with a publish-capable token:
 
@@ -63,15 +64,10 @@ npm dist-tag rm  <pkg> <tag>          # the 'latest' tag cannot be removed
 
 ## Revert
 
-Remove a single published version (requires a token with the `yank:npm`
-capability):
-
-```bash
-npm unpublish <pkg>@<version>
-```
-
-Whole-package unpublish (removing every version at once) is not accepted over
-the npm CLI — use the web UI or management API for that.
+Removing a published version is an Admin or Owner action done in the web UI:
+open the package's version list and select **Delete**. The npm CLI's
+`npm unpublish` needs removal permission that the pre-defined token scopes do
+not include.
 
 To stop using Dependably as your registry:
 

@@ -94,7 +94,8 @@ UI.
 
 ## Publishing
 
-Publishing requires a token with the `publish:maven` capability.
+Publishing requires a token with a push scope (**push only** or
+**push & pull**) — see [Access tokens](../web-ui/tokens.md).
 
 For Maven, add a `distributionManagement` block to `pom.xml` pointed at the same
 URL, reusing the `<server>` credentials from `settings.xml`, then `mvn deploy`:

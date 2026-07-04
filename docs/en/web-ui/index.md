@@ -50,6 +50,6 @@ The console shows you what your role allows. A **member** can browse packages an
 vulnerabilities, view the license policy, manage their own tokens, copy setup
 snippets, and edit their own profile. Reviewing the [Quarantine](quarantine.md)
 queue and reading the [Audit log](audit.md) require elevated permissions — a
-member who opens those pages sees a **Forbidden** notice instead of data. Roles
-and the capabilities behind them are described in
+member who opens those pages sees a **Forbidden** notice instead of data. The
+roles and what each allows are described in
 [Access control (RBAC)](../admin/rbac.md).

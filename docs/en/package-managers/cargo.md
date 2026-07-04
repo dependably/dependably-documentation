@@ -66,11 +66,13 @@ Publish a crate to your instance:
 cargo publish --registry dependably
 ```
 
-Publishing requires a token with the `publish:cargo` capability. The published
+Publishing requires a token with a push scope (**push only** or
+**push & pull**) — see [Access tokens](../web-ui/tokens.md). The published
 version appears in the sparse index immediately; re-publishing an existing
-version is rejected. Yank a bad version with `cargo yank --registry dependably
---version <x.y.z>` (and `--undo` to reverse it), which needs the `yank:cargo`
-capability.
+version is rejected. Removing a bad version is an Admin or Owner action done
+in the web UI (open the package's version list and select **Delete**);
+`cargo yank` needs removal permission that the pre-defined token scopes do not
+include.
 
 **Access is managed centrally.** Who can publish is governed by your Dependably
 [roles and tokens](../admin/users-and-tokens.md), so there are no per-crate owner

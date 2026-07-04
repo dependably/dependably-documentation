@@ -55,7 +55,8 @@ twine upload \
   dist/*
 ```
 
-Publishing requires a token with the `publish:pypi` capability.
+Publishing requires a token with a push scope (**push only** or
+**push & pull**) — see [Access tokens](../web-ui/tokens.md).
 
 ## Revert
 

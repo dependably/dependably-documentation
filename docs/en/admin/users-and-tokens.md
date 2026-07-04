@@ -1,104 +1,111 @@
 # Users & tokens
 
 This page covers managing the people and machine credentials in your
-organization. The capabilities named below (`tenant:configure`, `tenant:admin`,
-`tokens:manage_own`) are explained in [Access control](rbac.md).
+organization, from the web UI. What each role may do is defined in
+[Access control](rbac.md).
 
 ## Managing members & roles
 
-List the members of your organization with `GET /api/v1/users` (requires
-`tenant:configure`, so ordinary members cannot enumerate the roster).
+Open **Users** in the sidebar (requires the Admin or Owner role). The
+**Members** tab lists everyone in your organization with their email, role,
+account type (Forms or SAML), MFA status, and join date.
 
-A member's role is one of `member`, `admin`, `owner`, or `auditor`. Change it
-with `PATCH /api/v1/users/{userId}/role`. Role changes use a **two-tier gate**:
+A member's role is one of **Member**, **Admin**, **Owner**, or **Auditor** —
+see [Access control](rbac.md) for what each allows. To change a role, select
+**Change role** on the member's row, pick the new role, and **Save**. Role
+changes follow a two-tier rule:
 
-- **Entry** — you need `tenant:configure` to reach the endpoint at all. Admins
-  can manage `member` and `admin` rows.
-- **Owners** — touching an existing **owner**, or **granting** the owner role,
-  additionally requires `tenant:admin`. Admins cannot promote someone to owner;
-  only an owner can.
+- **Admins** can manage Member, Admin, and Auditor rows.
+- **Owners** — changing an existing Owner's role, or promoting someone **to**
+  Owner, is reserved to Owners. Admins cannot promote someone to Owner.
 
-Remove a member with `DELETE /api/v1/users/{userId}` (same two-tier gate).
+Remove a member from the same row (same two-tier rule).
 
-> **Last-owner invariant.** An organization must always keep at least one owner.
-> Demoting or removing the **last** remaining owner is rejected with 409
-> Conflict — promote a second owner first.
+> **Last-owner rule.** An organization must always keep at least one Owner.
+> Demoting or removing the **last** remaining Owner is rejected — promote a
+> second Owner first.
 
 ## Inviting users
 
-Invite someone by email:
+On the **Users** page, select **Invite user**, enter the person's email, and
+choose their role. Admins can invite Members, Admins, and Auditors; inviting
+at the Owner role is reserved to Owners.
 
-```
-POST /api/v1/invites
-{ "email": "newdev@example.com", "role": "member" }
-```
-
-Requires `tenant:configure`. `role` is optional and defaults to `member`;
-inviting at the **owner** role additionally requires `tenant:admin`. Each
-organization has a cap on outstanding pending invites — cancel unused ones
-(`DELETE /api/v1/invites/{id}`) if you hit it.
+The **Pending Invites** tab shows each invite's status (pending, accepted, or
+expired). Each organization has a cap on outstanding pending invites — cancel
+unused ones from this tab if you hit it.
 
 When SMTP is configured the invite is emailed automatically. If SMTP is
-unconfigured or delivery fails, the API response returns the invite link
-(`https://repo.example.com/join?token=…`) so you can deliver it
-yourself. The raw token is never written to logs. The invitee follows the
-`/join` link to validate the invite and set their password.
+unconfigured or delivery fails, the page shows the invite link so you can send
+it yourself. The invitee follows the link to validate the invite and set their
+password.
 
 ## Personal tokens vs service tokens
 
-Both are registry credentials. The raw token string is shown **once**, at
-creation time — it is stored only as a SHA-256 hash and cannot be retrieved
-again. A token's capabilities are a **narrowing**: it can only carry
-capabilities the creator already holds. Set an `expiresAt` to bound its
-lifetime and an optional `description` (up to 200 characters). The organization
-enforces a maximum number of active tokens (personal and service tokens share
-this cap); revoke unused tokens before creating new ones.
+Both are registry credentials. The raw token value is shown **once**, at
+creation time — it is stored only as a hash and cannot be retrieved again, so
+store it in your credential store or CI secret manager immediately.
+
+Every token carries one of the pre-defined scopes:
+
+| Scope | Allows |
+| ----- | ------ |
+| **pull only** | Install and download packages. |
+| **push only** | Publish packages. |
+| **push & pull** | Both. |
+| **admin** | Read and change organization settings. |
+| **audit** | Read the audit log — for SIEM and logging integrations. |
+
+A token never grants more than the role of the person who created it allows:
+scopes that publish (**push only**, **push & pull**) or manage the
+organization (**admin**, **audit**) require the Admin or Owner role.
+
+Set an **Expires at** to bound a token's lifetime, and a description (up to
+200 characters) to tell tokens apart. The organization enforces a maximum
+number of active tokens (personal and service tokens share this cap); revoke
+unused tokens before creating new ones.
 
 ### Personal tokens
 
-Use a personal token for your own day-to-day CLI access (`npm install`,
-`npm publish`, …). Manage them at `GET / POST / DELETE /api/v1/tokens`, all of
-which require `tokens:manage_own` (a capability ordinary members have):
+A personal token is tied to a person's account — best for day-to-day CLI access
+(`npm install`, `npm publish`, …) from their own machine. It lives and dies
+with that account: removing the user from the organization (or the user
+changing their password) revokes their personal tokens. Everyone manages
+their own on the **Tokens** page; see [Access tokens](../web-ui/tokens.md) for
+the walkthrough.
 
-```
-POST /api/v1/tokens
-{ "capabilities": ["read:packages", "publish:npm"],
-  "expiresAt": "2026-12-31T00:00:00Z",
-  "description": "laptop CLI" }
-```
-
-You may always revoke your own tokens; owners and admins (holders of
-`tenant:configure`) may revoke any. `npm whoami` against a personal token
-reports the owner's email.
+Members can revoke their own tokens; Admins and Owners can revoke any token in
+the organization. `npm whoami` against a personal token reports the owner's
+email.
 
 ### Service tokens
 
 Use a service token for CI pipelines and automation that should **not** be tied
-to a person — it survives the originating user leaving the organization. Manage
-them at `GET / POST / DELETE /api/v1/service-tokens`, which require
-`tenant:configure`. A service token has a required `name` plus the same
-`capabilities` / `expiresAt` / `description` fields:
+to a person — it survives the originating user leaving the organization.
 
-```
-POST /api/v1/service-tokens
-{ "name": "ci-publisher",
-  "capabilities": ["read:packages", "publish:npm"],
-  "expiresAt": "2026-12-31T00:00:00Z" }
-```
+Manage them in **Settings → Service tokens** (requires the Admin or Owner
+role). Select **New token** and enter:
+
+1. A **Name** (required — for example, *GitHub Actions*).
+2. An optional **Description** (for example, *Build server in us-east-1*).
+3. A **Scope** — any of the five scopes above.
+4. An optional **Expires at**.
+
+The table lists each service token's name, description, scope, creation and
+expiry dates, and when it was last used, so you can spot and revoke stale ones.
 
 `npm whoami` against a service token reports `service:<name>` (for example
 `service:ci-publisher`), giving pipelines a stable identifier to echo into logs.
 
 ### Scoping guidance
 
-Grant the narrowest capability set the job needs — `read:packages` for a
-read-only consumer, plus `publish:npm` only where a pipeline publishes. Always
-set an expiry on automation tokens and rotate them on a schedule. Because the
-raw value is shown only once, store it in your CI secret manager immediately.
+Grant the narrowest scope the job needs — **pull only** for a read-only
+consumer, **push only** where a pipeline publishes. Always set an expiry on
+automation tokens and rotate them on a schedule.
 
 ## Password & account administration
 
-Any signed-in user can rotate their own password with
-`POST /api/v1/users/me/password` (current password required; the new one must
-pass the password policy). A successful change invalidates the user's other
-sessions and revokes their API tokens.
+Any signed-in user can change their own password from the **Profile** page
+(current password required; the new one must pass the password policy). A
+successful change signs out the user's other sessions and revokes their
+personal tokens — service tokens are unaffected.

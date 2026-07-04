@@ -18,6 +18,12 @@ CI and shared automation, use a **service token** instead — see
    - **pull only** — install and download packages.
    - **push only** — publish packages.
    - **push & pull** — both.
+
+   A token can never do more than your own role allows — creating a token
+   with a push scope requires a role that can publish (Admin or Owner).
+   Admins and Owners also see two privileged scopes: **admin** (read and
+   change organization settings) and **audit** (read the audit log, for SIEM
+   integrations).
 4. Optionally set an **Expires at** date and time. Leave it empty for a token
    that does not expire — though a dated token you rotate is safer.
 5. Select **Create**.
@@ -41,5 +47,5 @@ Each ecosystem guide shows the exact command that stores the token in that tool'
 own config — start from [Setup](setup.md) for a ready-made snippet, or open the
 full guide for your tool from the [documentation home](../index.md).
 
-The scope you pick maps to the underlying capabilities a token carries; the full
-capability model is described in [Access control (RBAC)](../admin/rbac.md).
+A token never grants more than your own role allows — the roles are described
+in [Access control (RBAC)](../admin/rbac.md).
