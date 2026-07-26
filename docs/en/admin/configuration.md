@@ -41,7 +41,21 @@ instance.
 | `FIRST_BOOT_ADMIN_EMAIL` | `admin@dependably.local` | Email of the owner account created on first boot. |
 | `FIRST_BOOT_ADMIN_PASSWORD` | generated | Password for that account. When unset, a random password is generated and printed to the logs. Either way, rotation is forced on first login. |
 | `AIR_GAPPED` | `false` | `true` runs the instance air-gapped: fetching from upstream registries is disabled and vulnerability scanning uses the local mirror only. |
-| `DEPENDABLY_MASTER_KEY` | unset | Master key used to envelope-encrypt stored secrets (upstream credentials, webhook signing secrets) at rest. Without it, webhook signing secrets cannot be stored. |
+| `DEPENDABLY_MASTER_KEY` | unset | Master key that envelope-encrypts stored secrets (upstream credentials, webhook signing secrets) at rest. Must be **base64 that decodes to exactly 32 bytes** (AES-256), or a path to a file containing such a value — see the note below. Without it, webhook signing secrets cannot be stored. |
+
+> **Generating the master key.** The value is base64 that must decode to
+> exactly 32 bytes (AES-256). A hex string or any other length fails startup
+> with `DEPENDABLY_MASTER_KEY must decode to exactly 32 bytes`. Generate a valid
+> key with:
+>
+> ```
+> openssl rand -base64 32
+> ```
+>
+> Instead of setting the key inline, you can point the variable at a file path
+> whose contents are the base64 key. Treat the key as a key-encryption key: set
+> it once and store it in a secret manager. Changing or losing it makes
+> already-encrypted secrets undecryptable.
 
 ### Invite email (SMTP)
 
