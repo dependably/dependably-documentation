@@ -75,7 +75,7 @@ invite link for you to deliver yourself (see
 
 | Variable | Default | Effect |
 | -------- | ------- | ------ |
-| `STORAGE_BACKEND` | `local` | Where package artifacts are stored: `local`, `s3`, or `azure`. |
+| `STORAGE_BACKEND` | `local` | Where package artefacts are stored: `local`, `s3`, or `azure`. |
 | `LOCAL_STORAGE_PATH` | `/data/blobs` | Directory for the `local` backend — mount a volume here. |
 | `S3_BUCKET`, `S3_REGION` | — | Required for the `s3` backend. |
 | `S3_ENDPOINT` | unset | Point the `s3` backend at an S3-compatible service (R2, MinIO, B2, Wasabi). |

@@ -45,12 +45,12 @@ latest version 8.0.1 is not cached here*).
 | **Latest** | Whether this is the latest upstream version. |
 | **Origin** | **Proxy** (cached from an upstream) or **Hosted** (published to your registry). |
 | **Checksum** | The verified content hash, truncated. |
-| **Size** | Artifact size. |
+| **Size** | Artefact size. |
 | **Pushed** | When this version landed in your registry. |
 | **License** | The detected SPDX license, when known. |
 | **Downloads** | Download count for this version. |
 | **Status** | One of **No advisories**, **Vulnerable**, **Allowed (vulnerable)**, **Malicious**, **Deprecated**, **Unscanned**, or **Blocked**. |
-| **Actions** | **Download** the artifact. Multi-file versions (e.g. a Maven jar + pom, or a PyPI wheel + sdist) have no single download — expand the row to download each file individually. |
+| **Actions** | **Download** the artefact. Multi-file versions (e.g. a Maven jar + pom, or a PyPI wheel + sdist) have no single download — expand the row to download each file individually. |
 
 ## Override the same-version push policy for one package
 

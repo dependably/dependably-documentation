@@ -13,9 +13,9 @@ A row of cards across the top summarizes the organization:
 | Card | What it counts |
 | ---- | -------------- |
 | **Total packages** | Every package across all ecosystems, split into **hosted** (published to your registry) and **proxied** (cached from an upstream). |
-| **Total disk used** | Storage occupied by all cached and published artifacts. |
+| **Total disk used** | Storage occupied by all cached and published artefacts. |
 | **Active users (7d)** | Distinct users who pulled or pushed in the last 7 days. |
-| **Downloads (30d)** | Artifact downloads served in the last 30 days. |
+| **Downloads (30d)** | Artefact downloads served in the last 30 days. |
 | **Blocked pulls (30d)** | Pull requests refused by a policy gate in the last 30 days. |
 | **Malicious blocked (30d)** | Downloads blocked specifically by the malware gate in the last 30 days. |
 | **Quarantine pending** | Versions awaiting review. Select it to open the [Quarantine](quarantine.md) queue. |

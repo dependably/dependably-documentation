@@ -3,7 +3,7 @@
 Dependably acts as a pull-through cache in front of public registries. Each
 organization has its own upstreams. When a client requests a package that is not
 held locally, Dependably consults the configured upstream list for the matching
-ecosystem, fetches and verifies the artifact, caches it, and serves it.
+ecosystem, fetches and verifies the artefact, caches it, and serves it.
 
 If an ecosystem has **no upstream configured**, proxying for that ecosystem is
 disabled — Dependably serves only locally published packages.
