@@ -20,7 +20,7 @@ The page has two tabs:
   [Settings](../admin/settings.md)), and login success / failure / lockout.
 - **Configuration** — administrative changes: organization, retention, and proxy
   settings; SAML configuration and logins; token and service-token lifecycle;
-  member role changes, removals, and invites; allow/block-list and license-policy
+  member role changes, removals, and invites; allow/block-list and licence-policy
   edits; package claims; and security events such as a blocked SSRF attempt or an
   upstream checksum mismatch.
 

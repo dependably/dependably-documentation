@@ -25,7 +25,7 @@ public one.
   deprecation, and unsigned artefacts.
 - **One URL per ecosystem** — npm, PyPI, NuGet, Maven, Cargo, Go, RPM, and
   Docker, all from a single self-hosted instance.
-- **No cloud account, no per-seat license** — runs on your own infrastructure as
+- **No cloud account, no per-seat licence** — runs on your own infrastructure as
   a container (or a single self-contained binary), with no external services
   required.
 
@@ -75,7 +75,7 @@ tour of every page:
 [Overview](web-ui/dashboard.md) ·
 [Packages](web-ui/packages.md) ·
 [Vulnerabilities](web-ui/vulnerabilities.md) ·
-[Licenses](web-ui/license-policy.md) ·
+[Licences](web-ui/license-policy.md) ·
 [Tokens](web-ui/tokens.md) ·
 [Setup](web-ui/setup.md) ·
 [Profile](web-ui/profile.md)

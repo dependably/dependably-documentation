@@ -12,4 +12,4 @@ these scores are configured in [Settings](admin/settings.md).
 | **KEV** | CISA's Known Exploited Vulnerabilities Catalog — vulnerabilities confirmed to be actively exploited. The `blockKev` gate keys on it. |
 | **OSV** | Open Source Vulnerabilities — the open advisory database and schema Dependably consults when scanning packages. |
 | **MAL- advisory** | An OSV malicious-package advisory (its ID starts with `MAL-`) flagging a version as known-malicious. The `blockMalicious` gate keys on it. |
-| **SPDX** | The standard license-identifier scheme (e.g. `MIT`, `Apache-2.0`). Dependably records the SPDX license of every package and enforces the [license policy](web-ui/license-policy.md) against it. |
+| **SPDX** | The standard licence-identifier scheme (e.g. `MIT`, `Apache-2.0`). Dependably records the SPDX licence of every package and enforces the [licence policy](web-ui/license-policy.md) against it. |

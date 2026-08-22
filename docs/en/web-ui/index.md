@@ -31,7 +31,7 @@ The top navigation is the same on every page:
 | **Overview** | The dashboard — totals, packages by ecosystem, recent download activity. Select the **Dependably** logo to return here. |
 | [**Packages**](packages.md) | Browse, search, and filter every package; open a package to see its versions, origin, checksums, and advisory status. |
 | [**Vulnerabilities**](vulnerabilities.md) | Every known advisory affecting a cached version, with severity, CVSS score, and a link to the OSV record. |
-| [**Licenses**](license-policy.md) | The license policy — which SPDX licenses are allowed or blocked, and whether the policy is enforced. |
+| [**Licences**](license-policy.md) | The licence policy — which SPDX licences are allowed or blocked, and whether the policy is enforced. |
 | [**Tokens**](tokens.md) | Create and revoke the personal access tokens your package managers authenticate with. |
 | [**Setup**](setup.md) | Copy a ready-made configuration snippet for npm, pip, NuGet, Maven, Cargo, Go, Docker, or RPM. |
 | [**Profile**](profile.md) | Your account — change your password, enable two-factor authentication, switch theme or language. |
@@ -47,7 +47,7 @@ permissions — a member account sees a Forbidden notice):
 ## What you can see depends on your role
 
 The console shows you what your role allows. A **member** can browse packages and
-vulnerabilities, view the license policy, manage their own tokens, copy setup
+vulnerabilities, view the licence policy, manage their own tokens, copy setup
 snippets, and edit their own profile. Reviewing the [Quarantine](quarantine.md)
 queue and reading the [Audit log](audit.md) require elevated permissions — a
 member who opens those pages sees a **Forbidden** notice instead of data. The
