@@ -104,8 +104,8 @@ optional link, an optional target role, and a start/end window.
 
 - **Authentication** — sign-in methods, MFA, and SAML single sign-on; see
   [Authentication](authentication.md).
-- **Licenses** — the SPDX license policy; see
-  [License policy](../web-ui/license-policy.md).
+- **Licences** — the SPDX licence policy; see
+  [Licence policy](../web-ui/license-policy.md).
 - **Service tokens** — credentials for CI and automation; see
   [Users & tokens](users-and-tokens.md).
 - **Instance settings** and **Metrics access** — instance-wide limits,

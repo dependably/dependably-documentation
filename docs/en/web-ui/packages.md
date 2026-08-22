@@ -36,7 +36,7 @@ The package page lists every cached version. If a newer version exists upstream
 that you have not cached, a banner notes it (for example, *Behind upstream —
 latest version 8.0.1 is not cached here*).
 
-![A package detail page for @babel/core showing a behind-upstream banner and a per-version table with Origin, Checksum, Size, License, Downloads, and Status columns.](images/package-detail.png)
+![A package detail page for @babel/core showing a behind-upstream banner and a per-version table with Origin, Checksum, Size, Licence, Downloads, and Status columns.](images/package-detail.png)
 
 | Column | Meaning |
 | ------ | ------- |
@@ -47,7 +47,7 @@ latest version 8.0.1 is not cached here*).
 | **Checksum** | The verified content hash, truncated. |
 | **Size** | Artefact size. |
 | **Pushed** | When this version landed in your registry. |
-| **License** | The detected SPDX license, when known. |
+| **Licence** | The detected SPDX licence, when known. |
 | **Downloads** | Download count for this version. |
 | **Status** | One of **No advisories**, **Vulnerable**, **Allowed (vulnerable)**, **Malicious**, **Deprecated**, **Unscanned**, or **Blocked**. |
 | **Actions** | **Download** the artefact. Multi-file versions (e.g. a Maven jar + pom, or a PyPI wheel + sdist) have no single download — expand the row to download each file individually. |

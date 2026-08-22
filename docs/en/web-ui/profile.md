@@ -42,5 +42,5 @@ organization's default until you pick one here.
 ## About
 
 **View notices** opens the open-source notices: every third-party component
-Dependably is built from, with its version and license. Useful for your own
+Dependably is built from, with its version and licence. Useful for your own
 compliance records.
