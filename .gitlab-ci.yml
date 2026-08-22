@@ -2,6 +2,12 @@ stages:
   - check
   - publish
 
+# OCI pull-through mirror for CI container images — the runners cannot reach
+# Docker Hub's CDN, so every image resolves through the mirror (same convention
+# as dependably-community's pipeline).
+variables:
+  DEP_IMAGE_REGISTRY: "dependably.northwardlabs.ca"
+
 default:
   interruptible: true
 
@@ -13,21 +19,21 @@ workflow:
 
 spell:
   stage: check
-  image: python:3.12-alpine
+  image: ${DEP_IMAGE_REGISTRY}/library/python:3.12-alpine
   script:
     - pip install --quiet codespell
     - codespell docs/ README.md
 
 markdownlint:
   stage: check
-  image: node:20-alpine
+  image: ${DEP_IMAGE_REGISTRY}/library/node:20-alpine
   script:
     - npx -y markdownlint-cli2 "docs/**/*.md" "README.md"
 
 links:
   stage: check
   image:
-    name: lycheeverse/lychee:latest
+    name: ${DEP_IMAGE_REGISTRY}/lycheeverse/lychee:latest
     entrypoint: [""]
   script:
     # Internal-only — external HTTP(S) checks are flaky in CI.
@@ -36,7 +42,7 @@ links:
 secrets:
   stage: check
   image:
-    name: zricethezav/gitleaks:latest
+    name: ${DEP_IMAGE_REGISTRY}/zricethezav/gitleaks:latest
     entrypoint: [""]
   script:
     - gitleaks detect --source . --no-banner --redact -v
@@ -44,7 +50,7 @@ secrets:
 publish:github:
   stage: publish
   image:
-    name: alpine/git:latest
+    name: ${DEP_IMAGE_REGISTRY}/alpine/git:latest
     entrypoint: [""]
   rules:
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
