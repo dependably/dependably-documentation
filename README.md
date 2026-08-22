@@ -18,7 +18,9 @@ docs/
     │   ├── nuget.md
     │   ├── maven.md
     │   ├── cargo.md
-    │   └── go.md
+    │   ├── go.md
+    │   ├── terraform.md
+    │   └── blocked-packages.md        ← a 403 from a package manager
     ├── containers-and-system/       ← containers & system packages
     │   ├── docker.md
     │   └── rpm.md
@@ -44,6 +46,7 @@ docs/
     │   └── upstreams.md
     └── integrations/                ← monitoring & third-party integrations
         ├── index.md
+        ├── logging.md                ← structured log output & shipping
         └── grafana/                 ← one folder per integration
             ├── index.md             ← Grafana dashboard guide
             ├── dashboards/          ← downloadable dashboard JSON

@@ -18,6 +18,11 @@ URL and token every guide needs.
 | **Maven** / Gradle | Java & JVM artefacts | [Maven](maven.md) |
 | **cargo** | Rust crates | [Cargo](cargo.md) |
 | **go** | Go modules | [Go](go.md) |
+| **terraform** | Terraform providers | [Terraform](terraform.md) |
 
 For container images and Linux system packages, see
 [Containers & system](../containers-and-system/index.md).
+
+Getting a `403 Forbidden` on an install? See
+[Blocked packages](blocked-packages.md) to tell a policy refusal from an
+authentication failure.
