@@ -19,9 +19,12 @@ workflow:
 
 spell:
   stage: check
-  image: ${DEP_IMAGE_REGISTRY}/library/python:3.12-alpine
+  # Debian, not Alpine + pip: the runners resolve the Debian mirrors but not
+  # pypi.org, and the instance's PyPI proxy requires credentials this project
+  # does not hold. Debian packages codespell, so apt is the reachable route.
+  image: ${DEP_IMAGE_REGISTRY}/library/debian:stable-slim
   script:
-    - pip install --quiet codespell
+    - apt-get update -qq && apt-get install -y -qq --no-install-recommends codespell
     - codespell docs/ README.md
 
 markdownlint:
