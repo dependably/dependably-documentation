@@ -15,7 +15,7 @@ URL and token every guide needs.
 | **npm** / yarn / pnpm | JavaScript & Node.js packages | [npm](npm.md) |
 | **pip** / uv | Python packages (PyPI) | [PyPI](pypi.md) |
 | **dotnet** | C# / .NET packages (NuGet) | [NuGet](nuget.md) |
-| **Maven** / Gradle | Java & JVM artifacts | [Maven](maven.md) |
+| **Maven** / Gradle | Java & JVM artefacts | [Maven](maven.md) |
 | **cargo** | Rust crates | [Cargo](cargo.md) |
 | **go** | Go modules | [Go](go.md) |
 

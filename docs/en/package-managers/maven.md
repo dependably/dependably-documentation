@@ -1,6 +1,6 @@
 # Maven (Maven & Gradle)
 
-Point Maven or Gradle at Dependably to install private artifacts, proxy public
+Point Maven or Gradle at Dependably to install private artefacts, proxy public
 ones, and publish your own.
 
 You will need your **token** — create one in the web UI; see
@@ -13,7 +13,7 @@ password. Your repository URL is:
 https://repo.example.com/maven/
 ```
 
-Locally published artifacts always take priority over upstream, so an internal
+Locally published artefacts always take priority over upstream, so an internal
 package can never be silently replaced by a public one of the same coordinates.
 
 ## Configure

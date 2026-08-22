@@ -22,10 +22,10 @@ public one.
   request is served locally, even if upstream is down or the package is removed.
 - **Supply-chain controls** — first-fetch detection, per-version checksum
   verification, allowlists, and policy gates for vulnerabilities, malware,
-  deprecation, and unsigned artifacts.
+  deprecation, and unsigned artefacts.
 - **One URL per ecosystem** — npm, PyPI, NuGet, Maven, Cargo, Go, RPM, and
   Docker, all from a single self-hosted instance.
-- **No cloud account, no per-seat licence** — runs on your own infrastructure as
+- **No cloud account, no per-seat license** — runs on your own infrastructure as
   a container (or a single self-contained binary), with no external services
   required.
 
@@ -38,7 +38,7 @@ public one.
 | **npm** / yarn / pnpm      | JavaScript & Node.js packages       | [npm](package-managers/npm.md) |
 | **pip** / uv               | Python packages (PyPI)              | [PyPI](package-managers/pypi.md) |
 | **dotnet**                 | C# / .NET packages (NuGet)          | [NuGet](package-managers/nuget.md) |
-| **Maven** / Gradle         | Java & JVM artifacts                | [Maven](package-managers/maven.md) |
+| **Maven** / Gradle         | Java & JVM artefacts                | [Maven](package-managers/maven.md) |
 | **cargo**                  | Rust crates                         | [Cargo](package-managers/cargo.md) |
 | **go**                     | Go modules                          | [Go](package-managers/go.md) |
 | **docker** / podman        | Container images (OCI)              | [Docker](containers-and-system/docker.md) _(Beta)_ |

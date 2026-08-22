@@ -12,7 +12,7 @@ Organization-wide switches every member inherits.
 | **Anonymous pull** | on / off | off | Allow unauthenticated clients to install and download packages from this organization's registries. |
 | **Default language** | English, French | English | UI language new users start with. Each user can override it in their profile. |
 | **Air-gapped environment** | on / off | off | Stop all outbound requests for this organization: uncached upstream packages return 404 and vulnerability scanning skips this organization. When the operator sets `AIR_GAPPED` on the instance, this is enforced instance-wide and cannot be changed here. |
-| **Require MFA enrollment** | on / off | off | Every user in the organization must complete MFA enrollment before using the API or UI. |
+| **Require MFA enrolment** | on / off | off | Every user in the organization must complete MFA enrolment before using the API or UI. |
 
 ## Storage
 
@@ -27,7 +27,7 @@ dimension is unbounded; enforcement runs in the scheduled cleanup pass.
 | Setting | Default | What it does |
 | ------- | ------- | ------------ |
 | **Keep versions** | unlimited | Maximum versions to retain per package; older versions become eligible for cleanup. |
-| **Keep days (proxy blobs)** | unlimited | Evict proxy-cached artifacts unused for this many days. |
+| **Keep days (proxy blobs)** | unlimited | Evict proxy-cached artefacts unused for this many days. |
 | **Activity retention days** | unlimited | How long activity-log entries are kept. All-time download counts survive pruning. |
 | **Purge unlisted after (days)** | off | Hard-delete uploaded versions that have been unlisted longer than this. |
 
@@ -56,16 +56,16 @@ per-version allow override always wins.
 | **Version overwrite policy** | Block, Exception, Allow | Block | Same-version re-push policy (applies to your own publishes). Block rejects all duplicates; Exception rejects by default with per-package overrides; Allow permits overwrites. |
 | **Max OSV score tolerance** | 0.0–10.0 (CVSS) | 10.0 | Block a version whose highest vulnerability score exceeds this. 10.0 blocks nothing on score. |
 | **EPSS probability ceiling** | 0.0–1.0, or empty | off | Block a version whose highest EPSS exploit probability exceeds this. |
-| **Known-exploited (KEV) policy** | Off, Warn, Block | Off | Gate versions whose advisories match a CVE in the CISA Known Exploited Vulnerabilities catalog. |
+| **Known-exploited (KEV) policy** | Off, Warn, Block | Off | Gate versions whose advisories match a CVE in the CISA Known Exploited Vulnerabilities Catalog. |
 | **Malicious package policy** | Off, Warn, Block | Block | Gate versions carrying a malicious-package advisory (OpenSSF malicious-packages feed). |
 | **Deprecated package policy** | Off, Warn, Block new, Block all | Off | Gate upstream-deprecated versions. Block new refuses uncached deprecated versions but keeps serving cached ones; Block all also stops serving cached. |
 | **Revoked (removed upstream) policy** | Off, Warn, Block | Warn | Gate versions removed from the upstream registry (npm unpublish, PyPI delete, a takedown of a compromised release). |
 | **Minimum release age** | hours or days, or empty | off | Supply-chain hold: block an upstream version until it is at least this old, giving the community time to catch bad releases. Held versions serve automatically once they age past the threshold. |
-| **Install-script policy** | Off, Warn, Block | Off | Gate artifacts that ship an install / lifecycle script (such scripts run automatically on install). The **install-script allowlist** on the same tab exempts named packages from the block. |
+| **Install-script policy** | Off, Warn, Block | Off | Gate artefacts that ship an install / lifecycle script (such scripts run automatically on install). The **install-script allowlist** on the same tab exempts named packages from the block. |
 
 ## Signatures
 
-Origin verification for proxy-fetched artifacts, per ecosystem — each is
+Origin verification for proxy-fetched artefacts, per ecosystem — each is
 **Off** (default), **Warn** (verify and flag), or **Block** (refuse versions
 that fail verification or are unsigned):
 
@@ -73,7 +73,7 @@ that fail verification or are unsigned):
 - **NuGet** — the signature embedded in each `.nupkg`.
 - **PyPI** — PEP 740 digital attestations.
 - **RPM** — the GPG signature in each package header.
-- **Maven** — the detached `.asc` signature for each artifact.
+- **Maven** — the detached `.asc` signature for each artefact.
 
 Verification checks against **trust anchors** — per-organization public key
 material (registry keys, signing certificates, Sigstore roots and trusted

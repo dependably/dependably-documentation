@@ -18,7 +18,7 @@ verified (see *Set up single sign-on*).
 
 ### Multi-factor authentication (TOTP)
 
-Any user can enroll a time-based one-time-password authenticator from their
+Any user can enrol a time-based one-time-password authenticator from their
 **Profile** page — scan the QR code (or enter the manual key), confirm with a
 6-digit code, and **10 recovery codes** are issued (shown once — store them
 safely). See [Your profile & account](../web-ui/profile.md) for the
@@ -33,7 +33,7 @@ as the second step.
   revokes all trusted devices.
 
 To require MFA for everyone in your organization, turn on **Require MFA
-enrollment** in [Settings](settings.md).
+enrolment** in [Settings](settings.md).
 
 ## Set up single sign-on
 
