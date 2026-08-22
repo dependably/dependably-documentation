@@ -41,6 +41,7 @@ public one.
 | **Maven** / Gradle         | Java & JVM artefacts                | [Maven](package-managers/maven.md) |
 | **cargo**                  | Rust crates                         | [Cargo](package-managers/cargo.md) |
 | **go**                     | Go modules                          | [Go](package-managers/go.md) |
+| **terraform**              | Terraform providers                 | [Terraform](package-managers/terraform.md) |
 | **docker** / podman        | Container images (OCI)              | [Docker](containers-and-system/docker.md) _(Beta)_ |
 | **dnf** / yum              | RPM packages (Linux)                | [RPM](containers-and-system/rpm.md) _(Beta)_ |
 
@@ -58,7 +59,8 @@ for your tool:
 [NuGet](package-managers/nuget.md) ·
 [Maven](package-managers/maven.md) ·
 [Cargo](package-managers/cargo.md) ·
-[Go](package-managers/go.md)
+[Go](package-managers/go.md) ·
+[Terraform](package-managers/terraform.md)
 
 **Containers & system packages**
 [Docker](containers-and-system/docker.md) _(Beta)_ ·
@@ -95,8 +97,9 @@ control (RBAC), users and tokens, organization settings, authentication
 
 Connect Dependably to your existing monitoring stack. Metrics are published in
 Prometheus format, and a ready-made [**Grafana dashboard**](integrations/grafana/index.md)
-gives a single-instance admin an at-a-glance health view. See
-[**Integrations**](integrations/index.md).
+gives a single-instance admin an at-a-glance health view. Structured logs go to
+stdout for your aggregator to pick up — see [**Log output**](integrations/logging.md).
+Both are covered in [**Integrations**](integrations/index.md).
 
 ---
 
@@ -104,3 +107,5 @@ gives a single-instance admin an at-a-glance health view. See
 
 - [**Glossary**](glossary.md) — PURL, CVSS, EPSS, KEV, OSV, SPDX, and the other
   terms used across the UI and the supply-chain gates.
+- [**Blocked packages**](package-managers/blocked-packages.md) — what a `403`
+  from your package manager means, and which policy produced it.
