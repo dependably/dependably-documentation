@@ -20,6 +20,7 @@ docs/
     │   ├── cargo.md
     │   ├── go.md
     │   ├── terraform.md
+    │   ├── hex.md
     │   └── blocked-packages.md        ← a 403 from a package manager
     ├── containers-and-system/       ← containers & system packages
     │   ├── docker.md
