@@ -42,6 +42,7 @@ public one.
 | **cargo**                  | Rust crates                         | [Cargo](package-managers/cargo.md) |
 | **go**                     | Go modules                          | [Go](package-managers/go.md) |
 | **terraform**              | Terraform providers                 | [Terraform](package-managers/terraform.md) |
+| **mix** / rebar3           | Elixir & Erlang packages (Hex)      | [Hex](package-managers/hex.md) |
 | **docker** / podman        | Container images (OCI)              | [Docker](containers-and-system/docker.md) _(Beta)_ |
 | **dnf** / yum              | RPM packages (Linux)                | [RPM](containers-and-system/rpm.md) _(Beta)_ |
 
@@ -60,7 +61,8 @@ for your tool:
 [Maven](package-managers/maven.md) ·
 [Cargo](package-managers/cargo.md) ·
 [Go](package-managers/go.md) ·
-[Terraform](package-managers/terraform.md)
+[Terraform](package-managers/terraform.md) ·
+[Hex](package-managers/hex.md)
 
 **Containers & system packages**
 [Docker](containers-and-system/docker.md) _(Beta)_ ·

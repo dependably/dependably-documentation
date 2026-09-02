@@ -19,6 +19,7 @@ URL and token every guide needs.
 | **cargo** | Rust crates | [Cargo](cargo.md) |
 | **go** | Go modules | [Go](go.md) |
 | **terraform** | Terraform providers | [Terraform](terraform.md) |
+| **mix** / rebar3 | Elixir & Erlang packages (Hex) | [Hex](hex.md) |
 
 For container images and Linux system packages, see
 [Containers & system](../containers-and-system/index.md).
