@@ -1,3 +1,7 @@
+---
+description: "Configure dnf and yum to install RPM packages from a Dependably repository that caches upstream packages and serves your own uploads."
+---
+
 # RPM (dnf/yum) — Beta
 
 > **Beta.** Repository serving, proxying, and upload work, but behaviour and

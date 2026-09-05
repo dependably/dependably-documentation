@@ -1,3 +1,7 @@
+---
+description: "What a 403 Forbidden from your package manager means when Dependably's policy blocks a package, which policy did it, and what to do next."
+---
+
 # Blocked packages
 
 Your package manager reports `403 Forbidden` and the build fails. This page

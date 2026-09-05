@@ -1,3 +1,7 @@
+---
+description: "Deploy and run a Dependably instance: set the base URL, manage users and organizations, configure policy, and keep the registry healthy."
+---
+
 # Administration
 
 This section is for the people who **run** Dependably, not the developers who

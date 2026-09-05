@@ -1,3 +1,7 @@
+---
+description: "Dependably's built-in web console: browse what the registry holds, see which versions carry advisories, create tokens, and manage policy."
+---
+
 # The web UI
 
 Dependably ships with a built-in web console. Open your **base URL** in a

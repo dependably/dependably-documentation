@@ -1,3 +1,7 @@
+---
+description: "Configure Terraform's provider network mirror so terraform init downloads providers through Dependably instead of registry.terraform.io."
+---
+
 # Terraform
 
 Point Terraform at your Dependably instance and `terraform init` resolves and

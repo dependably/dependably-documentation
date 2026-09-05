@@ -1,3 +1,7 @@
+---
+description: "Point npm, PyPI, Maven, NuGet, Cargo, Go, Terraform and Hex at your private Dependably registry: configure the client, verify, publish, revert."
+---
+
 # Package managers
 
 Point your developer package managers at Dependably and they work exactly as

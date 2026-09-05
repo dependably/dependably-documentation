@@ -1,3 +1,7 @@
+---
+description: "Self-hosted private package registry and pull-through cache: checksum and signature verification and policy gates before a package reaches a build."
+---
+
 # Dependably
 
 **A private package registry you host yourself.**

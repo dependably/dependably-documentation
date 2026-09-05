@@ -1,3 +1,7 @@
+---
+description: "Configure Maven and Gradle to resolve artefacts through a private Dependably repository, proxy Maven Central, and publish your own."
+---
+
 # Maven (Maven & Gradle)
 
 Point Maven or Gradle at Dependably to install private artefacts, proxy public

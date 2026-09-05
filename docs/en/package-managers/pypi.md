@@ -1,3 +1,7 @@
+---
+description: "Configure pip and uv to install Python packages through a private Dependably registry, proxy PyPI, and publish your own with twine or uv."
+---
+
 # PyPI (pip, uv)
 
 Point your Python tooling at Dependably to install private packages, proxy

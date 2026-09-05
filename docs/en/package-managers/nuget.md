@@ -1,3 +1,7 @@
+---
+description: "Configure dotnet and NuGet to restore packages through a private Dependably feed, proxy nuget.org, and push your own packages."
+---
+
 # NuGet (.NET)
 
 Point `dotnet` at Dependably to restore private packages, proxy public ones, and
