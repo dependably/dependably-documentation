@@ -1,3 +1,7 @@
+---
+description: "Configure Mix and Rebar3 to fetch Hex packages for Elixir and Erlang through a private Dependably repository, and publish your own."
+---
+
 # Hex (Elixir and Erlang)
 
 Point Mix or Rebar3 at your Dependably instance as a Hex **repository** and

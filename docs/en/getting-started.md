@@ -1,3 +1,7 @@
+---
+description: "The two inputs every Dependably guide needs: the base URL of your instance and an access token created in the web UI."
+---
+
 # Getting started
 
 Before you configure any tool, gather the two things every guide in this site

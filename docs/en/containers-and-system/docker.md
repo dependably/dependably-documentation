@@ -1,3 +1,7 @@
+---
+description: "Configure docker and podman to pull and push OCI container images through Dependably's registry, which implements the OCI Distribution Spec."
+---
+
 # Docker / OCI images — Beta
 
 > **Beta.** Docker / OCI container image support is functional but the protocol

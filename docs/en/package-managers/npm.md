@@ -1,3 +1,7 @@
+---
+description: "Configure npm, yarn and pnpm to install through a private Dependably registry, proxy public packages, and publish your own with a scoped token."
+---
+
 # npm
 
 Point npm (and yarn / pnpm, which read the same config) at Dependably to install

@@ -1,3 +1,7 @@
+---
+description: "Connect Dependably to the monitoring and dashboard tools you already run; operational data is exposed in standard formats."
+---
+
 # Integrations
 
 Connect Dependably to the tools you already run alongside it. Dependably exposes

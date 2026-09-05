@@ -1,3 +1,7 @@
+---
+description: "Configure GOPROXY so go get and go mod download resolve modules through Dependably's Go module proxy cache instead of proxy.golang.org."
+---
+
 # Go
 
 Point the Go toolchain at Dependably so `go get` and `go mod download` resolve
