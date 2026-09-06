@@ -8,6 +8,8 @@ The content lives under [`docs/`](docs/), organized one subtree per language.
 English is the only language today; more will be added as siblings.
 
 ```
+.claude/skills/docs/               ← the docs skill: how a page is grounded and screenshotted
+scripts/screenshots.mjs            ← retakes every web-UI screenshot from a live instance
 docs/
 └── en/
     ├── index.md                     ← product landing page (start here)
@@ -29,7 +31,10 @@ docs/
     │   ├── index.md
     │   ├── dashboard.md
     │   ├── packages.md
+    │   ├── projects.md
+    │   ├── lookup.md
     │   ├── vulnerabilities.md
+    │   ├── risk.md
     │   ├── license-policy.md
     │   ├── tokens.md
     │   ├── setup.md
@@ -63,3 +68,17 @@ docs/
   directly onto the host (`<base>/npm/`, `<base>/simple/`, …).
 - Tokens are never shown literally — guides use placeholders and let each tool
   store the token in its own credential store.
+- Every claim is grounded in the `dependably-community` source and every
+  screenshot is a fresh capture from a running instance — see
+  [`.claude/skills/docs/SKILL.md`](.claude/skills/docs/SKILL.md) for the rules and
+  `scripts/screenshots.mjs` for the capture.
+
+## Screenshots
+
+```bash
+DEPENDABLY_URL=http://demo.localhost:8080 DEPENDABLY_EMAIL=… DEPENDABLY_PASSWORD=… node scripts/screenshots.mjs
+```
+
+Sign in as the role the pages are written for (a member for `web-ui/`). The
+script loads Playwright from a sibling `dependably-community/web` checkout and
+writes 1920 × 936 PNGs into `docs/en/web-ui/images/`.

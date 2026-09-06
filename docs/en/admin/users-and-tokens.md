@@ -55,10 +55,12 @@ Every token carries one of the pre-defined scopes:
 | **push & pull** | Both. |
 | **admin** | Read and change organization settings. |
 | **audit** | Read the audit log — for SIEM and logging integrations. |
+| **SBOM upload** | Upload SBOM, VEX, and SARIF documents to Projects — for CI. |
 
 A token never grants more than the role of the person who created it allows:
 scopes that publish (**push only**, **push & pull**) or manage the
-organization (**admin**, **audit**) require the Admin or Owner role.
+organization (**admin**, **audit**, **SBOM upload**) require the Admin or Owner
+role.
 
 Set an **Expires at** to bound a token's lifetime, and a description (up to
 200 characters) to tell tokens apart. The organization enforces a maximum
@@ -88,7 +90,7 @@ role). Select **New token** and enter:
 
 1. A **Name** (required — for example, *GitHub Actions*).
 2. An optional **Description** (for example, *Build server in us-east-1*).
-3. A **Scope** — any of the five scopes above.
+3. A **Scope** — any of the six scopes above.
 4. An optional **Expires at**.
 
 The table lists each service token's name, description, scope, creation and

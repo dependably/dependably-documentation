@@ -13,3 +13,9 @@ these scores are configured in [Settings](admin/settings.md).
 | **OSV** | Open Source Vulnerabilities — the open advisory database and schema Dependably consults when scanning packages. |
 | **MAL- advisory** | An OSV malicious-package advisory (its ID starts with `MAL-`) flagging a version as known-malicious. The `blockMalicious` gate keys on it. |
 | **SPDX** | The standard licence-identifier scheme (e.g. `MIT`, `Apache-2.0`). Dependably records the SPDX licence of every package and enforces the [licence policy](web-ui/license-policy.md) against it. |
+| **CWE** | Common Weakness Enumeration — the catalogue of weakness classes (for example CWE-79, cross-site scripting) an advisory is tagged with. Shown on each advisory in [Vulnerabilities](web-ui/vulnerabilities.md). |
+| **SBOM** | Software bill of materials — a document listing every component an application ships. Dependably accepts CycloneDX JSON; upload one to describe a version in [Projects](web-ui/projects.md). |
+| **VEX** | Vulnerability Exploitability eXchange — a document stating whether each advisory actually affects a product (CycloneDX VEX or OpenVEX). Uploaded alongside an SBOM to record triage decisions. |
+| **SARIF** | Static Analysis Results Interchange Format — the output of a code scanner (SARIF 2.1.0). Uploaded alongside an SBOM to add reachability findings. |
+| **TOTP** | Time-based one-time password — the 6-digit code an authenticator app generates for two-factor authentication. See [Profile](web-ui/profile.md). |
+| **Air-gapped** | An instance with no route to the public registries. Upstream fetches are off, and advisories come from a locally mirrored OSV feed. |

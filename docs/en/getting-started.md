@@ -30,9 +30,11 @@ examples; substitute your own host.
 Every guide authenticates with a token that you create in the web UI — no files
 to edit and nothing to set up on the server:
 
+- **Setup** — a wizard that creates a personal token and hands you the
+  configuration for your package manager in one go.
 - **Tokens** — a personal token tied to your account. Best for your own machine.
 - **Settings → Service tokens** — a long-lived token not tied to a person. Best
-  for CI and shared automation.
+  for CI and shared automation. Created by an administrator.
 
 Each tool then stores the token in its own credential store when you log in or
 configure it; the guides show the exact command. You never need to paste a token
@@ -58,6 +60,8 @@ Once that succeeds, head to the guide for your tool:
 - [Maven](package-managers/maven.md)
 - [Cargo](package-managers/cargo.md)
 - [Go](package-managers/go.md)
+- [Terraform](package-managers/terraform.md)
+- [Hex](package-managers/hex.md)
 - [Docker](containers-and-system/docker.md)
 - [RPM](containers-and-system/rpm.md)
 

@@ -4,11 +4,10 @@ The **Quarantine** queue is where versions blocked by a supply-chain policy wait
 for a human decision. Open it from the **Quarantine pending** card on the
 [Overview](dashboard.md).
 
-> Reviewing the queue requires elevated permissions. A member account that opens
-> this page sees a **Forbidden** notice instead of entries — see
+> This page is for the **Admin** and **Owner** roles. It appears under **Admin**
+> in their sidebar; a member's sidebar does not list it, and a member who opens
+> its address is returned to the Overview — see
 > [Access control (RBAC)](../admin/rbac.md).
-
-![The Quarantine page with a decision-state filter and an explanation of the review queue; a member account sees a Forbidden notice and no entries.](images/quarantine.png)
 
 ## What lands here
 
