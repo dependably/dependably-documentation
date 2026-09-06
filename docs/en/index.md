@@ -1,10 +1,10 @@
 ---
-description: "Self-hosted private package registry and pull-through cache: checksum and signature verification and policy gates before a package reaches a build."
+description: "Private package registry and pull-through cache: checksum and signature verification and policy gates before a package reaches a build."
 ---
 
 # Dependably
 
-**A private package registry you host yourself.**
+**A private package registry that verifies every package before it reaches your build.**
 
 Dependably sits between your developers and the public package registries. It
 caches every package your team pulls, verifies its checksum before storing it,
@@ -77,12 +77,16 @@ for your tool:
 ## The web UI
 
 Dependably has a built-in web console. Open your base URL in a browser to browse
-packages, see which versions carry advisories, create the token your tools need,
-and copy a ready-made setup snippet. See [**The web UI**](web-ui/index.md) for a
-tour of every page:
+packages, check a package before you add it, see which versions carry
+advisories, create the token your tools need, and copy a ready-made
+configuration for your package manager. See [**The web UI**](web-ui/index.md)
+for a tour of every page:
 [Overview](web-ui/dashboard.md) ·
 [Packages](web-ui/packages.md) ·
+[Projects](web-ui/projects.md) ·
+[Lookup](web-ui/lookup.md) ·
 [Vulnerabilities](web-ui/vulnerabilities.md) ·
+[Risk](web-ui/risk.md) ·
 [Licences](web-ui/license-policy.md) ·
 [Tokens](web-ui/tokens.md) ·
 [Setup](web-ui/setup.md) ·

@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "docs-site",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "cd /Users/michael/Projects/dependably-www && node_modules/.bin/svelte-docs-build --local /Users/michael/Projects/dependably-documentation --out dist/docs-content --base-path /docs && exec node node_modules/vite/bin/vite.js --port 5173 --strictPort"
+      ],
+      "port": 5173
+    },
+    {
+      "name": "docs-engine-demo",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "cd /Users/michael/Projects/SvelteDocs && node build/cli.js --local /Users/michael/Projects/dependably-documentation --out demo/public/docs-content --base-path /docs && exec node node_modules/vite/bin/vite.js --port 5174 --strictPort"
+      ],
+      "port": 5174
+    }
+  ]
+}

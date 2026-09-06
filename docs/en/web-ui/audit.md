@@ -3,12 +3,11 @@
 The **Audit log** is a searchable, exportable record of what happened in your
 organization — every fetch, push, block, login, and configuration change.
 
-> Reading the audit log requires the **Admin**, **Owner**, or **Auditor**
-> role. A Member account that opens this
-> page sees a **Forbidden** notice instead of events — see
+> This page is for the **Admin** and **Owner** roles. It appears under **Admin**
+> in their sidebar; a member's sidebar does not list it, and a member who opens
+> its address is returned to the Overview. An **Auditor** reads the log through
+> a token with the **audit** scope rather than this page — see
 > [Access control (RBAC)](../admin/rbac.md).
-
-![The Audit log with Activity and Configuration tabs, a search box, an event-type filter, and an Export CSV button; a member account sees a Forbidden notice and no events.](images/audit.png)
 
 ## Two views
 
