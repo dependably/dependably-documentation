@@ -1,5 +1,6 @@
 ---
 description: "Configure pip and uv to install Python packages through a private Dependably registry, proxy PyPI, and publish your own with twine or uv."
+order: 2
 ---
 
 # PyPI (pip, uv)

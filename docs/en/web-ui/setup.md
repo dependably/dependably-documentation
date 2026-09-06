@@ -1,5 +1,6 @@
 ---
 description: "The Setup page of the Dependably web console: a three-step wizard that creates a token and writes the configuration for your package manager."
+order: 9
 ---
 
 # Connect a package manager

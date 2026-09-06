@@ -1,3 +1,7 @@
+---
+order: 2
+---
+
 # Access control (RBAC)
 
 Dependably's permission model is built from two pre-defined sets — there is

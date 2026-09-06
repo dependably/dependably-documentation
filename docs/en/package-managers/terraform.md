@@ -1,5 +1,6 @@
 ---
 description: "Configure Terraform's provider network mirror so terraform init downloads providers through Dependably instead of registry.terraform.io."
+order: 7
 ---
 
 # Terraform

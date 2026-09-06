@@ -1,3 +1,7 @@
+---
+order: 4
+---
+
 # Settings
 
 These are the per-organization settings an Owner or Admin configures on the

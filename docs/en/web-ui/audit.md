@@ -1,3 +1,7 @@
+---
+order: 12
+---
+
 # Audit log
 
 The **Audit log** is a searchable, exportable record of what happened in your

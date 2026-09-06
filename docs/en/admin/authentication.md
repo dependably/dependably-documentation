@@ -1,3 +1,7 @@
+---
+order: 5
+---
+
 # Authentication
 
 Dependably gives your team two ways to sign in: **forms login** (email and

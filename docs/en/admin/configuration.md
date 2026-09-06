@@ -1,3 +1,7 @@
+---
+order: 1
+---
+
 # Configuration
 
 This page is for **operators** who deploy and run a Dependably instance.

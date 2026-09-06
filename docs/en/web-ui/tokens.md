@@ -1,5 +1,6 @@
 ---
 description: "Create, review, and revoke the personal access tokens your package managers use to sign in to a Dependably registry."
+order: 8
 ---
 
 # Access tokens

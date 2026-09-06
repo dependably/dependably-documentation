@@ -1,5 +1,6 @@
 ---
 description: "The Overview page of the Dependably web console: what each metric card, chart, trend, and prevention count means and where it leads."
+order: 1
 ---
 
 # Overview dashboard

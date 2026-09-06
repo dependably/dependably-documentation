@@ -1,5 +1,6 @@
 ---
 description: "The Projects page of the Dependably web console: the applications you build, described by uploaded SBOMs, with the components and findings of every version."
+order: 3
 ---
 
 # Projects

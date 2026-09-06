@@ -1,5 +1,6 @@
 ---
 description: "Point npm, PyPI, Maven, NuGet, Cargo, Go, Terraform and Hex at your private Dependably registry: configure the client, verify, publish, revert."
+order: 1
 ---
 
 # Package managers

@@ -1,5 +1,6 @@
 ---
 description: "Connect Dependably to the monitoring and dashboard tools you already run; operational data is exposed in standard formats."
+order: 5
 ---
 
 # Integrations

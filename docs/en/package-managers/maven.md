@@ -1,5 +1,6 @@
 ---
 description: "Configure Maven and Gradle to resolve artefacts through a private Dependably repository, proxy Maven Central, and publish your own."
+order: 4
 ---
 
 # Maven (Maven & Gradle)
