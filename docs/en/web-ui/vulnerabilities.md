@@ -1,5 +1,6 @@
 ---
 description: "The Vulnerabilities page of the Dependably web console: every advisory affecting a cached version, ranked by exploitation risk, with a fix recipe for your AI assistant."
+order: 5
 ---
 
 # Vulnerabilities

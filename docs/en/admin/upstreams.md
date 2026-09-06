@@ -1,3 +1,7 @@
+---
+order: 6
+---
+
 # Upstreams
 
 Dependably acts as a pull-through cache in front of public registries. Each

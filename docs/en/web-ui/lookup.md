@@ -1,5 +1,6 @@
 ---
 description: "The Lookup page of the Dependably web console: check a package for malware, known vulnerabilities, and licence policy before you add it, without downloading anything."
+order: 4
 ---
 
 # Check a package before you add it

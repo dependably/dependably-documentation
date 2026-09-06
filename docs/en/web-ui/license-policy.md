@@ -1,5 +1,6 @@
 ---
 description: "The Licences page of the Dependably web console: which SPDX licences your organization allows, permits with a condition, or blocks, and whether the policy is enforced."
+order: 7
 ---
 
 # Licence policy

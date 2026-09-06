@@ -1,5 +1,6 @@
 ---
 description: "Configure dnf and yum to install RPM packages from a Dependably repository that caches upstream packages and serves your own uploads."
+order: 2
 ---
 
 # RPM (dnf/yum) — Beta

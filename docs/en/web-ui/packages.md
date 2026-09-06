@@ -1,5 +1,6 @@
 ---
 description: "Browse and search every package a Dependably registry holds, open one to see its versions, checksums, licence, advisories, and whether it is behind upstream."
+order: 2
 ---
 
 # Browsing packages

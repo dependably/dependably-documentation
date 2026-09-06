@@ -1,5 +1,6 @@
 ---
 description: "Configure Cargo to use a private Dependably sparse registry for Rust crates: proxy crates.io, install private crates, and publish your own."
+order: 5
 ---
 
 # Cargo

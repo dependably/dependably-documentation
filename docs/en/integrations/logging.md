@@ -1,3 +1,7 @@
+---
+order: 2
+---
+
 # Log output
 
 Dependably writes structured logs to stdout. Every event is one object on one

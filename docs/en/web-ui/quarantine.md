@@ -1,3 +1,7 @@
+---
+order: 11
+---
+
 # Quarantine review
 
 The **Quarantine** queue is where versions blocked by a supply-chain policy wait

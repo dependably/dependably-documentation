@@ -1,5 +1,6 @@
 ---
 description: "The Profile page of the Dependably web console: change your password, set up or disable two-factor authentication, and choose your theme, language, and timezone."
+order: 10
 ---
 
 # Your profile

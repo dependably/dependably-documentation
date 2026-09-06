@@ -1,3 +1,7 @@
+---
+order: 1
+---
+
 # Grafana dashboard
 
 A ready-made Grafana dashboard for watching a single Dependably instance. It

@@ -1,5 +1,6 @@
 ---
 description: "Configure npm, yarn and pnpm to install through a private Dependably registry, proxy public packages, and publish your own with a scoped token."
+order: 1
 ---
 
 # npm

@@ -1,3 +1,7 @@
+---
+order: 3
+---
+
 # Users & tokens
 
 This page covers managing the people and machine credentials in your

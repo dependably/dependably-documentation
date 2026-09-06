@@ -1,5 +1,6 @@
 ---
 description: "Deploy and run a Dependably instance: set the base URL, manage users and organizations, configure policy, and keep the registry healthy."
+order: 4
 ---
 
 # Administration

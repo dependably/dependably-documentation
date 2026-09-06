@@ -1,5 +1,6 @@
 ---
 description: "The Risk page of the Dependably web console: cached versions that are far behind upstream, and versions whose licence is blocked, conditional, or unknown."
+order: 6
 ---
 
 # Risk

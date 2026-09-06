@@ -1,5 +1,6 @@
 ---
 description: "Configure GOPROXY so go get and go mod download resolve modules through Dependably's Go module proxy cache instead of proxy.golang.org."
+order: 6
 ---
 
 # Go
