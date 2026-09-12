@@ -8,8 +8,8 @@ order: 2
 Point your Python tooling at Dependably to install private packages, proxy
 public ones, and publish your own. This guide covers both **pip** and **uv**.
 
-You will need your **base URL** and a **token** — see
-[Getting started](../getting-started.md). The examples use `repo.example.com`;
+You will need your **base URL** and a **token**. See
+[Getting started](../getting-started.md) for both. The examples use `repo.example.com`;
 substitute your own. Python tools authenticate with **HTTP Basic**: the token
 goes in the password field and the username is ignored, so any username works
 (the examples use `user`). Your package index URL is:
@@ -20,7 +20,7 @@ https://repo.example.com/simple/
 
 ## Configure
 
-Use pip's own command — it writes the index URL into pip's config for you, so
+Use pip's own command. It writes the index URL into pip's config for you, so
 there are no files to edit by hand:
 
 ```bash
@@ -45,8 +45,8 @@ pip config list           # should show your Dependably index-url
 pip install requests      # or: uv add requests
 ```
 
-Your first install records an entry on the **Activity** page in the web UI —
-check there to confirm packages are flowing through Dependably.
+Your first install records an entry on the **Activity** page in the web UI.
+Check there to confirm packages are flowing through Dependably.
 
 ## Publishing
 
@@ -61,7 +61,7 @@ twine upload \
 ```
 
 Publishing requires a token with a push scope (**push only** or
-**push & pull**) — see [Access tokens](../web-ui/tokens.md).
+**push & pull**). See [Access tokens](../web-ui/tokens.md).
 
 ## Revert
 
@@ -70,5 +70,4 @@ pip config unset --user global.index-url
 ```
 
 uv took the index per-command (`--default-index`), so there is nothing
-persistent to undo unless you exported it as `UV_DEFAULT_INDEX` — in which case
-unset that too.
+persistent to undo. If you exported it as `UV_DEFAULT_INDEX`, unset that too.

@@ -10,7 +10,7 @@ held locally, Dependably consults the configured upstream list for the matching
 ecosystem, fetches and verifies the artefact, caches it, and serves it.
 
 If an ecosystem has **no upstream configured**, proxying for that ecosystem is
-disabled — Dependably serves only locally published packages.
+disabled, and Dependably serves only locally published packages.
 
 ## Configuring upstreams
 
@@ -19,7 +19,7 @@ order; on a miss or an unreachable upstream, Dependably falls through to the
 next.
 
 A new organization is seeded with the standard public upstream for each
-ecosystem, so it works out of the box:
+ecosystem, so proxying works without adding an upstream yourself:
 
 | Ecosystem | Default upstream |
 | --------- | ---------------- |
@@ -29,7 +29,7 @@ ecosystem, so it works out of the box:
 | Maven | `https://repo1.maven.org/maven2` |
 | Go | `https://proxy.golang.org` |
 | Cargo | `https://index.crates.io` (sparse index) |
-| RPM | *(none — see below)* |
+| RPM | *(none; see below)* |
 | OCI | MCR + Docker Hub (see below) |
 
 RPM has no built-in default (RPM repos are distro-specific): an RPM upstream
@@ -45,8 +45,8 @@ catch-all, so it belongs on your last-resort upstream.
 
 A new organization is seeded with two OCI upstreams:
 
-1. **`mcr.microsoft.com`** (anonymous) — prefixes `dotnet/` and `playwright`.
-2. **`registry-1.docker.io`** (Docker Hub token exchange) — prefixes `library/`
+1. `mcr.microsoft.com` (anonymous): prefixes `dotnet/` and `playwright`.
+2. `registry-1.docker.io` (Docker Hub token exchange): prefixes `library/`
    and `""` (catch-all). Anything not matched by MCR routes here.
 
 Each OCI upstream carries an auth type: `anonymous` (public images), `basic`

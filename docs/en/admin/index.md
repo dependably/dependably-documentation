@@ -10,7 +10,7 @@ pull and publish packages.
 
 Setup is deliberately light: deploy the instance and set its base URL (see
 [Configuration](configuration.md)), then manage everything from the web UI or
-API — access, tokens, settings, authentication, and upstreams. No server access
+API: access, tokens, settings, authentication, and upstreams. No server access
 or config files are needed for day-to-day administration.
 
 ## Pages

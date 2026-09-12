@@ -8,7 +8,7 @@ order: 6
 The **Risk** page lists the versions in your registry that deserve a second
 look for a reason other than a vulnerability: they are far behind upstream, or
 their licence is blocked, conditional, or unknown. Every signed-in user can
-open it. It is read-only — select a row to open the
+open it. It is read-only. Select a row to open the
 [package](packages.md), where an administrator can block or allow the version.
 
 ![The Risk page with Operational risk and Licence risk tabs, a summary line, an ecosystem filter, and a table of versions.](images/risk.png)

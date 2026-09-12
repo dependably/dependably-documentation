@@ -8,13 +8,13 @@ This page is for **operators** who deploy and run a Dependably instance.
 
 Dependably is built to be simple to run: start the container, tell it the URL
 it will be reached at, and manage everything else from the admin UI. There are
-no config files to maintain — the few deploy-time choices below are set as
+no config files to maintain. The few deploy-time choices below are set as
 environment variables on the container.
 
 ## Deploy
 
 Run the Dependably container on your own infrastructure. The one setting every
-deployment should have is the **public base URL** — the address your developers
+deployment should have is the public base URL, the address your developers
 and the web UI will use:
 
 ```
@@ -33,7 +33,7 @@ first login, and you are ready to administer the instance.
 
 ## Environment reference
 
-All variables are optional — an empty environment gives a working local
+All variables are optional. An empty environment gives a working local
 instance.
 
 ### Instance & first boot
@@ -45,7 +45,7 @@ instance.
 | `FIRST_BOOT_ADMIN_EMAIL` | `admin@dependably.local` | Email of the owner account created on first boot. |
 | `FIRST_BOOT_ADMIN_PASSWORD` | generated | Password for that account. When unset, a random password is generated and printed to the logs. Either way, rotation is forced on first login. |
 | `AIR_GAPPED` | `false` | `true` runs the instance air-gapped: fetching from upstream registries is disabled and vulnerability scanning uses the local mirror only. |
-| `DEPENDABLY_MASTER_KEY` | unset | Master key that envelope-encrypts stored secrets (upstream credentials, webhook signing secrets) at rest. Must be **base64 that decodes to exactly 32 bytes** (AES-256), or a path to a file containing such a value — see the note below. Without it, webhook signing secrets cannot be stored. |
+| `DEPENDABLY_MASTER_KEY` | unset | Master key that envelope-encrypts stored secrets (upstream credentials, webhook signing secrets) at rest. Must be base64 that decodes to exactly 32 bytes (AES-256), or a path to a file containing such a value; see the note below. Without it, webhook signing secrets cannot be stored. |
 
 > **Generating the master key.** The value is base64 that must decode to
 > exactly 32 bytes (AES-256). A hex string or any other length fails startup
@@ -71,7 +71,7 @@ invite link for you to deliver yourself (see
 | -------- | ------- | ------ |
 | `SMTP_HOST` | unset | SMTP server to send invite emails through. |
 | `SMTP_PORT` | `587` | SMTP port. |
-| `SMTP_FROM` | — | Envelope From address (for example `invites@example.com`). Required when `SMTP_HOST` is set. |
+| `SMTP_FROM` | unset | Envelope From address (for example `invites@example.com`). Required when `SMTP_HOST` is set. |
 | `SMTP_USERNAME` / `SMTP_PASSWORD` | unset | Credentials, if your server requires them. |
 | `SMTP_STARTTLS` | `true` | Set `false` to disable STARTTLS. |
 
@@ -80,11 +80,11 @@ invite link for you to deliver yourself (see
 | Variable | Default | Effect |
 | -------- | ------- | ------ |
 | `STORAGE_BACKEND` | `local` | Where package artefacts are stored: `local`, `s3`, or `azure`. |
-| `LOCAL_STORAGE_PATH` | `/data/blobs` | Directory for the `local` backend — mount a volume here. |
-| `S3_BUCKET`, `S3_REGION` | — | Required for the `s3` backend. |
+| `LOCAL_STORAGE_PATH` | `/data/blobs` | Directory for the `local` backend. Mount a volume here. |
+| `S3_BUCKET`, `S3_REGION` | unset | Required for the `s3` backend. |
 | `S3_ENDPOINT` | unset | Point the `s3` backend at an S3-compatible service (R2, MinIO, B2, Wasabi). |
 | `S3_FORCE_PATH_STYLE` | `false` | Set `true` for services that require path-style addressing (R2, MinIO). |
-| `AZURE_CONNECTION_STRING`, `AZURE_CONTAINER` | — | Required for the `azure` backend. |
+| `AZURE_CONNECTION_STRING`, `AZURE_CONTAINER` | unset | Required for the `azure` backend. |
 
 ### Behind a reverse proxy
 
@@ -94,17 +94,17 @@ invite link for you to deliver yourself (see
 
 ## Manage the instance in the app
 
-Once it is running, all administration happens in the web UI — no server
+Once it is running, all administration happens in the web UI, with no server
 access required:
 
-- **[Access control (RBAC)](rbac.md)** — roles and what each can do.
-- **[Users & tokens](users-and-tokens.md)** — invite members, issue personal and
+- [Access control (RBAC)](rbac.md): roles and what each can do.
+- [Users & tokens](users-and-tokens.md): invite members, issue personal and
   service tokens.
-- **[Settings](settings.md)** — anonymous pull, retention, upload limits, and the
+- [Settings](settings.md): anonymous pull, retention, upload limits, and the
   supply-chain security gates applied to proxied packages.
-- **[Authentication](authentication.md)** — forms login, MFA, and SAML 2.0
+- [Authentication](authentication.md): forms login, MFA, and SAML 2.0
   single sign-on.
-- **[Upstreams](upstreams.md)** — the public registries Dependably proxies.
+- [Upstreams](upstreams.md): the public registries Dependably proxies.
 
 ## Verify
 

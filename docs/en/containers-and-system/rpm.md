@@ -3,16 +3,13 @@ description: "Configure dnf and yum to install RPM packages from a Dependably re
 order: 2
 ---
 
-# RPM (dnf/yum) — Beta
-
-> **Beta.** Repository serving, proxying, and upload work, but behaviour and
-> configuration may still change.
+# RPM (dnf/yum)
 
 Dependably serves a standard `dnf`/`yum` repository: it caches upstream packages
 on first fetch, verifies them before storage, and can host your own `.rpm`
 builds.
 
-Create a token in the web UI — see [Getting started](../getting-started.md) —
+Create a token in the web UI (see [Getting started](../getting-started.md))
 and use it where the examples below show `<your token>`. Your repository base
 URL is:
 
@@ -22,8 +19,8 @@ https://repo.example.com/rpm/
 
 ## Configure
 
-`dnf`/`yum` reads its repositories from `.repo` files in `/etc/yum.repos.d/` —
-that is the OS's own mechanism, and there's no CLI or in-app alternative. Create
+`dnf`/`yum` reads its repositories from `.repo` files in `/etc/yum.repos.d/`.
+That is the OS's own mechanism, and there's no CLI or in-app alternative. Create
 `/etc/yum.repos.d/dependably.repo`:
 
 ```ini
@@ -38,7 +35,7 @@ password=<your token>
 
 `dnf` authenticates with **HTTP Basic**: the token is the password and the
 username can be anything (`user` is conventional), set with the `username` and
-`password` keys. `gpgcheck=0` is the default — turn it on once you have package
+`password` keys. `gpgcheck=0` is the default. Turn it on once you have package
 signing wired up. Because this file holds the literal token, keep its
 permissions tight:
 
@@ -72,7 +69,7 @@ curl --user user:<your token> \
 ```
 
 Uploading requires a token with a push scope (**push only** or
-**push & pull**) — see [Access tokens](../web-ui/tokens.md).
+**push & pull**). See [Access tokens](../web-ui/tokens.md).
 
 ## Revert
 

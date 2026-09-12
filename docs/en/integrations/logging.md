@@ -6,7 +6,7 @@ order: 2
 
 Dependably writes structured logs to stdout. Every event is one object on one
 line, ready for Elastic Stack, AWS CloudWatch Logs, Datadog, Grafana Loki, or
-any other line-oriented log aggregator. Nothing needs to be enabled — the only
+any other line-oriented log aggregator. Nothing needs to be enabled. The only
 choice is the format.
 
 > **There is no in-app log viewer.** Logs are write-only from the application's
@@ -21,8 +21,8 @@ Set `LOG_FORMAT` (see [Configuration](../admin/configuration.md)):
 
 | Value | Use it for |
 | ----- | ---------- |
-| `json` (default) | Elastic Common Schema (ECS) JSON, one object per line — log-ingestion pipelines. |
-| `text` | Human-readable console output — interactive `docker logs` tailing. |
+| `json` (default) | Elastic Common Schema (ECS) JSON, one object per line, for log-ingestion pipelines. |
+| `text` | Human-readable console output, for interactive `docker logs` tailing. |
 
 Text format looks like this, with exception stack traces on the lines
 immediately following:
@@ -46,7 +46,7 @@ With `LOG_FORMAT=json`, each event conforms to the
 | `trace.id`, `span.id` | when set | Trace and span IDs from the current activity. |
 | `labels` | varies | Every remaining property. Sensitive values are already redacted to `[REDACTED]` before the formatter sees them. |
 
-One event, formatted here for readability — real output is a single line:
+One event, formatted here for readability. Real output is a single line:
 
 ```json
 {
@@ -64,7 +64,7 @@ One event, formatted here for readability — real output is a single line:
 | Level | Used for |
 | ----- | -------- |
 | `Verbose` | Fine-grained diagnostics. Off in production by default. |
-| `Debug` | Periodic heartbeats and operational ticks — a cleanup pass starting, a stats refresh finishing. |
+| `Debug` | Periodic heartbeats and operational ticks, such as a cleanup pass starting or a stats refresh finishing. |
 | `Information` | Normal operational events: pushes, proxy hits, first boot. |
 | `Warning` | Recoverable anomalies: upstream timeouts, checksum mismatches, skipped schema migrations. |
 | `Error` | Failed requests and exceptions caught at the boundary. |
@@ -86,7 +86,7 @@ fields `@timestamp`, `log.level`, message, `log.logger`
 ## Ship them over OTLP
 
 Set `OTEL_EXPORTER_OTLP_ENDPOINT` and logs are forwarded to that collector in
-addition to the always-on stdout sink — stdout never stops. Air-gapped
+addition to the always-on stdout sink, which never stops. Air-gapped
 deployments leave the variable unset and consume stdout only.
 
 Metrics have their own path: see the

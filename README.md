@@ -1,11 +1,11 @@
-# Dependably — Documentation
+# Dependably documentation
 
 End-user and administrator documentation for
 [Dependably](https://github.com/dependably), the self-hosted private package
 registry.
 
 The content lives under [`docs/`](docs/), organized one subtree per language.
-English is the only language today; more will be added as siblings.
+English is the only language.
 
 ```
 .claude/skills/docs/               ← the docs skill: how a page is grounded and screenshotted
@@ -65,11 +65,11 @@ docs/
 - Developer guides follow a shared template: intro + prerequisites, the registry
   URL, **Configure**, **Verify**, **Publishing**, **Revert**.
 - Examples use `repo.example.com` as the base URL. Registry URLs are built
-  directly onto the host (`<base>/npm/`, `<base>/simple/`, …).
-- Tokens are never shown literally — guides use placeholders and let each tool
+  directly onto the host, for example `<base>/npm/` and `<base>/simple/`.
+- Tokens are never shown literally. Guides use placeholders and let each tool
   store the token in its own credential store.
 - Every claim is grounded in the `dependably-community` source and every
-  screenshot is a fresh capture from a running instance — see
+  screenshot is a fresh capture from a running instance. See
   [`.claude/skills/docs/SKILL.md`](.claude/skills/docs/SKILL.md) for the rules and
   `scripts/screenshots.mjs` for the capture.
 

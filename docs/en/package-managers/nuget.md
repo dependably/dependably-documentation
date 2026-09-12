@@ -8,8 +8,8 @@ order: 3
 Point `dotnet` at Dependably to restore private packages, proxy public ones, and
 publish your own.
 
-You will need your **base URL** and a **token** — see
-[Getting started](../getting-started.md). The examples use `repo.example.com`;
+You will need your **base URL** and a **token**. See
+[Getting started](../getting-started.md) for both. The examples use `repo.example.com`;
 substitute your own. Your NuGet v3 service index is:
 
 ```
@@ -18,7 +18,7 @@ https://repo.example.com/nuget/v3/index.json
 
 ## Configure
 
-Use `dotnet`'s own commands — they manage your `NuGet.config` for you, so there
+Use `dotnet`'s own commands. They manage your `NuGet.config` for you, so there
 are no files to edit by hand. NuGet authenticates with HTTP Basic: any username
 works (the token is the password), so use `user`.
 
@@ -50,7 +50,7 @@ dotnet add package Newtonsoft.Json
 
 A successful restore confirms the source, credentials, and service index are all
 wired up. Your first restore records an entry on the **Activity** page in the web
-UI — check there to confirm packages are flowing through Dependably.
+UI. Check there to confirm packages are flowing through Dependably.
 
 ## Publishing
 
@@ -64,12 +64,12 @@ dotnet nuget push MyPackage.1.0.0.nupkg \
 ```
 
 Symbol packages (`.snupkg`) push the same way. Publishing requires a token
-with a push scope (**push only** or **push & pull**) — see
+with a push scope (**push only** or **push & pull**). See
 [Access tokens](../web-ui/tokens.md).
 
 ### Unlisting a version
 
-Deleting a version **unlists** (soft-deletes) it — the package data is retained,
+Deleting a version **unlists** (soft-deletes) it. The package data is retained,
 but the version stops appearing in restore metadata:
 
 ```bash
@@ -80,8 +80,8 @@ dotnet nuget delete MyPackage 1.0.0 \
 
 Unlisting needs removal permission that the pre-defined token scopes do not
 include. An Admin or Owner can instead delete the version in the web UI (open
-the package's version list and select **Delete**) — note that deleting removes
-the version entirely rather than unlisting it.
+the package's version list and select **Delete**). Deleting removes the
+version entirely rather than unlisting it.
 
 ## Revert
 

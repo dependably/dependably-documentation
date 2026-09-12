@@ -8,8 +8,8 @@ order: 1
 Point npm (and yarn / pnpm, which read the same config) at Dependably to install
 private packages, proxy public ones, and publish your own.
 
-You will need your **base URL** and a **token** — see
-[Getting started](../getting-started.md). The examples use `repo.example.com`;
+You will need your **base URL** and a **token**. See
+[Getting started](../getting-started.md) for both. The examples use `repo.example.com`;
 substitute your own. Your npm registry URL is:
 
 ```
@@ -18,7 +18,7 @@ https://repo.example.com/npm/
 
 ## Configure
 
-Use npm's own commands — they store everything in npm's config for you, so there
+Use npm's own commands. They store everything in npm's config for you, so there
 are no files to edit by hand. npm sends the token as a Bearer credential:
 
 ```bash
@@ -46,8 +46,8 @@ confirm your token authenticates. `npm ping` is always anonymous; if it succeeds
 but `npm whoami` returns `ENEEDAUTH`, the token was not set. A service token
 reports its identity as `service:<name>` rather than an email.
 
-Your first install records an entry on the **Activity** page in the web UI —
-check there to confirm packages are flowing through Dependably.
+Your first install records an entry on the **Activity** page in the web UI.
+Check there to confirm packages are flowing through Dependably.
 
 ## Publishing
 
@@ -56,7 +56,7 @@ npm publish --registry https://repo.example.com/npm/
 ```
 
 Both scoped (`@scope/name`) and unscoped packages are supported. Publishing
-requires a token with a push scope (**push only** or **push & pull**) — see
+requires a token with a push scope (**push only** or **push & pull**). See
 [Access tokens](../web-ui/tokens.md).
 
 You can also manage dist-tags with a publish-capable token:

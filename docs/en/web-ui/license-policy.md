@@ -20,18 +20,18 @@ information is there even when enforcement is off, and every version's
 The **Enforcement** indicator at the top shows one of three modes, and the
 sentence beneath it says what that mode means for you:
 
-- **Off** — licences are recorded but never affect a pull or a publish. The
+- **Off**: licences are recorded but never affect a pull or a publish. The
   lists show what *would* be allowed or blocked if enforcement were turned on.
-- **Warn** — packages are still served and published. A publish whose licence
+- **Warn**: packages are still served and published. A publish whose licence
   violates the policy is recorded in the [Audit log](audit.md).
-- **Block** — a publish or an upstream fetch is refused when the package's
+- **Block**: a publish or an upstream fetch is refused when the package's
   licence is not on the allow or conditional list, or appears on the block
   list. For npm, PyPI, NuGet, Maven, Cargo, RPM, and Hex a package with no
   licence recorded at all is refused too, and an empty allow list refuses every
   package that declares one. A refused download reaches your package manager
   as [a blocked package](../package-managers/blocked-packages.md).
 
-## The three lists
+## The lists
 
 | List | What it means for a package carrying the licence |
 | ---- | ------------------------------------------------- |

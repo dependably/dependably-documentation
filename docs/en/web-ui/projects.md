@@ -14,13 +14,13 @@ advisories, and whether the version passes your organization's policy.
 ![The Projects page: a search box and a table of projects with Name, Components, Severity, Policy, Latest, and Last upload columns.](images/projects.png)
 
 Every signed-in user can browse projects, open any version, and export its
-documents. Creating, uploading, and triaging are administrator actions — see
-[What needs an administrator](#what-needs-an-administrator).
+documents. Creating, uploading, and triaging are administrator actions, listed
+under [What needs an administrator](#what-needs-an-administrator).
 
 ## Browse projects
 
 The list shows every project and folder at the top level. Type in **Search
-projects…** to match any part of a name; a project nested in a folder shows
+projects…** to match any part of a name; a project nested in a folder shows <!-- tells: allow -->
 indented under its folder.
 
 | Column | Meaning |
@@ -37,11 +37,11 @@ Select a row to open it.
 ### Folders
 
 A folder groups projects and holds no versions of its own. Opening one shows
-counts rolled up across everything inside it — **Projects (all levels)**,
+counts rolled up across everything inside it: **Projects (all levels)**,
 **Components (rolled up)**, **Findings (rolled up)**, and **Policy (rolled
-up)** — and a **Projects in this collection** table. The rolled-up policy is
-the worst verdict in the folder, and a note reads *n of m not evaluated* when
-some projects have never been scanned.
+up)**. It also shows a **Projects in this collection** table. The rolled-up
+policy is the worst verdict in the folder, and a note reads *n of m not
+evaluated* when some projects have never been scanned.
 
 ## A project and its versions
 
@@ -54,30 +54,35 @@ Select a version to open it.
 
 The version page is where the analysis lives.
 
-- **Policy** — a ribbon showing the verdict, with the component total split by
-  production and development scope, and a priority breakdown. When the verdict
-  is **Violation**, select the ribbon to show only the violating components.
-- **Risk pillars** — the worst advisory severity, the licence findings, and the
-  policy verdict, side by side.
-- **Filters** — search by name; narrow by scope (All, Prod, Dev), by severity,
-  or by reachability; show only policy violations; include suppressed findings.
-- **The component table** — one row per component with its version, whether
-  the registry knows it (blocked, deprecated, outdated, unknown, or never
-  served here), whether it is a direct or transitive dependency, its licences,
-  its advisories, and a priority of **act**, **attend**, **track**, or
-  **suppressed**. Expand a row to read each advisory and any triage decision
-  recorded against it.
-- **Unmatched analysis** — statements from an uploaded VEX (Vulnerability
-  Exploitability eXchange) or SARIF (Static Analysis Results Interchange
-  Format) document that named a package the SBOM does not contain. They are
-  shown rather than dropped.
-- **Documents** — every document uploaded for this version, with its type,
-  format, producing tool, SHA-256 digest, size, and uploader. **Download
-  original** returns the exact bytes that were uploaded.
+A **Policy** ribbon shows the verdict, with the component total split by
+production and development scope, and a priority breakdown. When the verdict
+is **Violation**, select the ribbon to show only the violating components.
+
+The risk pillars sit side by side: the worst advisory severity, the licence
+findings, and the policy verdict.
+
+The filters search by name and narrow by scope (All, Prod, Dev), by severity,
+or by reachability. You can also show only policy violations and include
+suppressed findings.
+
+The component table has one row per component. Each row shows its version,
+whether the registry knows it (blocked, deprecated, outdated, unknown, or never
+served here), whether it is a direct or transitive dependency, its licences,
+its advisories, and a priority of **act**, **attend**, **track**, or
+**suppressed**. Expand a row to read each advisory and any triage decision
+recorded against it.
+
+**Unmatched analysis** lists statements from an uploaded VEX (Vulnerability
+Exploitability eXchange) or SARIF (Static Analysis Results Interchange Format)
+document that named a package the SBOM does not contain. They are shown rather
+than dropped.
+
+**Documents** lists every document uploaded for this version, with its type,
+format, producing tool, SHA-256 digest, size, and uploader. **Download
+original** returns the exact bytes that were uploaded.
 
 **Export** on the version page produces a fresh document from what Dependably
-knows now: an **SBOM — inventory (CycloneDX)**, an **SBOM — with
-vulnerabilities (VDR)**, or a **VEX document**.
+knows now: an **SBOM — inventory (CycloneDX)**, an **SBOM — with vulnerabilities (VDR)**, or a **VEX document**. <!-- tells: allow -->
 
 ## What needs an administrator
 
@@ -85,11 +90,11 @@ Members read; administrators and owners change. The following controls do not
 appear for a member:
 
 - **Upload** an SBOM, VEX, or SARIF document, from the page or through the
-  API. The upload accepts CycloneDX 1.4–1.7 JSON, OpenVEX, and SARIF 2.1.0; VEX
-  and SARIF enrich the SBOM already uploaded for that version. Uploads are
+  API. The upload accepts CycloneDX 1.4 to 1.7 JSON, OpenVEX, and SARIF 2.1.0;
+  VEX and SARIF enrich the SBOM already uploaded for that version. Uploads are
   capped at 50 MB unless the operator raises the limit.
-- **New folder**, and **Edit…** or **Delete** on a project or folder. Deleting
-  a folder removes everything inside it.
+- **New folder**, and **Edit…** or **Delete** on a project or folder. <!-- tells: allow -->
+  Deleting a folder removes everything inside it.
 - **Promote to latest** and **Delete** on a version.
 - **Rescan** a version against current advisories, at most once an hour.
 - Record a triage decision on a finding.
