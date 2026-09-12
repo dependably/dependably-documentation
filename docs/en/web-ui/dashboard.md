@@ -11,8 +11,8 @@ is being pulled, what is being blocked, and where the risk sits.
 
 ![The Overview page: a New vulnerabilities detected ribbon, thirteen metric cards, and a packages-by-ecosystem table beside a doughnut chart, with the downloads chart starting beneath.](images/overview.png)
 
-All numbers cover your organization only. The scoring terms — CVSS, EPSS,
-KEV — are defined in the [Glossary](../glossary.md).
+All numbers cover your organization only. The scoring terms (CVSS, EPSS,
+KEV) are defined in the [Glossary](../glossary.md).
 
 ## New vulnerabilities
 
@@ -52,6 +52,7 @@ advisories at each severity (**Critical**, **High**, **Medium**, **Low**, and
 **Unscored** for advisories that carry no score), and the total. These are
 current counts, not a 30-day window. Ecosystems with no packages are left out.
 
+<!-- tells: allow-next -->
 ## Package downloads — last 24 hours
 
 A bar per hour of downloads served over the last day, with the total beneath.
@@ -59,17 +60,18 @@ Blocked attempts are not included.
 
 ## Trends (30d)
 
-Three cards — **Vulnerabilities**, **Blocked pulls**, and **Downloads** — the
-same figures as the cards above, snapshotted once a day. Each shows today's value, the change against the value 7 days ago, and a sparkline of
+Three cards, **Vulnerabilities**, **Blocked pulls**, and **Downloads**, show
+the same figures as the cards above, snapshotted once a day. Each shows today's value, the change against the value 7 days ago, and a sparkline of
 the last 30 daily snapshots. The section reads **Not enough history yet** until
 two daily snapshots exist.
 
 ## Prevention (30d)
 
-One count per policy gate — Deprecated, Revoked, Release Age, Licence, Install
-Script, Provenance, Malicious, KEV, KEV · Ransomware, EPSS, and Vuln Score —
-showing how many downloads that gate refused in the last 30 days; together
-they add up to **Blocked pulls (30d)**. A gate that never fired shows 0. When nothing was blocked, a note says whether that is
+One count per policy gate shows how many downloads that gate refused in the
+last 30 days; together they add up to **Blocked pulls (30d)**. The gates are
+Deprecated, Revoked, Release Age, Licence, Install Script, Provenance,
+Malicious, KEV, KEV · Ransomware, EPSS, and Vuln Score. A gate that never
+fired shows 0. When nothing was blocked, a note says whether that is
 because every pull passed or because no pulls were served. What each gate
 checks, and its enforcement mode, is set by an administrator in
 [Settings](../admin/settings.md).

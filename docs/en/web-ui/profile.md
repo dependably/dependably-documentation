@@ -44,9 +44,9 @@ From then on you enter a code at sign-in, or tick **Remember this device for
 on the sign-in screen and enter one of the saved codes. The row shows how many recovery codes you have left, with two more
 actions:
 
-- **Regenerate recovery codes** — enter a code from your app or an unused
+- **Regenerate recovery codes**: enter a code from your app or an unused
   recovery code to get a new set of 10. The old set stops working.
-- **Disable** — enter your current password and a code from your app or a
+- **Disable**: enter your current password and a code from your app or a
   recovery code. Disabling signs out your other sessions, revokes your API
   tokens, and forgets every remembered device.
 

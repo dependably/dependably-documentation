@@ -5,8 +5,8 @@ order: 2
 
 # Browsing packages
 
-The **Packages** page lists every package your registry holds — both the ones
-your organization published and the ones proxied from upstream — and lets you
+The **Packages** page lists every package your registry holds, both the ones
+your organization published and the ones proxied from upstream, and lets you
 open any one to see its versions, verify a checksum, and check whether it
 carries an advisory.
 
@@ -14,12 +14,11 @@ carries an advisory.
 
 ## Find a package
 
-- **Search by name** — the box matches any part of the package name.
-- **Filter by ecosystem** — All ecosystems, PyPI, npm, NuGet, Maven, RPM,
-  Docker, Go, Cargo, Alpine apk, Terraform, or Hex.
-- **Sort** by selecting a column header. Every column sorts except **Latest**.
-- **Page** through results at the bottom; choose 20, 50, 100, or 200 rows per
-  page.
+The **Search by name** box matches any part of the package name. The
+ecosystem filter offers All ecosystems, PyPI, npm, NuGet, Maven, RPM, Docker,
+Go, Cargo, Alpine apk, Terraform, or Hex. Sort by selecting a column header;
+every column sorts except **Latest**. Page through results at the bottom,
+choosing 20, 50, 100, or 200 rows per page.
 
 | Column | Meaning |
 | ------ | ------- |
@@ -33,11 +32,11 @@ carries an advisory.
 | **Created** | When the package first appeared in your registry. |
 
 Select a row to open the package. The **⋯** menu at the end of a row offers
-**Copy install command** — the plain install command for that package manager,
-pointing at your registry — except for Maven and Terraform, which need a
-version, and Docker, which needs a tag. Administrators use the same menu to
-override the organization's same-version push policy for one package; see
-[Settings](../admin/settings.md).
+**Copy install command**, the plain install command for that package manager,
+pointing at your registry. It is not offered for Maven and Terraform, which
+need a version, or for Docker, which needs a tag. Administrators use the same
+menu to override the organization's same-version push policy for one package;
+see [Settings](../admin/settings.md).
 
 ## Package detail
 
@@ -48,14 +47,15 @@ your registry) or **Proxy** (cached from an upstream), and lists the
 description, author, and homepage or repository links when the package
 provides them. Beneath it:
 
-- **Applications ship this** — when any of your [projects](projects.md) list
+- **Applications ship this**: when any of your [projects](projects.md) list
   this package in their software bill of materials (SBOM), a line says how
-  many; expand it to see which.
-- **Security**, **Licence**, and **Operational** pillars — the worst advisory
+  many. Expand it to see which.
+- **Security**, **Licence**, and **Operational** pillars: the worst advisory
   severity, the licence standing, and how far the package sits behind upstream.
-- **Banners** — *Behind upstream — latest version x is not cached here* or *Up
-  to date with upstream*, and *Abandoned — no new release published upstream in
-  over a year* when that applies.
+- **Banners**: *Behind upstream — latest version x is not cached here* or <!-- tells: allow -->
+  *Up to date with upstream*, and
+  *Abandoned — no new release published upstream in over a year* when that <!-- tells: allow -->
+  applies.
 
 ### Versions
 
@@ -71,15 +71,15 @@ provides them. Beneath it:
 | **Status** | **No advisories**, **Vulnerable**, **Allowed (vulnerable)**, **Deprecated**, **Blocked**, **Unscanned** (not checked yet), or **No advisory feed** for ecosystems that have no vulnerability database. The last two mean Dependably could not vouch for the version either way, not that it is clean. A **Malicious** badge appears beside the status when the version is flagged. |
 | **Actions** | **Download** the artefact. |
 
-Expand a row for the details: the full **SHA-256** checksum with a **Copy**
-button (and the upstream integrity value where the ecosystem publishes one) —
-compare it with `sha256sum <file>` on a download to confirm the bytes match —
-the install command for this exact version, how many releases behind upstream
-it is, when it was last scanned, and every advisory affecting it. Multi-file
-versions — a Maven jar with its pom, a PyPI wheel with its sdist, a NuGet
-package with its symbols — list each file with its own checksum, size, and
-**Download** button. Where the upstream registry has a page for the version, a
-**View page** link opens it.
+Expand a row for the details. The full **SHA-256** checksum has a **Copy**
+button, and the upstream integrity value is shown where the ecosystem
+publishes one; compare the checksum with `sha256sum <file>` on a download to
+confirm the bytes match. The row also shows the install command for this exact
+version, how many releases behind upstream it is, when it was last scanned,
+and every advisory affecting it. Multi-file versions (a Maven jar with its
+pom, a PyPI wheel with its sdist, a NuGet package with its symbols) list each
+file with its own checksum, size, and **Download** button. Where the upstream
+registry has a page for the version, a **View page** link opens it.
 
 ### What an administrator sees here
 

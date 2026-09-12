@@ -19,5 +19,5 @@ stack can watch the registry the same way it watches everything else.
 
 Dependably publishes metrics in Prometheus exposition format at `/metrics`. Any
 Prometheus-compatible scraper can read them, and any Grafana instance with a
-Prometheus data source can chart them — see the [Grafana dashboard](grafana/index.md)
+Prometheus data source can chart them. See the [Grafana dashboard](grafana/index.md)
 guide to get started.

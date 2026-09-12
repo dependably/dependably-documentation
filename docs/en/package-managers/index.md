@@ -6,12 +6,12 @@ order: 1
 # Package managers
 
 Point your developer package managers at Dependably and they work exactly as
-before — they just pull, and publish, through your registry instead of the
-public one. Each guide covers configuring the client, verifying it, publishing,
+before. They pull, and publish, through your registry instead of the public
+one. Each guide covers configuring the client, verifying it, publishing,
 and reverting.
 
-First time here? [**Getting started**](../getting-started.md) gathers the base
-URL and token every guide needs.
+[**Getting started**](../getting-started.md) gathers the base URL and token
+every guide needs.
 
 ## Guides
 

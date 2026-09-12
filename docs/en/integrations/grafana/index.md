@@ -5,17 +5,17 @@ order: 1
 # Grafana dashboard
 
 A ready-made Grafana dashboard for watching a single Dependably instance. It
-leads with supply-chain value — advisories tracked, critical findings, downloads
-blocked, packages monitored — then covers traffic health, vulnerability posture,
+leads with supply-chain value (advisories tracked, critical findings, downloads
+blocked, packages monitored), then covers traffic health, vulnerability posture,
 proxy and cache activity, identity, storage, and background-job freshness. The
 17 panels are grouped into five rows so you can read it top to bottom.
 
-It is aimed at an **admin running one self-hosted instance**. It queries
-**Prometheus only**, so the only moving parts are the Dependably `/metrics`
+It is aimed at an admin running one self-hosted instance. It queries
+Prometheus only, so the only moving parts are the Dependably `/metrics`
 endpoint and a Prometheus server that scrapes it.
 
 [**Download the dashboard**](dashboards/dependably-admin-overview.json)
-(`dependably-admin-overview.json`) — import it into Grafana as described below.
+(`dependably-admin-overview.json`), then import it into Grafana as described below.
 
 ![The Dependably: Admin Overview dashboard in Grafana, showing the at-a-glance, traffic, supply-chain, proxy/cache, and identity/storage rows.](images/grafana-admin-overview.png)
 
@@ -25,18 +25,18 @@ endpoint and a Prometheus server that scrapes it.
 
 ## Prerequisites
 
-### 1. Expose the metrics endpoint
+### Expose the metrics endpoint
 
 Dependably serves Prometheus metrics at `GET /metrics` on the same host and port
 as the registry. The endpoint is gated two ways:
 
-- **Enabled flag** — on by default. If it is off, the endpoint returns
+- The enabled flag is on by default. If it is off, the endpoint returns
   **404**. Set the `METRICS_ENABLED` environment variable (or the
   `metrics_enabled` instance setting) to `true` to turn it on.
-- **IP allowlist** — only callers whose IP is on the allowlist get a **200**;
-  everyone else gets **403**. The default allowlist is `127.0.0.1, ::1`
+- The IP allowlist admits only callers whose IP is on it; they get a **200**
+  and everyone else gets **403**. The default allowlist is `127.0.0.1, ::1`
   (localhost only). Add the IP of your Prometheus server with the
-  `METRICS_ALLOWED_IPS` environment variable — a comma-separated list of IPs or
+  `METRICS_ALLOWED_IPS` environment variable, a comma-separated list of IPs or
   CIDR ranges.
 
 ```bash
@@ -44,16 +44,17 @@ METRICS_ENABLED=true
 METRICS_ALLOWED_IPS=127.0.0.1,::1,10.0.0.5
 ```
 
-> **Precedence:** environment variable → instance setting → built-in default.
+> **Precedence:** an environment variable wins over an instance setting, which
+> wins over the built-in default.
 > When an environment variable is set, the matching field is locked in the
 > admin UI so there is no conflicting state. If you scrape across a network,
-> remember that `/metrics` is unauthenticated — the IP allowlist (plus your
+> remember that `/metrics` is unauthenticated. The IP allowlist (plus your
 > reverse proxy or firewall) is what protects it.
 
 The endpoint emits only aggregate counters, gauges, and histograms. It carries
 no per-tenant, per-user, or per-package labels and no secrets.
 
-### 2. Scrape it with Prometheus
+### Scrape it with Prometheus
 
 Point Prometheus at the endpoint. Use the job name `dependably` so the
 dashboard's scrape-health panel matches:
@@ -67,8 +68,8 @@ scrape_configs:
       - targets: ["repo.example.com"]
 ```
 
-Reload Prometheus and confirm the target is **UP** under Status → Targets before
-importing the dashboard.
+Reload Prometheus and confirm the target is **UP** under **Status**, then
+**Targets**, before importing the dashboard.
 
 ## Import the dashboard
 
@@ -76,7 +77,7 @@ Grafana 10.0+ / 11.x. Two equivalent paths.
 
 ### UI import
 
-1. In Grafana, go to **Dashboards → New → Import**.
+1. In Grafana, open **Dashboards**, choose **New**, then **Import**.
 2. Upload [`dependably-admin-overview.json`](dashboards/dependably-admin-overview.json)
    (or paste its contents).
 3. When prompted, pick your Prometheus data source for `DS_PROMETHEUS`.
@@ -102,7 +103,7 @@ Place `dependably-admin-overview.json` at
 
 ## What the file looks like
 
-The dashboard is a standard Grafana JSON model — the same shape Grafana exports
+The dashboard is a standard Grafana JSON model, the same shape Grafana exports
 when you click **Export** on a dashboard you built in the UI. You don't need to
 read it to use it; import the file and you're done. For reference, the header and
 first panel look like this:
@@ -138,13 +139,13 @@ and an `ecosystem` filter you can scope to npm, PyPI, or NuGet.
 
 ## What the panels show
 
-**At a glance** — the headline supply-chain and health numbers:
+**At a glance:** the headline supply-chain and health numbers.
 
 | Panel | Answers |
 | ----- | ------- |
 | **Request rate** | How much traffic the instance is serving right now |
 | **Advisories tracked** | Total vulnerability advisories the scanner has recorded |
-| **Critical findings** | Advisories at CRITICAL severity — green at 0, red at 5+ |
+| **Critical findings** | Advisories at CRITICAL severity (green at 0, red at 5+) |
 | **Supply chain blocks** | Downloads refused by a policy gate (e.g. the deprecated-package gate) |
 | **Packages monitored** | Package checks the deprecation-refresh job has performed (catalogue coverage) |
 | **Registry storage** | Bytes held across all blob-store tiers |
@@ -153,7 +154,7 @@ and an `ecosystem` filter you can scope to npm, PyPI, or NuGet.
 
 | Panel | Answers |
 | ----- | ------- |
-| **Responses by status class** | Request rate split by 2xx/3xx/4xx/5xx — watch the 5xx line |
+| **Responses by status class** | Request rate split by 2xx/3xx/4xx/5xx. Watch the 5xx line |
 | **Request latency** | p50 / p95 / p99 server request duration |
 
 **Supply chain security:**
@@ -169,14 +170,14 @@ and an `ecosystem` filter you can scope to npm, PyPI, or NuGet.
 | Panel | Answers |
 | ----- | ------- |
 | **Packages monitored by ecosystem** | Spread of deprecation-refresh coverage across registries |
-| **Cache lookups by outcome** | Hit vs miss rate — the hit share climbs as the cache warms |
+| **Cache lookups by outcome** | Hit vs miss rate. The hit share climbs as the cache warms |
 | **Upstream fetch success** | Share of upstream fetches that succeeded |
 
 **Identity, storage and jobs:**
 
 | Panel | Answers |
 | ----- | ------- |
-| **Token auth outcomes** | success / no_auth / invalid mix — watch `invalid` for credential probing |
+| **Token auth outcomes** | success / no_auth / invalid mix. Watch `invalid` for credential probing |
 | **Background job freshness** | Time since each background job last completed successfully |
 | **Scrape health** | Whether Prometheus can reach the instance at all (UP / DOWN) |
 
@@ -186,7 +187,7 @@ and an `ecosystem` filter you can scope to npm, PyPI, or NuGet.
 
 ## What it does not show
 
-By design, the metrics behind this dashboard carry no high-cardinality labels —
+By design, the metrics behind this dashboard carry no high-cardinality labels:
 no per-tenant, per-user, or per-package breakdowns. The numbers here are
 instance-wide. For in-product counts (total packages, active users, recent
 downloads, blocked pulls), use the built-in

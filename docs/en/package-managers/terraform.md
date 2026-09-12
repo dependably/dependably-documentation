@@ -11,11 +11,11 @@ and `releases.hashicorp.com`.
 
 This is the ecosystem where a mirror pays off most visibly. A stack using
 `hashicorp/aws` and `hashicorp/random` unpacks to roughly 665 MB of provider
-binaries, and CI runners keep no `.terraform` directory between jobs — so
-without a mirror, every pipeline re-downloads the archives.
+binaries, and CI runners keep no `.terraform` directory between jobs, so
+without a mirror every pipeline re-downloads the archives.
 
 You will need your instance's base URL and, unless your organization allows
-anonymous pull, a token — create one in the web UI (see
+anonymous pull, a token. Create one in the web UI (see
 [Getting started](../getting-started.md)). The examples below use
 `repo.example.com`; substitute your own. Your provider mirror URL is:
 
@@ -26,7 +26,7 @@ https://repo.example.com/terraform/
 > **HTTPS is mandatory here.** Terraform rejects an `http://` mirror URL while
 > parsing its CLI configuration, before it makes any request, with
 > `Cannot use "http://…" as a URL for a network provider mirror`. Unlike the
-> other ecosystems, a plain-HTTP deployment cannot serve this one — terminate
+> other ecosystems, a plain-HTTP deployment cannot serve this one. Terminate
 > TLS in front of Dependably first.
 
 ## Configure
@@ -56,8 +56,8 @@ terraform init
 
 If your organization has anonymous pull disabled, the mirror answers `401` with
 a `WWW-Authenticate: Bearer` challenge. Terraform's network mirror sends no
-credentials of its own, so put them in the URL's userinfo — the username is
-ignored, only the token is checked:
+credentials of its own, so put them in the URL's userinfo. The username is
+ignored; only the token is checked:
 
 ```hcl
 url = "https://user:<your token>@repo.example.com/terraform/"
@@ -76,7 +76,7 @@ the **Activity** page in the web UI.
 change and no `-upgrade` run: Terraform recomputes each provider's `h1:` hash
 from the archive it downloads and verifies it against the lock file, and the
 mirrored bytes are identical to the ones the public registry serves. A
-configuration with no committed lock file gets no verification — the same
+configuration with no committed lock file gets no verification, the same
 exposure it already accepts when installing directly.
 
 **Archives are cached per platform.** A version document lists every platform
@@ -90,49 +90,49 @@ arm64 archive; the next `init` on that platform is what fetches it.
 separate protocol with no network-mirror equivalent, so `terraform init` still
 reaches the public registry for any `module` block sourced from a registry.
 Provider archives are where the bytes are, so this still removes the large
-majority of egress — but a deployment that must eliminate registry traffic
-entirely needs to vendor modules or source them from Git.
+majority of egress. A deployment that must eliminate registry traffic entirely
+needs to vendor modules or source them from Git.
 
 **Only configured registry hosts are mirrored.** A provider is addressed by its
 own source address (`{hostname}/{namespace}/{type}`), and Dependably matches
 that hostname against your organization's configured upstreams rather than
 fetching from whatever host the address names. To mirror a provider from a
-private registry, add that registry under **Settings → Proxy → Upstream
-registries** (see [Upstreams](../admin/upstreams.md)).
+private registry, open **Settings**, then **Proxy**, and add that registry under
+**Upstream registries** (see [Upstreams](../admin/upstreams.md)).
 
 ## Supply-chain controls
 
-Provider fetches run the same checks as every other ecosystem: the archive's
+Provider fetches run the same checks as every other ecosystem. The archive's
 checksum is verified against the `shasum` the registry reports for that exact
-platform before it is stored, a provider is pinned to the registry host that
-first served it, the policy gate runs on first fetch and on every cache hit, and
+platform before it is stored. A provider is pinned to the registry host that
+first served it. The policy gate runs on first fetch and on every cache hit, and
 reserved namespaces never pull from upstream. See
 [Settings](../admin/settings.md) for the gates themselves.
 
-Two controls behave differently for Terraform, both deliberately:
+Two controls behave differently for Terraform, both deliberately.
 
-- **No advisory feed.** OSV publishes no Terraform provider ecosystem, so
-  providers are never queried and never stamped as scanned. The UI reports them
-  as **No advisory feed**, never as clean — an artefact with zero advisory
-  coverage is not mistaken for one screened against a live feed. Every other
-  gate still applies.
-- **No declared licenses.** Provider archives carry no license manifest, so
-  recording zero licenses is the normal case here rather than an
-  unknown-license signal, and does not block under a blocking license policy.
+**No advisory feed.** OSV publishes no Terraform provider ecosystem, so providers are never queried
+and never stamped as scanned. The UI reports them as **No advisory feed**, never
+as clean, so an artefact with zero advisory coverage is not mistaken for one
+screened against a live feed. Every other gate still applies.
+
+**No declared licenses.** Provider archives carry no license manifest, so recording zero licenses is the
+normal case here rather than an unknown-license signal, and does not block under
+a blocking license policy.
 
 ## Troubleshooting
 
-**`Cannot use "http://…" as a URL for a network provider mirror`** — Terraform
+**`Cannot use "http://…" as a URL for a network provider mirror`**: Terraform
 rejects a plain-HTTP `network_mirror.url` while parsing the CLI configuration,
 before any request is made. Terminate TLS in front of Dependably.
 
-**A provider resolves to no installable versions** — the mirror answers `404`
+**A provider resolves to no installable versions**: the mirror answers `404`
 when the provider's hostname is not among your organization's configured
 upstream registries. Terraform then reports that the provider has no available
 versions, the same as if it did not exist at all, rather than a clear "this
-registry is not configured" error. Add the registry under **Settings → Proxy →
-Upstream registries**, or check `required_providers` for a typo in the
-hostname.
+registry is not configured" error. Open **Settings**, then **Proxy**, and add
+the registry under **Upstream registries**, or check `required_providers` for a
+typo in the hostname.
 
 ## Revert
 

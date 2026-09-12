@@ -135,6 +135,13 @@ and the sidebar gating.
    lychee --no-progress --exclude '^https?://' docs/ README.md
    ```
 
+   Then the readability floor from the global `documentation` skill, on every
+   page you touched (errors fail; each kept warning gets a stated reason):
+
+   ```bash
+   node ~/.claude/skills/natural-writing/scripts/tells-lint.mjs docs/en/<page>.md
+   ```
+
    (`pip install codespell` fails here — the private index needs auth; `uvx` works.)
 6. **Housekeeping.** New page → add it to the tree in `README.md`, to the
    section index (`web-ui/index.md` etc.), and to the landing page's link list.

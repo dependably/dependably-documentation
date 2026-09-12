@@ -8,10 +8,10 @@ order: 4
 Point Maven or Gradle at Dependably to install private artefacts, proxy public
 ones, and publish your own.
 
-You will need your **token** — create one in the web UI; see
+You will need your **token**. Create one in the web UI; see
 [Getting started](../getting-started.md). The examples use `repo.example.com`;
 substitute your own. Maven and Gradle authenticate with **HTTP Basic**: the
-username `user` (any value works — it is ignored) and your token as the
+username `user` (any value works, since it is ignored) and your token as the
 password. Your repository URL is:
 
 ```
@@ -23,8 +23,8 @@ package can never be silently replaced by a public one of the same coordinates.
 
 ## Configure
 
-Maven and Gradle are configured through files — there is no CLI config command.
-The blocks below are the minimum you need. The token lives in a user-level file
+Maven and Gradle have no CLI config command, so they are configured through
+files. The blocks below are the minimum you need. The token lives in a user-level file
 outside your project (so it is never committed); put it there directly.
 
 ### Maven
@@ -100,7 +100,7 @@ UI.
 ## Publishing
 
 Publishing requires a token with a push scope (**push only** or
-**push & pull**) — see [Access tokens](../web-ui/tokens.md).
+**push & pull**). See [Access tokens](../web-ui/tokens.md).
 
 For Maven, add a `distributionManagement` block to `pom.xml` pointed at the same
 URL, reusing the `<server>` credentials from `settings.xml`, then `mvn deploy`:
@@ -122,8 +122,8 @@ For Gradle, apply the `maven-publish` plugin with a repository pointed at the
 same URL, then `./gradlew publish`.
 
 Dependably validates every uploaded checksum (`.sha1`, `.md5`) against the bytes
-it received and rejects a mismatch. Versions ending in `-SNAPSHOT` are mutable —
-each deploy stores a new timestamped build and a request for the plain
+it received and rejects a mismatch. Versions ending in `-SNAPSHOT` are mutable:
+each deploy stores a new timestamped build, and a request for the plain
 `-SNAPSHOT` filename always resolves to the latest. For release versions, whether
 re-publishing the same version overwrites the existing one is governed by your
 organization's same-version push policy (`versionOverwritePolicy`, `block` by

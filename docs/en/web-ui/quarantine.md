@@ -10,14 +10,14 @@ for a human decision. Open it from the **Quarantine pending** card on the
 
 > This page is for the **Admin** and **Owner** roles. It appears under **Admin**
 > in their sidebar; a member's sidebar does not list it, and a member who opens
-> its address is returned to the Overview — see
+> its address is returned to the Overview. The roles are defined in
 > [Access control (RBAC)](../admin/rbac.md).
 
 ## What lands here
 
 Every automatic policy block lands in the queue for review while downloads of
 that version keep returning `403`. A version can be held by any of the
-supply-chain gates — the full set and their thresholds are defined in
+supply-chain gates. The full set and their thresholds are defined in
 [Settings](../admin/settings.md).
 
 ## Filter the queue

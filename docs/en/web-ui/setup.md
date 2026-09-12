@@ -16,8 +16,9 @@ your instance's address, so there are no URLs to hand-edit.
 
 Select **Create token**. The wizard creates a personal token with the scope
 that matches the **I want to** choice in step 2 (pull for installing, push for
-publishing), so pick that first if you plan to publish. The token is shown once — **Copy this now — it is not shown again.** The token has no
-expiry; manage it later from [Tokens](tokens.md).
+publishing), so pick that first if you plan to publish. The token is shown
+once, with the message **Copy this now — it is not shown again.** <!-- tells: allow -->
+The token has no expiry; manage it later from [Tokens](tokens.md).
 
 Already have one? **Already have a token? Manage tokens** takes you to the
 Tokens page instead. If you created a pull token and then switch step 2 to
@@ -26,30 +27,28 @@ token**.
 
 ## 2. Choose your package manager
 
-- **Package manager** — PyPI, npm, NuGet, Maven, RPM, Docker, Go, Cargo,
+- **Package manager**: PyPI, npm, NuGet, Maven, RPM, Docker, Go, Cargo,
   Alpine apk, Terraform, or Hex.
-- **I want to** — **Install packages** or **Publish packages**. Go, Alpine apk,
+- **I want to**: **Install packages** or **Publish packages**. Go, Alpine apk,
   and Terraform are install-only on the registry, and the page says so.
-- **Applies to** — **This project** (a file committed with your code that
+- **Applies to**: **This project** (a file committed with your code that
   reads the token from an environment variable) or **My machine** (a file in
   your home directory that holds the token in clear text and stays out of
   source control). Docker has only the machine option.
-- **Tool** — shown when the ecosystem has more than one: pip, Poetry, uv, or
+- **Tool**: shown when the ecosystem has more than one: pip, Poetry, uv, or
   twine for PyPI; Maven, Gradle, or Gradle Kotlin for Maven; Mix or Rebar3 for
   Hex.
 
 ## 3. Copy the configuration
 
-The result has three parts, each with a **Copy** button:
-
-- **The file** — its name, where it goes (*in your repository root*, *in your
-  home directory*, *on each developer's machine, not committed*), and its
-  contents. A file that holds the token in clear text carries a reminder to
-  keep it out of source control and restrict its permissions.
-- **Set the token** — the `export` line that puts the token in your terminal
-  for the install, filled in with the token from step 1.
-- **Check it works** — the command that proves the tool is talking to your
-  registry.
+The result has three parts, each with a **Copy** button. The first is the
+file: its name, where it goes (*in your repository root*, *in your home
+directory*, *on each developer's machine, not committed*), and its contents. A
+file that holds the token in clear text carries a reminder to keep it out of
+source control and restrict its permissions. The **Set the token** part is the
+`export` line that puts the token in your terminal for the install, filled in
+with the token from step 1. The **Check it works** part is the command that
+proves the tool is talking to your registry.
 
 Where a package manager needs a note before you paste, it appears above the
 file. On an instance served over plain HTTP: Maven 3.8.1 and later refuse the

@@ -6,12 +6,12 @@ order: 3
 # The web UI
 
 Dependably ships with a built-in web console. Open your **base URL** in a
-browser (for example `https://repo.example.com`) and sign in to browse what your
-registry holds, check a package before you add it, see which versions carry
-advisories, create the token your tools need, and copy a ready-made
-configuration for each package manager.
+browser (for example `https://repo.example.com`) and sign in. From there you
+can browse what your registry holds, check a package before you add it, see
+which versions carry advisories, create the token your tools need, and copy a
+ready-made configuration for each package manager.
 
-Everything here works without server access or config files — see
+Everything here works without server access or config files. See
 [Getting started](../getting-started.md) for the base URL and token every guide
 needs.
 
@@ -56,11 +56,11 @@ collapses the sidebar to icons.
 
 The bottom of the sidebar holds three more items:
 
-- [**Setup**](setup.md) — a three-step wizard that creates a token and gives
+- [**Setup**](setup.md): a three-step wizard that creates a token and gives
   you the configuration for your package manager.
-- **Notices** — opens the open-source notices: every third-party component
+- **Notices**: opens the open-source notices, every third-party component
   Dependably is built from, with its version and licence.
-- **Version** — the version of Dependably you are using.
+- **Version**: the version of Dependably you are using.
 
 The bar across the top holds a **search box**, a **Profile** button that opens
 [your account settings](profile.md), and **Sign out**.
@@ -75,9 +75,9 @@ the package, the project, or the Vulnerabilities page filtered to that advisory.
 ### Banners
 
 Above the page you may see a notice an administrator has posted for everyone,
-a strip warning that the instance is served over plain HTTP (dismiss it once
-and it stays dismissed on that browser), or an **Air-gapped** badge in the
-sidebar when the instance has no route to the public registries.
+or a strip warning that the instance is served over plain HTTP (dismiss it
+once and it stays dismissed on that browser). An **Air-gapped** badge appears
+in the sidebar when the instance has no route to the public registries.
 
 ## What a member sees
 
@@ -86,7 +86,7 @@ sidebar when the instance has no route to the public registries.
 > A member's console has neither; everything else is the same.
 
 Every page listed above is available to every signed-in user. Administrators
-and owners also see an **Admin** section in the sidebar — Quarantine, Users,
+and owners also see an **Admin** section in the sidebar: Quarantine, Users,
 Audit, Upload, and Settings. Those pages do not appear in a member's sidebar,
 and a bookmarked link to one of them opens the Overview instead. The roles and
 what each allows are described in [Access control (RBAC)](../admin/rbac.md).

@@ -8,29 +8,30 @@ description: "Private package registry and pull-through cache: checksum and sign
 
 Dependably sits between your developers and the public package registries. It
 caches every package your team pulls, verifies its checksum before storing it,
-and keeps a full audit trail — so the same build works tomorrow even if a
+and keeps a full audit trail, so the same build works tomorrow even if a
 package disappears from the internet, and nothing enters your codebase
 unnoticed.
 
 It speaks the native protocol of each tool you already use. Point npm, pip,
 NuGet, Maven, Cargo, `go`, `dnf`, or `docker` at your Dependably URL and they
-behave exactly as before — they just talk to your registry instead of the
-public one.
+behave exactly as before. The only difference is that they talk to your
+registry instead of the public one.
 
 ---
 
 ## What it does
 
-- **Pull-through cache** — the first request for a package is fetched from
-  upstream, verified against its published checksum, and stored. Every later
-  request is served locally, even if upstream is down or the package is removed.
-- **Supply-chain controls** — first-fetch detection, per-version checksum
+- As a pull-through cache, it fetches the first request for a package from
+  upstream, verifies it against its published checksum, and stores it. Every
+  later request is served locally, even if upstream is down or the package is
+  removed.
+- Supply-chain controls cover first-fetch detection, per-version checksum
   verification, allowlists, and policy gates for vulnerabilities, malware,
   deprecation, and unsigned artefacts.
-- **One URL per ecosystem** — npm, PyPI, NuGet, Maven, Cargo, Go, RPM, and
+- There is one URL per ecosystem: npm, PyPI, NuGet, Maven, Cargo, Go, RPM, and
   Docker, all from a single self-hosted instance.
-- **No cloud account, no per-seat licence** — runs on your own infrastructure as
-  a container (or a single self-contained binary), with no external services
+- It runs on your own infrastructure as a container (or a single self-contained
+  binary), with no cloud account, no per-seat licence, and no external services
   required.
 
 ---
@@ -47,8 +48,8 @@ public one.
 | **go**                     | Go modules                          | [Go](package-managers/go.md) |
 | **terraform**              | Terraform providers                 | [Terraform](package-managers/terraform.md) |
 | **mix** / rebar3           | Elixir & Erlang packages (Hex)      | [Hex](package-managers/hex.md) |
-| **docker** / podman        | Container images (OCI)              | [Docker](containers-and-system/docker.md) _(Beta)_ |
-| **dnf** / yum              | RPM packages (Linux)                | [RPM](containers-and-system/rpm.md) _(Beta)_ |
+| **docker** / podman        | Container images (OCI)              | [Docker](containers-and-system/docker.md) |
+| **dnf** / yum              | RPM packages (Linux)                | [RPM](containers-and-system/rpm.md) |
 
 ---
 
@@ -69,8 +70,8 @@ for your tool:
 [Hex](package-managers/hex.md)
 
 **Containers & system packages**
-[Docker](containers-and-system/docker.md) _(Beta)_ ·
-[RPM](containers-and-system/rpm.md) _(Beta)_
+[Docker](containers-and-system/docker.md) ·
+[RPM](containers-and-system/rpm.md)
 
 ---
 
@@ -108,14 +109,14 @@ control (RBAC), users and tokens, organization settings, authentication
 Connect Dependably to your existing monitoring stack. Metrics are published in
 Prometheus format, and a ready-made [**Grafana dashboard**](integrations/grafana/index.md)
 gives a single-instance admin an at-a-glance health view. Structured logs go to
-stdout for your aggregator to pick up — see [**Log output**](integrations/logging.md).
+stdout for your aggregator to pick up. See [**Log output**](integrations/logging.md).
 Both are covered in [**Integrations**](integrations/index.md).
 
 ---
 
 ## Reference
 
-- [**Glossary**](glossary.md) — PURL, CVSS, EPSS, KEV, OSV, SPDX, and the other
-  terms used across the UI and the supply-chain gates.
-- [**Blocked packages**](package-managers/blocked-packages.md) — what a `403`
-  from your package manager means, and which policy produced it.
+- [**Glossary**](glossary.md) defines PURL, CVSS, EPSS, KEV, OSV, SPDX, and the
+  other terms used across the UI and the supply-chain gates.
+- [**Blocked packages**](package-managers/blocked-packages.md) explains what a
+  `403` from your package manager means, and which policy produced it.

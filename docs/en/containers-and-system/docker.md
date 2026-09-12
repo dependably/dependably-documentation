@@ -3,18 +3,15 @@ description: "Configure docker and podman to pull and push OCI container images 
 order: 1
 ---
 
-# Docker / OCI images — Beta
-
-> **Beta.** Docker / OCI container image support is functional but the protocol
-> surface and configuration may still change.
+# Docker / OCI images
 
 Dependably implements the OCI Distribution Spec (`/v2/`), so `docker` (and
 `podman`) work against it unchanged for both pulling and pushing images.
 
-You will need your instance **host** and a **token** — create a token in the web
+You will need your instance **host** and a **token**. Create a token in the web
 UI (see [Getting started](../getting-started.md)). The Docker protocol owns the
 URL: every client talks to `/v2/` at the registry root, so image references are
-simply `repo.example.com/<image>:<tag>`, where the host is your registry:
+`repo.example.com/<image>:<tag>`, where the host is your registry:
 
 ```text
 repo.example.com/myimage:tag
@@ -56,14 +53,14 @@ cached; later pulls of the same digest are served locally. Pulls appear as
 
 New instances are seeded with two upstream registries: Microsoft Container
 Registry (`mcr.microsoft.com`, for `dotnet/` and `playwright` images) and Docker
-Hub (everything else). Pulls proxy through these automatically — see
+Hub (everything else). Pulls proxy through these automatically. See
 [Upstreams](../admin/upstreams.md) to add or change them.
 
 ## Publishing
 
-Pushing requires a token with a push scope (**push only** or **push & pull**)
-— see [Access tokens](../web-ui/tokens.md). Tag your image with the registry
-host and repository, then push:
+Pushing requires a token with a push scope (**push only** or **push & pull**).
+See [Access tokens](../web-ui/tokens.md). Tag your image with the registry host
+and repository, then push:
 
 ```bash
 docker tag myimage:1.0 repo.example.com/myimage:1.0
@@ -85,5 +82,5 @@ docker logout repo.example.com
 Removing a pushed image is an Admin or Owner action done in the web UI: open
 the image's version list and select **Delete**. Removal via the registry API
 (for example `skopeo delete`) needs permission that the pre-defined token
-scopes do not include. Blob deletion over the `/v2/` API is not supported —
-unreferenced blobs are reclaimed by garbage collection.
+scopes do not include. Blob deletion over the `/v2/` API is not supported.
+Unreferenced blobs are reclaimed by garbage collection.

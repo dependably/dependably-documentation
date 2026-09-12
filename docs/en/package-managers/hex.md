@@ -7,7 +7,7 @@ order: 8
 
 Point Mix or Rebar3 at your Dependably instance as a Hex **repository** and
 `mix deps.get` or `rebar3 get-deps` resolves and downloads every package through
-it — the ones your organization publishes and, on first use, anything from
+it: the ones your organization publishes and, on first use, anything from
 hex.pm. Publishing, retiring and documentation uploads go to the same instance.
 
 You will need your instance's base URL, a token (see
@@ -88,7 +88,7 @@ mix deps.get        # or: rebar3 get-deps
 Each package downloads through Dependably; a first download of a hex.pm
 package records an entry on the **Activity** page in the web UI. If Dependably
 has recorded a vulnerability for a release you fetch, Mix prints the advisory
-during `deps.get` — the registry index carries it.
+during `deps.get`, because the registry index carries it.
 
 If the repository was registered with the wrong public key, or the key was
 rotated (below), every fetch fails with a signature error rather than
@@ -97,7 +97,7 @@ returning data.
 ## Publish
 
 Publishing uses the API URL and a token with the `publish:hex` capability
-(the **push** preset). Mix reads both from the environment:
+(the **push only** preset). Mix reads both from the environment:
 
 ```bash
 export HEX_API_URL=https://repo.example.com/hex/api
@@ -120,7 +120,7 @@ rebar3 hex publish --repo dependably --yes
 
 ## Retire a release
 
-Retiring marks a release as advised against without removing it — a project
+Retiring marks a release as advised against without removing it, so a project
 that already locked it keeps resolving. It needs a token with `yank:hex`:
 
 ```bash
@@ -139,18 +139,18 @@ registry your organization's own policy applies, and the deletion is audited.
 
 ## The signing key
 
-Every organization has its own registry signing key. **Settings → Signatures**
-shows the public key and its fingerprint and offers **Rotate key**. Rotation
-takes effect immediately: every developer and CI runner that registered the
+Every organization has its own registry signing key. The **Signatures** tab in
+**Settings** shows the public key and its fingerprint and offers **Rotate key**.
+Rotation takes effect immediately: every developer and CI runner that registered the
 repository must fetch the new public key and register it again, so treat it
 as a planned change. If the instance was deployed without a master key
 (`DEPENDABLY_MASTER_KEY`), no signing key can be stored and the Hex repository
-answers `503` — ask your administrator.
+answers `503`. Ask your administrator.
 
 ## Blocked packages
 
 A `403` on a tarball, or a version missing from the index that hex.pm lists,
-is a policy refusal, not an authentication failure — see
+is a policy refusal, not an authentication failure. See
 [Blocked packages](blocked-packages.md). Because Dependably signs the index
 itself, a blocked version never appears in it, and the organization's policy is
 also published as a signed Hex policy resource at

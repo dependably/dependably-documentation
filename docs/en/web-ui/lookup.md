@@ -29,12 +29,12 @@ spot.
 
 The verdict at the top is one of:
 
-- **Allowed** — no policy gate objects.
-- **Warn** — something needs your judgement: a licence outside the allow list,
+- **Allowed**: no policy gate objects.
+- **Warn**: something needs your judgement: a licence outside the allow list,
   a conditional licence, a deprecated package, or a finding your organization
-  has set to warn rather than block. The licence policy alone never produces
-  more than a warning here.
-- **Blocked** — a policy gate would refuse the package if you pulled it:
+  has set to warn rather than block. The licence policy alone produces at
+  most a warning here.
+- **Blocked**: a policy gate would refuse the package if you pulled it:
   it is malicious, in the CISA Known Exploited Vulnerabilities Catalog, too
   new for the release-age hold, deprecated, or above your organization's
   vulnerability score or exploit-likelihood tolerance.
