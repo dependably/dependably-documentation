@@ -194,11 +194,15 @@ that replica saw. **Alert on the total across replicas, never on a single row's 
 multi-replica deployment a single row always reads low, by a factor of roughly the replica
 count.
 
-Group rows by organization, partition and reason over a time bucket of your own choosing that is
-at least as wide as the emission window. Do not group on `window_start` equality unless you have
-confirmed your deployment aligns window boundaries across replicas: if each process starts its
-own clock, two replicas never produce an identical `window_start` and an equality grouping
-silently yields per-replica partial counts instead of the total.
+Sum rows sharing the same organization, partition, reason and `window_start`. That works because
+the window label is derived from the instant the event was recorded, floored to a fixed wall-clock
+interval — not from when a process started or last flushed — so every replica labels the same
+event identically and the sum is the real total.
+
+One consequence worth knowing: a burst spanning a boundary is reported as two windows rather than
+one. That is correct rather than a rounding artefact, but a threshold rule of the form "N in one
+window" will see two smaller windows instead of one large one. Threshold over a rolling range
+rather than over a single window label.
 
 **Resolution degrades under a spray, the total does not.** The accumulator is bounded. A caller
 generating a very large number of distinct keys — many source addresses, say — will first cause
