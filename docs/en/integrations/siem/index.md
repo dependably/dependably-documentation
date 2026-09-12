@@ -118,6 +118,36 @@ correlations that never happened — a first run that backfills 24 hours can tri
 brute-force rule on traffic that did not occur. Stamp each record with whether it was
 fresh when collected, and exclude backfilled records from any time-window rule.
 
+## Aggregated events and what the count means
+
+Some events are emitted on paths a caller can trigger at will — a rejected credential, a
+rate-limit refusal. Writing one audit row per occurrence would let anyone inflate your audit
+table and your SIEM bill, so these are **coalesced**: one row per window carrying a `count`,
+rather than one row per event.
+
+Two consequences your detections must account for.
+
+**Counts are per process.** Dependably coalesces in memory, so a deployment running several
+replicas behind a load balancer emits one row per replica per window. The true total for a
+window is the **sum** of rows sharing the same organization, partition, reason and
+`window_start`. Do not alert on a single row's count as if it were the whole picture.
+
+**Resolution degrades under a spray, the total does not.** The accumulator is bounded. A caller
+generating a very large number of distinct keys — many source addresses, say — will first cause
+new keys to fold into an overflow bucket, and then into a saturation bucket. Those rows are
+marked as folded. You lose the ability to say *which* partition each denial came from; you do
+not lose the fact that they happened, or how many there were. Alert on the total and treat the
+appearance of folded rows as itself a signal: something is generating keys faster than the
+instance will track them individually.
+
+The payload carries `window_start`, `window_end` and a replica identifier so you can group and
+sum correctly.
+
+**Retention.** Audit `detail` and `source_ip` are scrubbed after `AUDIT_LOG_PII_DAYS` (90 by
+default). The count, window and partition live in `detail`, so they do not survive that horizon
+— the event's action and ecosystem do. If you need the detail long-term, your SIEM's own
+retention is what preserves it, not Dependably's.
+
 ## Known limits
 
 Be explicit with your SOC about these rather than letting them discover them.
