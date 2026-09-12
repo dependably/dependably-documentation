@@ -13,28 +13,37 @@ It is written from a working reference implementation against Wazuh; the mechani
 generalize to Splunk, Elastic, Sentinel or anything that can read newline-delimited
 JSON.
 
-## Two transports carry different data
+## Two transports, three feeds, and they carry different data
 
-This is the first thing to get right, because the two are **not** the same events at
-different fidelity — they read different tables.
+Getting this wrong is the most common way to wire up the wrong thing, because the two transports
+read different tables — they are not the same events at different fidelity.
 
-| | Pull — `GET /api/v1/siem/events/*` | Push — `SIEM_WEBHOOK_URL` / `SIEM_SYSLOG_HOST` |
+| | Pull | Push (`SIEM_WEBHOOK_URL` / `SIEM_SYSLOG_HOST`) |
 | --- | --- | --- |
-| Source | the `audit_log` plane | the `audit_event` plane |
+| Source | `audit_log` and `activity` | `audit_event` |
+| Endpoints | `/api/v1/siem/events/auth`, `/api/v1/siem/events/activity` | n/a |
 | Latency | collector-polled | near real time |
 | Backfills history | yes, to `SIEM_MAX_LOOKBACK_DAYS` | no |
-| Carries `source_ip` | yes | no, by design |
+| Carries `source_ip` | yes | **no** |
 | Survives collector downtime | yes — the caller re-reads its own window | no — the queue is bounded and drops on overflow |
 | Needs an instance restart to enable | no | yes |
 
-Neither is a superset of the other. Pull carries `source_ip`, the MFA family,
-authorization denials and SAML configuration changes. Push carries typed events with
-an explicit `outcome` that pull does not see.
+**Push drops more than the transport table suggests.** It forwards each typed event's `payload`,
+but `outcome`, `source_ip`, `user_agent` and `request_id` are *columns* on the typed event rather
+than payload fields, and none of them are mapped. So the push path carries neither the source
+address nor the explicit accepted/rejected/error verdict.
 
-**If you are choosing one, choose pull.** It is durable across collector outages, it
-backfills, and it carries the source address that most detections need. Use push in
-addition when you need sub-minute latency, and understand that `SIEM_QUEUE_CAPACITY`
-overflow drops audit events permanently.
+**If you are choosing one, choose pull.** It is durable across collector outages, it backfills, and
+it carries the source address most detections need. Use push in addition only when you need
+sub-minute latency, and know that exceeding `SIEM_QUEUE_CAPACITY` drops audit events permanently.
+
+### The two pull feeds
+
+`/api/v1/siem/events/auth` reads the `audit_log` plane: authentication, credential and capability
+refusals, MFA lifecycle, SAML identity changes, security-setting changes.
+
+`/api/v1/siem/events/activity` reads the `activity` plane: policy denials (`blocked_*` — every
+block-gate arm) and, behind an opt-in flag, `download`. Poll both.
 
 ## Authentication and tenant scope
 
@@ -43,8 +52,12 @@ Both SIEM endpoints accept either a JWT session or a Bearer token carrying the
 
 A **token is pinned to its own organization**. The `?org=` parameter is ignored for
 token callers — not rejected, ignored — so a token can neither read another tenant's
-events nor use the endpoint to discover whether an organization slug exists. Only a
-platform administrator (capability `platform:*`) can read across tenants.
+events nor use the endpoint to discover whether an organization slug exists.
+
+A platform administrator (capability `platform:*`) can read across tenants on the auth
+feed. On the activity feed it must name one organization per poll: that query is scoped
+by a non-nullable organization id, so "every tenant at once" is not expressible, and
+omitting `?org=` is a 400 rather than an unscoped read.
 
 Mint a dedicated token for your collector with `read:audit` and nothing else.
 
@@ -78,6 +91,54 @@ There is a second reason to be strict. The SIEM endpoint is a personal-data egre
 point: forwarded events carry actor identifiers and payloads, and if your collector
 sits in another jurisdiction that is a Chapter V transfer. Events nobody acts on are
 unnecessary egress as well as noise.
+
+## The events worth alerting on
+
+Names are prefix-filterable on the auth feed via repeatable `action=` parameters. The filter
+matches a **prefix ending in a dot**, so an action without a dot in its name cannot be requested by
+any value — several credential-lifecycle events are currently unreachable for that reason, noted
+below.
+
+### Refusals — a credential or caller was told no
+
+| Action | Fires when | Feed |
+| --- | --- | --- |
+| `auth.token.rejected` | a credential was presented and did not resolve. Reasons: `invalid`, `tenant_mismatch` | auth |
+| `auth.capability.denied` | a resolved credential lacked the capability for the operation; carries required vs granted | auth |
+| `oci.scope_denied` | the OCI plane's own, richer form of the same | auth |
+| `ratelimit.rejected` | a request was refused by a rate limiter; aggregated with a count | auth |
+| `metrics.scrape_denied` | an unauthorized `/metrics` scrape | auth |
+| `blocked_*` | a pull refused by policy — licence, KEV, malicious, provenance, release age and the rest | **activity** |
+| `login.failure`, `lockout.*` | failed sign-in, lockout | auth |
+
+`auth.token.rejected` with `reason=tenant_mismatch` is the cross-tenant credential probe: a valid
+token from one organization presented against another. The row under the target organization is
+deliberately **actor-less**, because naming the presenting credential there would leak one tenant's
+token identity into another tenant's audit trail.
+
+### Identity and credential lifecycle
+
+`mfa.*` (enrolled, disabled, recovery-code used, trusted device added), `auth.saml.role*`,
+`saml.config_*`, `user.password_changed`, `user.email_changed`.
+
+**Unreachable today:** `token_created`, `token_revoked`, `service_token_*`, `member_role_changed`,
+`member_removed`, `invite_accept_blocked`, `allowlist_blocked` — these have no dot in their names,
+so the prefix filter cannot request them. Do not build a rule that assumes token or role-change
+coverage until that is fixed.
+
+### Configuration
+
+`tenant.setting.change` carries the setting key with its before and after values. Treat a change to
+an enforcement control — policy mode, signature verification, overwrite policy, MFA or SSO
+requirements — differently from a cosmetic one; that is the canonical post-account-takeover step.
+
+### Reading `partition`
+
+Aggregated rows carry a `partition` identifying who was refused. It uses several namespaces and you
+must **branch on the prefix rather than parse it as an address**: `ip:` or a bare address,
+`user:<subject>`, `token:<reference>`, `proto:<address>`, and `<address>:<policy>`. Note `token:`
+means different things on different actions — a truncated token id on `auth.*`, a hash prefix of the
+presented credential on `ratelimit.*`.
 
 ## Building a collector that does not lose data
 
@@ -128,15 +189,27 @@ rather than one row per event.
 Two consequences your detections must account for.
 
 **Counts are per process.** Dependably coalesces in memory, so a deployment running several
-replicas behind a load balancer emits one row per replica per window. The true total for a
-window is the **sum** of rows sharing the same organization, partition, reason and
-`window_start`. Do not alert on a single row's count as if it were the whole picture.
+replicas behind a load balancer emits one row per replica per window, each carrying only what
+that replica saw. **Alert on the total across replicas, never on a single row's count** — on a
+multi-replica deployment a single row always reads low, by a factor of roughly the replica
+count.
+
+Group rows by organization, partition and reason over a time bucket of your own choosing that is
+at least as wide as the emission window. Do not group on `window_start` equality unless you have
+confirmed your deployment aligns window boundaries across replicas: if each process starts its
+own clock, two replicas never produce an identical `window_start` and an equality grouping
+silently yields per-replica partial counts instead of the total.
 
 **Resolution degrades under a spray, the total does not.** The accumulator is bounded. A caller
 generating a very large number of distinct keys — many source addresses, say — will first cause
 new keys to fold into an overflow bucket, and then into a saturation bucket. Those rows are
 marked as folded. You lose the ability to say *which* partition each denial came from; you do
-not lose the fact that they happened, or how many there were. Alert on the total and treat the
+not lose the fact that they happened, or how many there were.
+
+One caveat if you are a tenant rather than the operator: the last-resort saturation rows are
+written without an organization, so they land in the operator plane and a tenant-scoped collector
+does not receive them. Under a spray heavy enough to reach saturation, a tenant feed sees the
+counted overflow rows but not the final fold. Alert on the total and treat the
 appearance of folded rows as itself a signal: something is generating keys faster than the
 instance will track them individually.
 
