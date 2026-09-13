@@ -60,6 +60,53 @@ omitting `?org=` is a 400 rather than an unscoped read.
 
 Mint a dedicated token for your collector with `read:audit` and nothing else.
 
+## Setup
+
+Three steps to a working pull collector. None of them needs an instance restart.
+
+### 1. Mint a collector token
+
+Settings → Tokens, capability **`read:audit`** and nothing else. The token is pinned
+to the organization that mints it; on a multi-tenant instance, mint one per tenant
+you want to watch.
+
+### 2. Check the feed answers
+
+```bash
+curl -sS -H "Authorization: Bearer $DEPENDABLY_AUDIT_TOKEN" \
+  "https://repo.example.com/api/v1/siem/events/auth?limit=5"
+```
+
+A `200` carrying an `items` array is the whole server-side configuration. A `401`
+means the token is wrong or lacks `read:audit`; a `403` means it is not permitted on
+this instance.
+
+### 3. Poll both feeds
+
+The auth feed is tenant-scoped by the token, so it needs nothing else:
+
+```text
+GET /api/v1/siem/events/auth?since=<iso8601>&until=<iso8601>&limit=500
+```
+
+The activity feed carries the block-gate refusals, and its query is scoped by a
+non-nullable organization id — so a platform-admin caller must name one:
+
+```text
+GET /api/v1/siem/events/activity?since=<iso8601>&until=<iso8601>&limit=500
+```
+
+Poll on whatever interval your SOC's detection latency allows; a minute is typical.
+Everything that makes the difference between a collector that works and one that
+loses events quietly is in [Building a collector that does not lose data](#building-a-collector-that-does-not-lose-data)
+— read that before you ship it.
+
+### Optional: add push for lower latency
+
+Set `SIEM_WEBHOOK_URL` or `SIEM_SYSLOG_HOST` and restart. This is *in addition to*
+polling, never instead of it — see the transport table above for what push does not
+carry.
+
 ## What to collect, and what to leave alone
 
 A SIEM is not an archive. Dependably writes a great deal that belongs in its own
@@ -158,9 +205,31 @@ ids.
 
 ### Ask for the actions you want, explicitly
 
-The `action` filter is a repeatable **prefix** match and there is no wildcard. The
-documented default set does not cover everything, so a collector that relies on it
-will believe it has coverage it does not have. Name the prefixes you want.
+`GET /api/v1/siem/actions` publishes the whole declared vocabulary: every action name,
+which of them the no-filter feed serves (`default_actions`), the dotted families the
+vocabulary implies (`family_prefixes`), and the two limits on how many values one
+request may carry.
+
+The repeatable `action` filter matches the action of exactly that name, plus every
+action in its dotted family. `action=checksum_failure` selects that one action;
+`action=auth` selects all of `auth.*`. A trailing separator is optional and ignored,
+so `action=login.` and `action=login` are the same filter. An unrecognized value is
+not an error; it matches nothing, so a collector written against a newer instance
+keeps working against an older one.
+
+Name the actions you want rather than inheriting the default. The default set is the
+security vocabulary as of the release you are running, and it widens on upgrade, which
+means new event types start arriving without anyone deciding they should. Pinning the
+set your detections understand is both the safer subscription and the cheaper query:
+naming a declared action costs an equality match, while naming a family costs a scan
+the database cannot index. Diff your pinned list against `/api/v1/siem/actions` when
+you upgrade, so a family added in a release is a decision rather than a surprise.
+
+Two limits apply, both published by that endpoint. `max_action_filters` bounds the
+total values in one request. `max_family_filters` bounds how many of them may be
+dotted families or names this release does not declare, and it is the one you will
+meet first: it is a single budget shared between the families you name deliberately
+and any values the instance does not recognize.
 
 ### Treat your own failure as an event
 
@@ -235,5 +304,8 @@ Be explicit with your SOC about these rather than letting them discover them.
   blocklisting all stop working. Set `TRUSTED_PROXIES` to your proxy's address.
 - Failed logins carry no actor. A `login.failure` row records neither the account
   attempted nor an email. You can count a burst; you cannot attribute it.
-- The feed names organizations and actors by identifier, not by name. Alerts will
-  read as opaque identifiers unless you enrich them on the SIEM side.
+- The feed names actors by identifier, not by name. `orgSlug` is served beside `orgId`,
+  so an alert reads as a tenant rather than a 32-hex id, but actors are not resolved:
+  `actorEmail` is deliberately always null for user actors, because a denormalized
+  email would be personal data sitting outside the erasure and retention sweeps.
+  Enrich actor identifiers on the SIEM side if your analysts need names.
