@@ -66,9 +66,9 @@ Three steps to a working pull collector. None of them needs an instance restart.
 
 ### 1. Mint a collector token
 
-Settings → Tokens, capability **`read:audit`** and nothing else. The token is pinned
-to the organization that mints it; on a multi-tenant instance, mint one per tenant
-you want to watch.
+On the [Access tokens](../../web-ui/tokens.md) page, create a token with capability
+**`read:audit`** and nothing else. The token is pinned to the organization that mints
+it; on a multi-tenant instance, mint one per tenant you want to watch.
 
 ### 2. Check the feed answers
 
