@@ -297,11 +297,17 @@ retention is what preserves it, not Dependably's.
 
 Be explicit with your SOC about these rather than letting them discover them.
 
-- `source_ip` is only as good as your proxy configuration. When `TRUSTED_PROXIES`
-  is unset, Dependably discards forwarded headers by design and records the immediate
-  peer, which behind a reverse proxy or container bridge is the same address for
-  every request. Per-source brute-force correlation, geo-IP enrichment and IP
-  blocklisting all stop working. Set `TRUSTED_PROXIES` to your proxy's address.
+- `source_ip` is only as good as your proxy configuration, and that has two independent halves —
+  both have to be right, and each fails silently on its own. When `TRUSTED_PROXIES` is unset,
+  Dependably discards forwarded headers by design and records the immediate peer, which behind a
+  reverse proxy or container bridge is the same address for every request; set it to your proxy's
+  address. Separately, your reverse proxy has to actually be configured to *send*
+  `X-Forwarded-For` in the first place — a proxy that isn't (some GUI-managed reverse-proxy
+  tools default to not forwarding it) leaves nothing for `TRUSTED_PROXIES` to act on, and the
+  symptom is identical either way: every event shows the proxy's own address. Confirm a fresh
+  event's `source_ip` after changing either setting; do not assume the fix landed from the config
+  change alone. Once both are correct, per-source brute-force correlation, geo-IP enrichment and
+  IP blocklisting all become usable.
 - Failed logins carry no actor. A `login.failure` row records neither the account
   attempted nor an email. You can count a burst; you cannot attribute it.
 - The feed names actors by identifier, not by name. `orgSlug` is served beside `orgId`,
