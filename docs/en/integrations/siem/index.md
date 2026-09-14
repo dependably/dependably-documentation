@@ -12,6 +12,39 @@ silently lose data.
 The examples below were run against Wazuh; the mechanics generalize to Splunk,
 Elastic, Sentinel or anything that reads newline-delimited JSON.
 
+## Reference implementation for Wazuh
+
+If Wazuh is your SIEM, you do not have to write rules or a dashboard from scratch.
+
+[**Download the rules**](rules/dependably_rules.xml) (`dependably_rules.xml`) and
+[**download the dashboard**](dashboards/dependably-dashboard.ndjson)
+(`dependably-dashboard.ndjson`), then:
+
+1. Import the rules: Server management → Rules → Import files, tick **Overwrite**
+   if replacing a previous import. **Restart the manager** — an imported ruleset
+   does not take effect until analysisd restarts, and both `GET /rules` and
+   `/logtest` report the rules as active before that restart actually happens, so
+   neither is a reliable check. Confirm with a real search instead:
+   `wazuh-alerts-*` → `rule.groups:dependably`.
+2. Import the dashboard: Dashboards Management → Saved objects → Import. The
+   importer assigns new object ids on every import, so re-importing after an
+   update creates a duplicate rather than replacing the original — delete the old
+   one.
+3. Refresh the index pattern's field list once (Index patterns → `wazuh-alerts-*`
+   → the refresh icon), so panels that read poller-specific fields (like the feed
+   health table) can find them. This is a one-time step; it does not need
+   repeating after future imports.
+
+You need a working collector before either import produces anything — see Setup
+below first.
+
+![The Dependably Registry dashboard in Wazuh: five metric tiles (Audit events, Authorization denials, Security config changes, Failed logins, Poller errors), an Events by action bar chart led by a blocked_deprecated bar, and an empty Authorization denials table.](images/wazuh-dependably-registry.png)
+
+Nothing in the rules or dashboard is homelab-specific; both key off the feed's
+own fields (`dependably.instance`, `rule.groups`), not a hostname or an agent
+name. The rule id space is `100100-100199` — renumber before importing if you
+already use part of that range.
+
 ## Pull and push carry different data
 
 Getting this wrong is the most common way to wire up the wrong thing, because the two transports
