@@ -1,0 +1,298 @@
+<!-- Dependably artifact-registry audit and activity feed for Wazuh. Reference ruleset
+     shipped alongside the SIEM integration guide: install as its own file
+     (/var/ossec/etc/rules/dependably_rules.xml or your manager's rules directory) so it stays
+     separable from your own ruleset and can be removed in one step. -->
+<!-- ID space 100100-100199. If you already use part of this range for your own rules, renumber
+     before importing: Wazuh will silently prefer whichever definition loads last for a
+     collided id, not warn you. -->
+<!-- Records arrive as JSON from dependably-siem-poller.py via the Wazuh agent it runs on.
+     Nothing here is below level 3: log_alert_level is 3 by default, so a level-0 rule is never
+     indexed and would be invisible to any dashboard. The one level-0 rule (100100) is the
+     parent every other rule chains off of, and that is deliberate. -->
+<group name="local,dependably,">
+
+  <!-- Parent. Matches any record the poller wrote; children chain off it by if_sid. -->
+  <rule id="100100" level="0">
+    <decoded_as>json</decoded_as>
+    <field name="dependably.instance" type="pcre2">.+</field>
+    <description>Dependably: record from $(dependably.instance).</description>
+  </rule>
+
+  <!-- Catch-all so every audit action is indexed even before it has a rule of its own.
+       Without this, adding an action to the poller's prefix list silently produces
+       nothing: an unmatched JSON record stops at the level-0 parent and is dropped. -->
+  <rule id="100101" level="3">
+    <if_sid>100100</if_sid>
+    <field name="dependably.record_type" type="pcre2">^audit$</field>
+    <description>Dependably: $(dependably.action) on $(dependably.instance).</description>
+    <group>dependably_audit,</group>
+  </rule>
+
+  <!-- == Authentication ==========================================================
+       Caveat, and it is a big one: dependably's login.failure rows carry no actor id
+       and no email, and behind a reverse proxy with TRUSTED_PROXIES unset every
+       source_ip is the Docker bridge gateway. So these rules can count failures but
+       cannot attribute them to a user or an address. Tracked as G1/G3 on issue #668. -->
+
+  <!-- Only a LIVE failure feeds the frequency window below. Wazuh correlates on ingest time,
+       so a backfill (the first run replays up to 24h, and the replay flag up to 90 days) would land
+       months of scattered failures in one second and trip a brute-force alert on traffic that
+       never happened. The poller decides live vs history, because a rule cannot compare
+       event_time to now. This was not theoretical: an early run of this reference implementation
+       produced four such false
+       positives whose own event_time values were days apart. -->
+  <rule id="100110" level="5">
+    <if_sid>100101</if_sid>
+    <field name="dependably.action" type="pcre2">^login\.failure$</field>
+    <field name="dependably.live" type="pcre2">^true$</field>
+    <description>Dependably: failed login ($(dependably.detail_reason)).</description>
+    <group>authentication_failed,dependably_auth_fail,</group>
+  </rule>
+
+  <!-- Backfilled failure. Indexed so the history is searchable, but deliberately carries no
+       correlation group, so it can never contribute to a time-window rule. -->
+  <rule id="100115" level="3">
+    <if_sid>100101</if_sid>
+    <field name="dependably.action" type="pcre2">^login\.failure$</field>
+    <field name="dependably.live" type="pcre2">^false$</field>
+    <description>Dependably: failed login, backfilled history ($(dependably.detail_reason)).</description>
+    <group>dependably_history,</group>
+  </rule>
+
+  <!-- 8 live failures inside 120s. Only rule 100110 (live) feeds this; 100115 cannot. -->
+  <rule id="100111" level="10" frequency="8" timeframe="120">
+    <if_matched_sid>100110</if_matched_sid>
+    <description>Dependably: repeated failed logins - possible brute force or password spray.</description>
+    <group>authentication_failures,</group>
+  </rule>
+
+  <rule id="100112" level="3">
+    <if_sid>100101</if_sid>
+    <field name="dependably.action" type="pcre2">^login\.success$</field>
+    <field name="dependably.live" type="pcre2">^true$</field>
+    <description>Dependably: login by $(dependably.actor_id) via $(dependably.detail_method).</description>
+    <group>authentication_success,</group>
+  </rule>
+
+  <!-- Backfilled success: no authentication_success group, so it cannot pair with a failure
+       burst in rule 100113. -->
+  <rule id="100116" level="3">
+    <if_sid>100101</if_sid>
+    <field name="dependably.action" type="pcre2">^login\.success$</field>
+    <field name="dependably.live" type="pcre2">^false$</field>
+    <description>Dependably: login, backfilled history - $(dependably.actor_id).</description>
+    <group>dependably_history,</group>
+  </rule>
+
+  <rule id="100113" level="12" timeframe="300">
+    <if_group>authentication_success</if_group>
+    <if_matched_group>dependably_auth_fail</if_matched_group>
+    <description>Dependably: successful login straight after a run of failures - possible brute-force success.</description>
+    <group>authentication_success,attacks,</group>
+  </rule>
+
+  <rule id="100114" level="10">
+    <if_sid>100101</if_sid>
+    <field name="dependably.action" type="pcre2">^lockout\.</field>
+    <description>Dependably: account lockout triggered.</description>
+    <group>authentication_failures,</group>
+  </rule>
+
+  <!-- == Supply chain ============================================================
+       The two signals nothing else in the fleet can produce. -->
+
+  <!-- == Authorization and credential denial =====================================
+       A credential attempting an operation its capabilities do not grant. Fully attributed
+       (actor + source_ip) and the detail names what was required versus what the token held.
+       This is the strongest credential-probing signal the feed actually carries, and it was
+       previously landing on the catch-all at level 3, below a developer republishing. -->
+  <rule id="100124" level="7">
+    <if_sid>100101</if_sid>
+    <field name="dependably.action" type="pcre2">(scope_denied|_denied|role_mapping_blocked)$</field>
+    <description>Dependably: authorization denied - $(dependably.detail_raw)</description>
+    <group>dependably_authz,access_denied,</group>
+  </rule>
+
+  <!-- A burst from one actor is capability enumeration, not a misconfigured client. -->
+  <rule id="100125" level="10" frequency="6" timeframe="120">
+    <if_matched_sid>100124</if_matched_sid>
+    <same_field>dependably.actor_id</same_field>
+    <description>Dependably: repeated authorization denials - possible capability probing.</description>
+    <group>dependably_authz,access_denied,</group>
+  </rule>
+
+  <!-- SAML identity events: reachable today, and privilege movement through the IdP. -->
+  <rule id="100126" level="10">
+    <if_sid>100101</if_sid>
+    <field name="dependably.action" type="pcre2">^auth\.saml\.role</field>
+    <description>Dependably: SAML role change - $(dependably.action).</description>
+    <group>dependably_privilege,</group>
+  </rule>
+
+  <rule id="100127" level="7">
+    <if_sid>100101</if_sid>
+    <field name="dependably.action" type="pcre2">^saml\.(config_|signing_cert_|metadata_)</field>
+    <description>Dependably: SAML configuration changed - $(dependably.action).</description>
+    <group>dependably_config,</group>
+  </rule>
+
+  <!-- MFA lifecycle. Reachable through the existing filter all along; an earlier revision of this
+       collector simply
+       was not asking for it. Parent first so the high-risk subset below can chain off it. -->
+  <rule id="100129" level="7">
+    <if_sid>100101</if_sid>
+    <field name="dependably.action" type="pcre2">^mfa\.</field>
+    <description>Dependably: MFA lifecycle - $(dependably.action) by $(dependably.actor_id).</description>
+    <group>dependably_credentials,</group>
+  </rule>
+
+  <!-- Turning MFA off, or spending a recovery code, are the two classic post-takeover moves:
+       one removes the second factor, the other bypasses it. -->
+  <rule id="100128" level="10">
+    <if_sid>100129</if_sid>
+    <field name="dependably.action" type="pcre2">^mfa\.(disabled|recovery_code_used)$</field>
+    <description>Dependably: MFA WEAKENED - $(dependably.action) by $(dependably.actor_id).</description>
+    <group>dependably_credentials,dependably_privilege,</group>
+  </rule>
+
+  <!-- Instance-operator actions. Legitimate admin work, but also exactly what an attacker does
+       with a stolen operator session, so it is worth a record a SOC can see. -->
+  <rule id="100154" level="7">
+    <if_sid>100101</if_sid>
+    <field name="dependably.action" type="pcre2">^system_admin\.</field>
+    <description>Dependably: instance-operator action - $(dependably.action).</description>
+    <group>dependably_privilege,</group>
+  </rule>
+
+  <!-- == Credentials and privilege ===============================================
+       No data on the dogfood instance yet; these exist so the first real one alerts
+       rather than landing silently in the catch-all. -->
+
+  <rule id="100130" level="7">
+    <if_sid>100101</if_sid>
+    <field name="dependably.action" type="pcre2">^token\.created$</field>
+    <description>Dependably: API token created by $(dependably.actor_id).</description>
+    <group>dependably_credentials,</group>
+  </rule>
+
+  <rule id="100131" level="5">
+    <if_sid>100101</if_sid>
+    <field name="dependably.action" type="pcre2">^token\.revoked$</field>
+    <description>Dependably: API token revoked by $(dependably.actor_id).</description>
+    <group>dependably_credentials,</group>
+  </rule>
+
+  <rule id="100140" level="10">
+    <if_sid>100101</if_sid>
+    <field name="dependably.action" type="pcre2">^(rbac\.|auth\.saml\.role)</field>
+    <description>Dependably: privilege change - $(dependably.action).</description>
+    <group>dependably_privilege,</group>
+  </rule>
+
+  <rule id="100141" level="7">
+    <if_sid>100101</if_sid>
+    <field name="dependably.action" type="pcre2">^user\.(password_changed|password_reset|email_changed)$</field>
+    <description>Dependably: credential change - $(dependably.action).</description>
+    <group>dependably_credentials,</group>
+  </rule>
+
+  <!-- == Tenant and configuration ================================================  -->
+
+  <rule id="100150" level="5">
+    <if_sid>100101</if_sid>
+    <field name="dependably.action" type="pcre2">^tenant\.setting\.change$</field>
+    <description>Dependably: setting $(dependably.detail_key) changed from $(dependably.detail_prior_value) to $(dependably.detail_new_value).</description>
+    <group>dependably_config,</group>
+  </rule>
+  <!-- A change to an enforcement control is a security event; a cosmetic setting is not. -->
+  <rule id="100153" level="10">
+    <if_sid>100150</if_sid>
+    <field name="dependably.detail_key" type="pcre2">(policy|enforcement|block|verify|overwrite|anonymous|retention|quota|mfa|sso)</field>
+    <description>Dependably: SECURITY setting $(dependably.detail_key) changed from $(dependably.detail_prior_value) to $(dependably.detail_new_value).</description>
+    <group>dependably_config,</group>
+  </rule>
+
+  <rule id="100151" level="7">
+    <if_sid>100101</if_sid>
+    <field name="dependably.action" type="pcre2">^tenant\.(created|restored|status_changed|quota_changed)$</field>
+    <description>Dependably: tenant lifecycle - $(dependably.action).</description>
+    <group>dependably_config,</group>
+  </rule>
+
+  <rule id="100152" level="10">
+    <if_sid>100101</if_sid>
+    <field name="dependably.action" type="pcre2">^tenant\.(deleted|hard_deleted)$</field>
+    <description>Dependably: tenant DELETED - $(dependably.action).</description>
+    <group>dependably_config,</group>
+  </rule>
+
+  <!-- == Policy refusals (activity plane) =======================================
+       A separate feed from everything above: audit_log names WHO did WHAT, activity
+       names WHAT WAS REFUSED by a block-gate policy before it reached the tenant.
+       Added when the collector started polling /api/v1/siem/events/activity: rule
+       100100 matched these lines all along (any dependably.instance record), but
+       nothing below it recognized dependably.record_type == activity, so every
+       refusal stopped at the level-0 parent and was silently dropped. Confirmed via
+       Discover against wazuh-alerts-*: 1,010 audit-plane hits, zero activity-plane
+       ones, across 90 days of a collector that had already shipped 184 of them. -->
+
+  <!-- Catch-all, same purpose as 100101: a block reason added to the gate is indexed
+       before it has a rule of its own, rather than disappearing into the parent. -->
+  <rule id="100102" level="3">
+    <if_sid>100100</if_sid>
+    <field name="dependably.record_type" type="pcre2">^activity$</field>
+    <description>Dependably: $(dependably.action) refused for $(dependably.purl).</description>
+    <group>dependably_activity,</group>
+  </rule>
+
+  <!-- Confirmed malicious, actively-exploited (KEV), or a live compromise indicator.
+       The gate worked: this is what it caught, not an in-progress incident, but a
+       SOC wants same-day visibility into which org and package it was. -->
+  <rule id="100103" level="10">
+    <if_sid>100102</if_sid>
+    <field name="dependably.action" type="pcre2">^blocked_(malicious|malicious_live|kev|kev_ransomware|ssvc_exploitation)$</field>
+    <description>Dependably: BLOCKED known-malicious/actively-exploited package - $(dependably.action) on $(dependably.purl).</description>
+    <group>dependably_activity,dependably_supplychain,</group>
+  </rule>
+
+  <!-- Score-driven refusals: a vulnerability crossed a configured threshold. Worth a
+       look, not a page: the number itself is a policy choice, not an indicator. -->
+  <rule id="100104" level="7">
+    <if_sid>100102</if_sid>
+    <field name="dependably.action" type="pcre2">^blocked_(epss|epss_percentile|vuln_score)$</field>
+    <description>Dependably: blocked on vulnerability score - $(dependably.action) on $(dependably.purl).</description>
+    <group>dependably_activity,dependably_supplychain,</group>
+  </rule>
+
+  <!-- Policy and hygiene refusals: licence, provenance, deprecation, install scripts,
+       a revoked artefact, an operator's manual block. Routine gate operation, but
+       still an attempted pull a SOC may want in an investigation timeline. -->
+  <rule id="100105" level="5">
+    <if_sid>100102</if_sid>
+    <field name="dependably.action" type="pcre2">^blocked_(license|provenance|deprecated|install_script|revoked|manual|release_age)$</field>
+    <description>Dependably: blocked by policy - $(dependably.action) on $(dependably.purl).</description>
+    <group>dependably_activity,</group>
+  </rule>
+
+  <!-- Repeated refusals from one actor is policy probing, not routine friction,
+       the authz analog of 100125. -->
+  <rule id="100106" level="10" frequency="6" timeframe="120">
+    <if_matched_sid>100102</if_matched_sid>
+    <same_field>dependably.actor_id</same_field>
+    <description>Dependably: repeated policy refusals from one actor - possible probing.</description>
+    <group>dependably_activity,access_denied,</group>
+  </rule>
+
+  <!-- == Feed health ============================================================
+
+       A collector that stopped collecting looks exactly like a quiet instance. The
+       poller reports its own failures so the difference is visible. -->
+
+  <rule id="100170" level="10">
+    <if_sid>100100</if_sid>
+    <field name="dependably.record_type" type="pcre2">^poller_error$</field>
+    <description>Dependably: SIEM poller failed at stage $(dependably.stage) - $(dependably.message).</description>
+    <group>dependably_health,</group>
+  </rule>
+
+</group>
