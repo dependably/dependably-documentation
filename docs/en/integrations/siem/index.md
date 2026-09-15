@@ -45,56 +45,7 @@ own fields (`dependably.instance`, `rule.groups`), not a hostname or an agent
 name. The rule id space is `100100-100199` — renumber before importing if you
 already use part of that range.
 
-## Pull is an API you call; push is not
-
-**Pull** is the REST API this page is mostly about: two GET endpoints you poll, described below.
-
-**Push is not a second endpoint — it is Dependably calling out to infrastructure you run.**
-There is no URL on Dependably's side to request push data from. Setting `SIEM_WEBHOOK_URL` or
-`SIEM_SYSLOG_HOST` tells the instance to make outbound connections *to something you stand up*:
-
-- `SIEM_WEBHOOK_URL` — Dependably POSTs one NDJSON line per event to this URL. It must be
-  `https://`; a plaintext collector is refused at instance startup rather than warned about later
-  (set `SIEM_WEBHOOK_ALLOW_INSECURE=true` if the collector is only reachable over `http://`, such
-  as one on a trusted loopback interface). A private-network address (RFC 1918) is reachable by
-  default — set `SIEM_WEBHOOK_ALLOW_PRIVATE=false` to require a public collector address instead.
-  Your receiver is whatever HTTPS server accepts that POST — a SIEM's native HTTP input, a small
-  script behind a reverse proxy, anything that can terminate TLS and read a request body.
-- `SIEM_SYSLOG_HOST` — Dependably opens a UDP, TCP, or TLS connection (`SIEM_SYSLOG_PORT`,
-  default `514`) and sends one syslog message per event, CEF or RFC 5424 depending on
-  `SIEM_SYSLOG_FORMAT`. Your receiver is a syslog listener at that host and port.
-
-Either way, the receiving side is not Dependably's to provide — most SIEMs already have one
-(a webhook input, a syslog listener) built in; point it here.
-
-Pull and push also carry different data, which is the more common way to wire up the wrong
-thing — they are not the same events at different fidelity, they read different tables:
-
-| | Pull | Push |
-| --- | --- | --- |
-| Source | `audit_log` and `activity` | `audit_event` |
-| Latency | collector-polled | near real time |
-| Backfills history | yes, to `SIEM_MAX_LOOKBACK_DAYS` | no |
-| Carries `source_ip` | yes | **no** |
-| Survives collector downtime | yes (the caller re-reads its own window) | no (the queue is bounded and drops on overflow) |
-| Needs an instance restart to enable | no | yes |
-
-**Push drops more than the table suggests.** It forwards each typed event's `payload`, but
-`outcome`, `source_ip`, `user_agent` and `request_id` are *columns* on the typed event rather than
-payload fields, and none of them are mapped — so the push path carries neither the source address
-nor the explicit accepted/rejected/error verdict. `ecosystem` and `purl` are never populated
-either, so a push-only alert cannot filter or group by package ecosystem.
-
-**The two also don't share an action-name vocabulary.** Pull's action names are the declared,
-filterable set this page documents below. Push's are free-form strings chosen per event type, kept
-in sync with pull for some events and not for others — a hosted publish is `push` on the pull feed
-and `package.publish` on push, for one. Do not join pull and push records by action name.
-
-**If you are choosing one, choose pull.** It is durable across collector outages, it backfills, and
-it carries the source address most detections need. Use push in addition only when you need
-sub-minute latency, and know that exceeding `SIEM_QUEUE_CAPACITY` drops audit events permanently.
-
-### The pull feeds
+## The pull feeds
 
 `/api/v1/siem/events/auth` reads the `audit_log` plane: authentication, credential and capability
 refusals, MFA lifecycle, SAML identity changes, security-setting changes.
@@ -157,8 +108,7 @@ loses events quietly is in [Building a collector that does not lose data](#build
 ### Optional: add push for lower latency
 
 Set `SIEM_WEBHOOK_URL` or `SIEM_SYSLOG_HOST` and restart. This is *in addition to*
-polling, never instead of it — see the transport table above for what push does not
-carry.
+polling, never instead of it.
 
 ## The events worth alerting on
 
