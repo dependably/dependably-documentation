@@ -104,11 +104,6 @@ Everything that makes the difference between a collector that works and one that
 loses events quietly is in [Building a collector that does not lose data](#building-a-collector-that-does-not-lose-data).
 Read that before you ship it.
 
-### Optional: add push for lower latency
-
-Set `SIEM_WEBHOOK_URL` or `SIEM_SYSLOG_HOST` and restart. This is *in addition to*
-polling, never instead of it.
-
 ## The events worth alerting on
 
 Every action below is requestable by exact name via a repeatable `action=` parameter. See
