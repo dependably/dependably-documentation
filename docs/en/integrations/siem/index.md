@@ -20,29 +20,28 @@ If Wazuh is your SIEM, you do not have to write rules or a dashboard from scratc
 [**download the dashboard**](dashboards/dependably-dashboard.ndjson)
 (`dependably-dashboard.ndjson`), then:
 
-1. Import the rules: Server management → Rules → Import files, tick **Overwrite**
-   if replacing a previous import. **Restart the manager** — an imported ruleset
-   does not take effect until analysisd restarts, and both `GET /rules` and
+1. Import the rules: open Server management, then Rules, then Import files, and tick
+   **Overwrite** if replacing a previous import. **Restart the manager**: an imported
+   ruleset does not take effect until analysisd restarts, and both `GET /rules` and
    `/logtest` report the rules as active before that restart actually happens, so
-   neither is a reliable check. Confirm with a real search instead:
-   `wazuh-alerts-*` → `rule.groups:dependably`.
-2. Import the dashboard: Dashboards Management → Saved objects → Import. The
-   importer assigns new object ids on every import, so re-importing after an
-   update creates a duplicate rather than replacing the original — delete the old
-   one.
-3. Refresh the index pattern's field list once (Index patterns → `wazuh-alerts-*`
-   → the refresh icon), so panels that read poller-specific fields (like the feed
-   health table) can find them. This is a one-time step; it does not need
-   repeating after future imports.
+   neither is a reliable check. Confirm with a real search instead, on
+   `wazuh-alerts-*`, filtering `rule.groups:dependably`.
+2. Import the dashboard: open Dashboards Management, then Saved objects, then Import.
+   The importer assigns new object ids on every import, so re-importing after an
+   update creates a duplicate rather than replacing the original. Delete the old one.
+3. Refresh the index pattern's field list once. Open Index patterns, select
+   `wazuh-alerts-*`, and click the refresh icon, so panels that read poller-specific
+   fields (like the feed health table) can find them. This is a one-time step; it does
+   not need repeating on subsequent imports.
 
-You need a working collector before either import produces anything — see Setup
+You need a working collector before either import produces anything. See Setup
 below first.
 
-![The Dependably Registry dashboard in Wazuh: four metric tiles (Audit events 1,690, Authorization denials 62, Security config changes 12, Failed logins 42, Poller errors 24), a populated Authorization denials log table, an Events by action bar chart led by login.success, a Logins success-vs-failure histogram with a visible spike, and a Feed health table listing real poller error stages and counts.](images/wazuh-dependably-registry.png)
+![The Dependably Registry dashboard in Wazuh. Four metric tiles show Audit events 1,690, Authorization denials 62, Security config changes 12, Failed logins 42, and Poller errors 24. Below them are a populated Authorization denials log table, an Events by action bar chart led by login.success, a Logins success-vs-failure histogram with a visible spike, and a Feed health table listing real poller error stages and counts.](images/wazuh-dependably-registry.png)
 
 Nothing in the rules or dashboard is homelab-specific; both key off the feed's
 own fields (`dependably.instance`, `rule.groups`), not a hostname or an agent
-name. The rule id space is `100100-100199` — renumber before importing if you
+name. The rule id space is `100100-100199`; renumber before importing if you
 already use part of that range.
 
 ## The pull feeds
@@ -97,13 +96,13 @@ GET /api/v1/siem/events/auth?since=<iso8601>&until=<iso8601>&limit=500
 GET /api/v1/siem/events/activity?since=<iso8601>&until=<iso8601>&limit=500
 ```
 
-A platform-admin token must add `&org=<slug>` to the second — see
+A platform-admin token must add `&org=<slug>` to the second. See
 [Authentication and tenant scope](#authentication-and-tenant-scope) above.
 
 Poll on whatever interval your SOC's detection latency allows; a minute is typical.
 Everything that makes the difference between a collector that works and one that
-loses events quietly is in [Building a collector that does not lose data](#building-a-collector-that-does-not-lose-data)
-— read that before you ship it.
+loses events quietly is in [Building a collector that does not lose data](#building-a-collector-that-does-not-lose-data).
+Read that before you ship it.
 
 ### Optional: add push for lower latency
 
@@ -112,7 +111,7 @@ polling, never instead of it.
 
 ## The events worth alerting on
 
-Every action below is requestable by exact name via a repeatable `action=` parameter — see
+Every action below is requestable by exact name via a repeatable `action=` parameter. See
 [Ask for the actions you want, explicitly](#ask-for-the-actions-you-want-explicitly) for the
 filter's matching rule and where to get the full list.
 
@@ -137,12 +136,12 @@ token identity into another tenant's audit trail.
 
 `mfa.*` (enrolled, disabled, recovery-code used, trusted device added) is a real dotted family:
 one `action=mfa` filter selects all of it. The SAML role and config-change actions look like they
-should be families too, but the family filter matches only on the dot — `auth.saml.role_assigned`
+should be families too, but the family filter matches only on the dot: `auth.saml.role_assigned`
 and `saml.config_updated` split on an underscore, not a dot, so naming `auth.saml.role` or
 `saml.config` selects nothing. They join `user.password_changed`, `user.email_changed`, and the
 flat-named `token_created`, `token_revoked`, `service_token_created`, `service_token_revoked`,
 `member_role_changed`, `member_removed`, `invite_accept_blocked`, `allowlist_blocked` on the list
-of actions with no dotted family to inherit through — name each one individually:
+of actions with no dotted family to inherit through. Name each one individually:
 `auth.saml.role_assigned`, `auth.saml.role_changed`, `auth.saml.role_change_refused`,
 `auth.saml.role_mapping_blocked`, `saml.config_updated`, `saml.config_deleted`.
 
@@ -194,16 +193,16 @@ keeps working against an older one.
 Name the actions you want rather than inheriting the default. The default set is the
 security vocabulary as of the release you are running, and it widens on upgrade, which
 means new event types start arriving without anyone deciding they should. Pinning the
-set your detections understand is both the safer subscription and the cheaper query —
+set your detections understand is both the safer subscription and the cheaper query:
 naming a declared action is free, naming a family or an undeclared name is not. Diff
 your pinned list against `/api/v1/siem/actions` when you upgrade, so a family added in
 a release is a decision rather than a surprise.
 
-Two limits apply, both published by that endpoint. `max_action_filters` bounds the
-total values in one request. `max_family_filters` bounds how many of them may be
-dotted families or names this release does not declare, and it is the one you will
-meet first: it is a single budget shared between the families you name deliberately
-and any values the instance does not recognize.
+Two limits apply, both published by that endpoint. One, `max_action_filters`, bounds
+the total values in one request. The other, `max_family_filters`, bounds how many of
+them may be dotted families or names this release does not declare. You will meet
+this one first: it is a single budget shared between the families you name
+deliberately and any values the instance does not recognize.
 
 ### Treat your own failure as an event
 
@@ -271,12 +270,12 @@ retention is what preserves it, not Dependably's.
 
 Be explicit with your SOC about these rather than letting them discover them.
 
-- `source_ip` is only as good as your proxy configuration, and that has two independent halves —
+- `source_ip` is only as good as your proxy configuration, and that has two independent halves:
   both have to be right, and each fails silently on its own. When `TRUSTED_PROXIES` is unset,
   Dependably discards forwarded headers by design and records the immediate peer, which behind a
   reverse proxy or container bridge is the same address for every request; set it to your proxy's
   address. Separately, your reverse proxy has to actually be configured to *send*
-  `X-Forwarded-For` in the first place — a proxy that isn't (some GUI-managed reverse-proxy
+  `X-Forwarded-For` in the first place. A proxy that isn't (some GUI-managed reverse-proxy
   tools default to not forwarding it) leaves nothing for `TRUSTED_PROXIES` to act on, and the
   symptom is identical either way: every event shows the proxy's own address. Confirm a fresh
   event's `source_ip` after changing either setting; do not assume the fix landed from the config
