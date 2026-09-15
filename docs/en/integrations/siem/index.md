@@ -40,13 +40,6 @@ below first.
 
 ![The Dependably Registry dashboard in Wazuh: four metric tiles (Audit events 1,690, Authorization denials 62, Security config changes 12, Failed logins 42, Poller errors 24), a populated Authorization denials log table, an Events by action bar chart led by login.success, a Logins success-vs-failure histogram with a visible spike, and a Feed health table listing real poller error stages and counts.](images/wazuh-dependably-registry.png)
 
-A seven-day window on an instance with history predating the feed's action
-filtering — `package.replace` and `package.override.set` still show up in
-Events by action here. Both are excluded from new events the collector writes
-(`EXCLUDED_ACTIONS` in `dependably-siem-poller.py`); what's shown is index
-history from before that exclusion, not a gap in the current pipeline. A
-fresh instance's feed does not accumulate either action to begin with.
-
 Nothing in the rules or dashboard is homelab-specific; both key off the feed's
 own fields (`dependably.instance`, `rule.groups`), not a hostname or an agent
 name. The rule id space is `100100-100199` — renumber before importing if you
@@ -251,10 +244,10 @@ keeps working against an older one.
 Name the actions you want rather than inheriting the default. The default set is the
 security vocabulary as of the release you are running, and it widens on upgrade, which
 means new event types start arriving without anyone deciding they should. Pinning the
-set your detections understand is both the safer subscription and the cheaper query:
-naming a declared action costs an equality match, while naming a family costs a scan
-the database cannot index. Diff your pinned list against `/api/v1/siem/actions` when
-you upgrade, so a family added in a release is a decision rather than a surprise.
+set your detections understand is both the safer subscription and the cheaper query —
+naming a declared action is free, naming a family or an undeclared name is not. Diff
+your pinned list against `/api/v1/siem/actions` when you upgrade, so a family added in
+a release is a decision rather than a surprise.
 
 Two limits apply, both published by that endpoint. `max_action_filters` bounds the
 total values in one request. `max_family_filters` bounds how many of them may be
