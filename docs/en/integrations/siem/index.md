@@ -52,25 +52,50 @@ own fields (`dependably.instance`, `rule.groups`), not a hostname or an agent
 name. The rule id space is `100100-100199` — renumber before importing if you
 already use part of that range.
 
-## Pull and push carry different data
+## Pull is an API you call; push is not
 
-Getting this wrong is the most common way to wire up the wrong thing, because the two transports
-read different tables. They are not the same events at different fidelity.
+**Pull** is the REST API this page is mostly about: two GET endpoints you poll, described below.
 
-| | Pull | Push (`SIEM_WEBHOOK_URL` / `SIEM_SYSLOG_HOST`) |
+**Push is not a second endpoint — it is Dependably calling out to infrastructure you run.**
+There is no URL on Dependably's side to request push data from. Setting `SIEM_WEBHOOK_URL` or
+`SIEM_SYSLOG_HOST` tells the instance to make outbound connections *to something you stand up*:
+
+- `SIEM_WEBHOOK_URL` — Dependably POSTs one NDJSON line per event to this URL. It must be
+  `https://`; a plaintext collector is refused at instance startup rather than warned about later
+  (set `SIEM_WEBHOOK_ALLOW_INSECURE=true` if the collector is only reachable over `http://`, such
+  as one on a trusted loopback interface). A private-network address (RFC 1918) is reachable by
+  default — set `SIEM_WEBHOOK_ALLOW_PRIVATE=false` to require a public collector address instead.
+  Your receiver is whatever HTTPS server accepts that POST — a SIEM's native HTTP input, a small
+  script behind a reverse proxy, anything that can terminate TLS and read a request body.
+- `SIEM_SYSLOG_HOST` — Dependably opens a UDP, TCP, or TLS connection (`SIEM_SYSLOG_PORT`,
+  default `514`) and sends one syslog message per event, CEF or RFC 5424 depending on
+  `SIEM_SYSLOG_FORMAT`. Your receiver is a syslog listener at that host and port.
+
+Either way, the receiving side is not Dependably's to provide — most SIEMs already have one
+(a webhook input, a syslog listener) built in; point it here.
+
+Pull and push also carry different data, which is the more common way to wire up the wrong
+thing — they are not the same events at different fidelity, they read different tables:
+
+| | Pull | Push |
 | --- | --- | --- |
 | Source | `audit_log` and `activity` | `audit_event` |
-| Endpoints | `/api/v1/siem/events/auth`, `/api/v1/siem/events/activity` | n/a |
 | Latency | collector-polled | near real time |
 | Backfills history | yes, to `SIEM_MAX_LOOKBACK_DAYS` | no |
 | Carries `source_ip` | yes | **no** |
 | Survives collector downtime | yes (the caller re-reads its own window) | no (the queue is bounded and drops on overflow) |
 | Needs an instance restart to enable | no | yes |
 
-**Push drops more than the transport table suggests.** It forwards each typed event's `payload`,
-but `outcome`, `source_ip`, `user_agent` and `request_id` are *columns* on the typed event rather
-than payload fields, and none of them are mapped. So the push path carries neither the source
-address nor the explicit accepted/rejected/error verdict.
+**Push drops more than the table suggests.** It forwards each typed event's `payload`, but
+`outcome`, `source_ip`, `user_agent` and `request_id` are *columns* on the typed event rather than
+payload fields, and none of them are mapped — so the push path carries neither the source address
+nor the explicit accepted/rejected/error verdict. `ecosystem` and `purl` are never populated
+either, so a push-only alert cannot filter or group by package ecosystem.
+
+**The two also don't share an action-name vocabulary.** Pull's action names are the declared,
+filterable set this page documents below. Push's are free-form strings chosen per event type, kept
+in sync with pull for some events and not for others — a hosted publish is `push` on the pull feed
+and `package.publish` on push, for one. Do not join pull and push records by action name.
 
 **If you are choosing one, choose pull.** It is durable across collector outages, it backfills, and
 it carries the source address most detections need. Use push in addition only when you need
@@ -123,18 +148,13 @@ this instance.
 
 ### 3. Poll both feeds
 
-The auth feed is tenant-scoped by the token, so it needs nothing else:
-
 ```text
 GET /api/v1/siem/events/auth?since=<iso8601>&until=<iso8601>&limit=500
-```
-
-The activity feed carries the block-gate refusals, and its query is scoped by a
-non-nullable organization id — so a platform-admin caller must name one:
-
-```text
 GET /api/v1/siem/events/activity?since=<iso8601>&until=<iso8601>&limit=500
 ```
+
+A platform-admin token must add `&org=<slug>` to the second — see
+[Authentication and tenant scope](#authentication-and-tenant-scope) above.
 
 Poll on whatever interval your SOC's detection latency allows; a minute is typical.
 Everything that makes the difference between a collector that works and one that
@@ -172,11 +192,16 @@ token identity into another tenant's audit trail.
 
 ### Identity and credential lifecycle
 
-`mfa.*` (enrolled, disabled, recovery-code used, trusted device added), `auth.saml.role*`,
-`saml.config_*`, `user.password_changed`, `user.email_changed`, and the flat-named
-`token_created`, `token_revoked`, `service_token_created`, `service_token_revoked`,
-`member_role_changed`, `member_removed`, `invite_accept_blocked`, `allowlist_blocked` —
-name these individually, since none of them has a dotted family to inherit through.
+`mfa.*` (enrolled, disabled, recovery-code used, trusted device added) is a real dotted family:
+one `action=mfa` filter selects all of it. The SAML role and config-change actions look like they
+should be families too, but the family filter matches only on the dot — `auth.saml.role_assigned`
+and `saml.config_updated` split on an underscore, not a dot, so naming `auth.saml.role` or
+`saml.config` selects nothing. They join `user.password_changed`, `user.email_changed`, and the
+flat-named `token_created`, `token_revoked`, `service_token_created`, `service_token_revoked`,
+`member_role_changed`, `member_removed`, `invite_accept_blocked`, `allowlist_blocked` on the list
+of actions with no dotted family to inherit through — name each one individually:
+`auth.saml.role_assigned`, `auth.saml.role_changed`, `auth.saml.role_change_refused`,
+`auth.saml.role_mapping_blocked`, `saml.config_updated`, `saml.config_deleted`.
 
 ### Configuration
 
