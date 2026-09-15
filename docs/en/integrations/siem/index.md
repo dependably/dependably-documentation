@@ -261,6 +261,33 @@ default). The count, window and partition live in `detail`, so they do not survi
 The event's action and ecosystem do. If you need the detail long-term, your SIEM's own
 retention is what preserves it, not Dependably's.
 
+## Push, for lower latency or a syslog-native SIEM
+
+Everything above is pull: you poll the two endpoints. Dependably can also push, opening an
+outbound connection of its own to a collector you run, for lower latency or for a SIEM whose
+native input is a webhook or a syslog listener rather than a REST API to poll. Set one of the
+two variables below and restart the instance; push runs in addition to pull, never instead of
+it, since pull is what backfills and survives a collector outage.
+
+| Variable | Default | Effect |
+| --- | --- | --- |
+| `SIEM_WEBHOOK_URL` | unset | HTTPS endpoint Dependably POSTs one NDJSON line per event to. A plaintext URL is refused at startup; set `SIEM_WEBHOOK_ALLOW_INSECURE=true` to allow one anyway. |
+| `SIEM_WEBHOOK_BEARER` | unset | Bearer token sent with each POST, if your collector needs one. |
+| `SIEM_WEBHOOK_ALLOW_PRIVATE` | `true` | Set `false` to require a public collector address instead of an RFC 1918 one. |
+| `SIEM_SYSLOG_HOST` | unset | Syslog receiver hostname. Activates the syslog forwarder; ignored if `SIEM_WEBHOOK_URL` is also set. |
+| `SIEM_SYSLOG_PORT` | `514` | Syslog receiver port. |
+| `SIEM_SYSLOG_PROTO` | `tls` | `udp`, `tcp`, or `tls`. `udp` and `tcp` send events in cleartext and log a startup warning naming the exposure. |
+| `SIEM_SYSLOG_FORMAT` | `cef` | `cef` (ArcSight Common Event Format) or `rfc5424`. |
+| `SIEM_QUEUE_CAPACITY` | `1024` | Outbound queue depth. A full queue drops the event being sent, with a metric, rather than blocking the request that generated it. |
+
+Only one forwarder runs at a time. Setting both `SIEM_WEBHOOK_URL` and `SIEM_SYSLOG_HOST`
+activates the webhook one.
+
+Push carries less than pull. It has no `source_ip`, no `outcome`, no `ecosystem` or `purl`, and
+its action names are not the ones documented above for the same event: a hosted publish is
+`push` on the pull feed and `package.publish` on push. Do not try to join pull and push records
+by action name. Treat push as a latency add-on and pull as the feed a SOC actually alerts on.
+
 ## Known limits
 
 Be explicit with your SOC about these rather than letting them discover them.
