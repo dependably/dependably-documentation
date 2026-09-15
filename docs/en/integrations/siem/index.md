@@ -147,43 +147,11 @@ Set `SIEM_WEBHOOK_URL` or `SIEM_SYSLOG_HOST` and restart. This is *in addition t
 polling, never instead of it — see the transport table above for what push does not
 carry.
 
-## What to collect, and what to leave alone
-
-A SIEM is not an archive. Dependably writes a great deal that belongs in its own
-audit trail and should never reach a SOC queue. The dividing line that works:
-
-**Forward** refusals and failures, integrity breaks, and identity or credential
-lifecycle changes. A SOC analyst can act on these without asking you whether they
-were legitimate.
-
-**Leave behind** authorized operators doing authorized things through the product's
-intended workflow, even when those things lower security posture. An analyst cannot
-triage them, because only the registry owner knows whether they were justified, so
-every alert routes straight back to you.
-
-Two worked examples, both of which look tempting and are not:
-
-- **`package.replace`**: an artefact republished with different bytes. This reads
-  like tamper, but in a private registry the publishers are your own developers, and
-  whether a replace is permitted is the organization's `version_overwrite_policy`
-  setting, which the event does not carry. No rule can separate a policy violation
-  from ordinary churn, so the alert is unactionable by construction.
-- **`package.override.set`**: an operator allowing a package past a policy block.
-  The event records the package and the new value but not the blocked reason, so
-  a SOC cannot tell a waived licence mismatch from a waived known-malicious package.
-  Those need opposite responses. It belongs in the quarantine review workflow.
-
-There is a second reason to be strict. The SIEM endpoint is a personal-data egress
-point: forwarded events carry actor identifiers and payloads, and if your collector
-sits in another jurisdiction that is a Chapter V transfer. Events nobody acts on are
-unnecessary egress as well as noise.
-
 ## The events worth alerting on
 
-Names are prefix-filterable on the auth feed via repeatable `action=` parameters. The filter
-matches a prefix ending in a dot, so an action without a dot in its name cannot be requested by
-any value. Several credential-lifecycle events are unreachable for that reason, noted
-below.
+Every action below is requestable by exact name via a repeatable `action=` parameter — see
+[Ask for the actions you want, explicitly](#ask-for-the-actions-you-want-explicitly) for the
+filter's matching rule and where to get the full list.
 
 ### Refusals: a credential or caller was told no
 
@@ -205,12 +173,10 @@ token identity into another tenant's audit trail.
 ### Identity and credential lifecycle
 
 `mfa.*` (enrolled, disabled, recovery-code used, trusted device added), `auth.saml.role*`,
-`saml.config_*`, `user.password_changed`, `user.email_changed`.
-
-**Unreachable:** `token_created`, `token_revoked`, `service_token_*`, `member_role_changed`,
-`member_removed`, `invite_accept_blocked`, `allowlist_blocked`. These have no dot in their names,
-so the prefix filter cannot request them. Do not build a rule that assumes token or role-change
-coverage.
+`saml.config_*`, `user.password_changed`, `user.email_changed`, and the flat-named
+`token_created`, `token_revoked`, `service_token_created`, `service_token_revoked`,
+`member_role_changed`, `member_removed`, `invite_accept_blocked`, `allowlist_blocked` —
+name these individually, since none of them has a dotted family to inherit through.
 
 ### Configuration
 
@@ -355,3 +321,6 @@ Be explicit with your SOC about these rather than letting them discover them.
   `actorEmail` is deliberately always null for user actors, because a denormalized
   email would be personal data sitting outside the erasure and retention sweeps.
   Enrich actor identifiers on the SIEM side if your analysts need names.
+- The feed is a personal-data egress point: forwarded events carry actor identifiers
+  and payloads. If your collector or SIEM sits in another jurisdiction, that is a
+  cross-border transfer to account for under your own compliance regime.
