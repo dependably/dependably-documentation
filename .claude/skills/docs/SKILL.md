@@ -160,6 +160,13 @@ Prose is Canadian English per `../dependably-community/i18n/glossary.md`:
 identifiers, SPDX fields, API enums, and quoted messages keep their exact
 spelling from source even when it is US English.
 
+**No em dash as a clause separator, no arrow in prose** (decided 2026-09-15).
+Run `node ~/.claude/skills/natural-writing/scripts/tells-lint.mjs` without
+`--allow-dashes` on every page you touch; use a comma, period, or colon
+instead of a dash, and spell a UI path as "open X, then Y, then Z" instead of
+"X → Y". This is this repo's decision, not a global rule — most pages predate
+it and are fixed as they're next touched, not swept.
+
 ## Fact-sheet shape (what a scout returns)
 
 ```
