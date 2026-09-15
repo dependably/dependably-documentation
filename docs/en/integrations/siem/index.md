@@ -38,7 +38,14 @@ If Wazuh is your SIEM, you do not have to write rules or a dashboard from scratc
 You need a working collector before either import produces anything — see Setup
 below first.
 
-![The Dependably Registry dashboard in Wazuh: five metric tiles (Audit events, Authorization denials, Security config changes, Failed logins, Poller errors), an Events by action bar chart led by a blocked_deprecated bar, and an empty Authorization denials table.](images/wazuh-dependably-registry.png)
+![The Dependably Registry dashboard in Wazuh: four metric tiles (Audit events 1,690, Authorization denials 62, Security config changes 12, Failed logins 42, Poller errors 24), a populated Authorization denials log table, an Events by action bar chart led by login.success, a Logins success-vs-failure histogram with a visible spike, and a Feed health table listing real poller error stages and counts.](images/wazuh-dependably-registry.png)
+
+A seven-day window on an instance with history predating the feed's action
+filtering — `package.replace` and `package.override.set` still show up in
+Events by action here. Both are excluded from new events the collector writes
+(`EXCLUDED_ACTIONS` in `dependably-siem-poller.py`); what's shown is index
+history from before that exclusion, not a gap in the current pipeline. A
+fresh instance's feed does not accumulate either action to begin with.
 
 Nothing in the rules or dashboard is homelab-specific; both key off the feed's
 own fields (`dependably.instance`, `rule.groups`), not a hostname or an agent
