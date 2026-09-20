@@ -23,9 +23,8 @@ X-Dependably-Block-Reason: release_age
 ```
 
 `X-Dependably-Block-Reason` is present **only** when a policy gate refused the
-request. A `403` without it is not a policy decision. It is an authentication
-or authorization failure, and the remedy is a token, not a setting. See
-[Access tokens](../web-ui/tokens.md).
+request. A `403` without it is an authentication or authorization failure. Get
+a token; see [Access tokens](../web-ui/tokens.md).
 
 The header names the gate and nothing else. Your configured thresholds, and the
 advisory IDs behind them, stay out of the response, because an error body
@@ -54,8 +53,8 @@ The gates themselves, and who can change them, are described in
 
 Usually it should not have been: a listing surface filters against the same
 gates the download uses, so a version the index advertises is one the download
-will serve. Two cases are genuine exceptions rather than bugs, and both come
-down to what a listing can know.
+will serve. Two cases are genuine exceptions, and both come down to what a
+listing can know.
 
 **A version nobody has fetched yet.** Only the gates decidable from upstream
 metadata apply: release age, where the upstream publishes a timestamp, and
@@ -88,5 +87,5 @@ own.
 If developers hit `release_age` often, the cooldown is doing its job but
 arriving too late to be useful. Two things help more than lowering it. Pin
 your dependencies, so a build resolves to a version that is already past the
-window. And watch the quarantine queue rather than waiting for a failed build
-to surface the hold.
+window. And watch the quarantine queue so you see the hold before a build
+fails.

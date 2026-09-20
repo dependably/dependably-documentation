@@ -42,7 +42,7 @@ enrolment** in [Settings](settings.md).
 ## Set up single sign-on
 
 Connecting your identity provider is a short, guided flow on the
-**Authentication** tab in **Settings**. Most teams finish it in a few minutes:
+**Authentication** tab in **Settings**:
 
 1. Hand your IdP the two service-provider URLs Dependably shows you: the
    sign-in (ACS) URL `https://repo.example.com/saml/acs` and the metadata URL

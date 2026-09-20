@@ -30,11 +30,11 @@ examples; substitute your own host.
 Every guide authenticates with a token that you create in the web UI, so there
 are no files to edit and nothing to set up on the server:
 
-- **Setup**: a wizard that creates a personal token and hands you the
-  configuration for your package manager in one go.
-- **Tokens**: a personal token tied to your account. Best for your own machine.
-- **Settings**, then **Service tokens**: a long-lived token not tied to a
-  person. Best for CI and shared automation. Created by an administrator.
+| Where | Token type | Best for | Created by |
+| ----- | ---------- | -------- | ---------- |
+| **Setup** wizard | Personal, generated with ready-made configuration for your package manager | First-time setup | You |
+| **Tokens** | Personal, tied to your account | Your own machine | You |
+| **Settings** → **Service tokens** | Long-lived, not tied to a person | CI and shared automation | An administrator |
 
 Each tool then stores the token in its own credential store when you log in or
 configure it; the guides show the exact command. You never need to paste a token
