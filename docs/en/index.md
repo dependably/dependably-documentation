@@ -8,9 +8,8 @@ description: "Private package registry and pull-through cache: checksum and sign
 
 Dependably sits between your developers and the public package registries. It
 caches every package your team pulls, verifies its checksum before storing it,
-and keeps a full audit trail, so the same build works tomorrow even if a
-package disappears from the internet, and nothing enters your codebase
-unnoticed.
+and keeps a full audit trail. The same build works tomorrow even if a package
+disappears from the internet, and nothing enters your codebase unnoticed.
 
 It speaks the native protocol of each tool you already use. Point npm, pip,
 NuGet, Maven, Cargo, `go`, `dnf`, or `docker` at your Dependably URL and they
@@ -21,13 +20,9 @@ registry instead of the public one.
 
 ## What it does
 
-- As a pull-through cache, it fetches the first request for a package from
-  upstream, verifies it against its published checksum, and stores it. Every
-  later request is served locally, even if upstream is down or the package is
-  removed.
-- Supply-chain controls cover first-fetch detection, per-version checksum
-  verification, allowlists, and policy gates for vulnerabilities, malware,
-  deprecation, and unsigned artefacts.
+- Supply-chain controls add first-fetch detection, allowlists, and policy
+  gates for vulnerabilities, malware, deprecation, and unsigned artefacts on
+  top of that.
 - There is one URL per ecosystem: npm, PyPI, NuGet, Maven, Cargo, Go, RPM, and
   Docker, all from a single self-hosted instance.
 - It runs on your own infrastructure as a container (or a single self-contained
@@ -108,8 +103,9 @@ control (RBAC), users and tokens, organization settings, authentication
 
 Connect Dependably to your existing monitoring stack. Metrics are published in
 Prometheus format, and a ready-made [**Grafana dashboard**](integrations/grafana/index.md)
-gives a single-instance admin an at-a-glance health view. Structured logs go to
-stdout for your aggregator to pick up. See [**Log output**](integrations/logging.md).
+shows request rate, tracked advisories, critical findings, supply-chain
+blocks, and registry storage at a glance. Structured logs go to stdout for
+your aggregator to pick up. See [**Log output**](integrations/logging.md).
 An AI assistant can query the registry through the read-only
 [**MCP server**](integrations/mcp/index.md). [**Integrations**](integrations/index.md)
 covers each of these.

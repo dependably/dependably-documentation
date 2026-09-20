@@ -21,7 +21,7 @@ If Wazuh is your SIEM, you do not have to write rules or a dashboard from scratc
 (`dependably-dashboard.ndjson`), then:
 
 1. Import the rules: open Server management, then Rules, then Import files, and tick
-   **Overwrite** if replacing a previous import. **Restart the manager**: an imported
+   **Overwrite** if replacing a previous import. Then restart the manager: an imported
    ruleset does not take effect until analysisd restarts, and both `GET /rules` and
    `/logtest` report the rules as active before that restart actually happens, so
    neither is a reliable check. Confirm with a real search instead, on
@@ -124,7 +124,7 @@ filter's matching rule and where to get the full list.
 
 `auth.token.rejected` with `reason=tenant_mismatch` is the cross-tenant credential probe: a valid
 token from one organization presented against another. The row under the target organization is
-deliberately **actor-less**, because naming the presenting credential there would leak one tenant's
+deliberately actor-less, because naming the presenting credential there would leak one tenant's
 token identity into another tenant's audit trail.
 
 ### Identity and credential lifecycle
@@ -209,7 +209,7 @@ which is what distinguishes "my filter matches nothing" from "nothing happened" 
 
 ### Mark backfilled events so they cannot fake a burst
 
-Most SIEMs correlate on **ingest** time, not on the event's own timestamp. Replaying
+Most SIEMs correlate on ingest time, not on the event's own timestamp. Replaying
 history therefore lands months of scattered events in one second and manufactures
 correlations that never happened. A first run that backfills 24 hours can trip a
 brute-force rule on traffic that did not occur. Stamp each record with whether it was
@@ -219,7 +219,7 @@ fresh when collected, and exclude backfilled records from any time-window rule.
 
 Some events are emitted on paths a caller can trigger at will: a rejected credential, a
 rate-limit refusal. Writing one audit row per occurrence would let anyone inflate your audit
-table and your SIEM bill, so these are **coalesced**: one row per window carrying a `count`,
+table and your SIEM bill, so these are coalesced: one row per window carrying a `count`,
 rather than one row per event.
 
 Two consequences your detections must account for.
@@ -235,10 +235,10 @@ the window label is derived from the instant the event was recorded, floored to 
 interval, not from when a process started or last flushed. Every replica therefore labels the
 same event identically, and the sum is the real total.
 
-One consequence worth knowing: a burst spanning a boundary is reported as two windows rather than
-one. That is correct rather than a rounding artefact, but a threshold rule of the form "N in one
-window" will see two smaller windows instead of one large one. Threshold over a rolling range
-rather than over a single window label.
+A burst spanning a boundary is reported as two windows rather than one. That
+is correct, not a rounding artefact, but a threshold rule of the form "N in
+one window" will see two smaller windows instead of one large one. Threshold
+over a rolling range rather than over a single window label.
 
 **Resolution degrades under a spray, the total does not.** The accumulator is bounded. A caller
 generating a very large number of distinct keys (many source addresses, say) will first cause
@@ -246,7 +246,7 @@ new keys to fold into an overflow bucket, and then into a saturation bucket. Tho
 marked as folded. You lose the ability to say *which* partition each denial came from; you do
 not lose the fact that they happened, or how many there were.
 
-One caveat if you are a tenant rather than the operator: the last-resort saturation rows are
+If you are a tenant rather than the operator, the last-resort saturation rows are
 written without an organization, so they land in the operator plane and a tenant-scoped collector
 does not receive them. Under a spray heavy enough to reach saturation, a tenant feed sees the
 counted overflow rows but not the final fold. Alert on the total and treat the

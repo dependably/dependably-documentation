@@ -72,33 +72,34 @@ terraform init
 Providers download through Dependably. Each first download records an entry on
 the **Activity** page in the web UI.
 
-**Existing lock files keep working.** A committed `.terraform.lock.hcl` needs no
-change and no `-upgrade` run: Terraform recomputes each provider's `h1:` hash
-from the archive it downloads and verifies it against the lock file, and the
-mirrored bytes are identical to the ones the public registry serves. A
-configuration with no committed lock file gets no verification, the same
-exposure it already accepts when installing directly.
+A committed `.terraform.lock.hcl` needs no change and no `-upgrade` run:
+Terraform recomputes each provider's `h1:` hash from the archive it downloads
+and verifies it against the lock file, and the mirrored bytes are identical to
+the ones the public registry serves. A configuration with no committed lock
+file gets no verification, the same exposure it already accepts when
+installing directly.
 
-**Archives are cached per platform.** A version document lists every platform
-the upstream registry advertises, but each archive is fetched and cached on its
+Archives are cached per platform. A version document lists every platform the
+upstream registry advertises, but each archive is fetched and cached on its
 own first download. Running `terraform init` on Linux does not warm the macOS
 arm64 archive; the next `init` on that platform is what fetches it.
 
 ## What is mirrored
 
-**Providers are mirrored. Modules are not.** Terraform's module registry is a
-separate protocol with no network-mirror equivalent, so `terraform init` still
-reaches the public registry for any `module` block sourced from a registry.
-Provider archives are where the bytes are, so this still removes the large
-majority of egress. A deployment that must eliminate registry traffic entirely
-needs to vendor modules or source them from Git.
+Terraform's module registry is a separate protocol with no network-mirror
+equivalent, so `terraform init` still reaches the public registry for any
+`module` block sourced from a registry. Provider archives are where the bytes
+are, so this still removes the large majority of egress. A deployment that
+must eliminate registry traffic entirely needs to vendor modules or source
+them from Git.
 
-**Only configured registry hosts are mirrored.** A provider is addressed by its
-own source address (`{hostname}/{namespace}/{type}`), and Dependably matches
-that hostname against your organization's configured upstreams rather than
-fetching from whatever host the address names. To mirror a provider from a
-private registry, open **Settings**, then **Proxy**, and add that registry under
-**Upstream registries** (see [Upstreams](../admin/upstreams.md)).
+A provider is addressed by its own source address
+(`{hostname}/{namespace}/{type}`), and Dependably matches that hostname
+against your organization's configured upstreams instead of fetching from
+whatever host the address names, so only configured registry hosts are
+mirrored. To mirror a provider from a private registry, open **Settings**,
+then **Proxy**, and add that registry under **Upstream registries** (see
+[Upstreams](../admin/upstreams.md)).
 
 ## Supply-chain controls
 
@@ -111,14 +112,14 @@ reserved namespaces never pull from upstream. See
 
 Two controls behave differently for Terraform, both deliberately.
 
-**No advisory feed.** OSV publishes no Terraform provider ecosystem, so providers are never queried
-and never stamped as scanned. The UI reports them as **No advisory feed**, never
-as clean, so an artefact with zero advisory coverage is not mistaken for one
-screened against a live feed. Every other gate still applies.
+OSV publishes no Terraform provider ecosystem, so providers are never queried
+and never stamped as scanned. The UI reports them as **No advisory feed**,
+never as clean, so an artefact with zero advisory coverage is not mistaken for
+one screened against a live feed. Every other gate still applies.
 
-**No declared licenses.** Provider archives carry no license manifest, so recording zero licenses is the
-normal case here rather than an unknown-license signal, and does not block under
-a blocking license policy.
+Provider archives carry no license manifest, so recording zero licenses is the
+normal case here, not an unknown-license signal, and it does not block under a
+blocking license policy.
 
 ## Troubleshooting
 

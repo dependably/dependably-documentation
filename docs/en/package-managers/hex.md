@@ -5,14 +5,14 @@ order: 8
 
 # Hex (Elixir and Erlang)
 
-Point Mix or Rebar3 at your Dependably instance as a Hex **repository** and
+Point Mix or Rebar3 at your Dependably instance as a Hex repository and
 `mix deps.get` or `rebar3 get-deps` resolves and downloads every package through
 it: the ones your organization publishes and, on first use, anything from
 hex.pm. Publishing, retiring and documentation uploads go to the same instance.
 
 You will need your instance's base URL, a token (see
-[Getting started](../getting-started.md)), and the organization's **repository
-public key**. Every Hex registry resource is signed, and your client verifies
+[Getting started](../getting-started.md)), and the organization's repository
+public key. Every Hex registry resource is signed, and your client verifies
 each one against that key, so registering the repository is the one step that
 differs from the other ecosystems. The examples below use `repo.example.com`;
 substitute your own. Your repository and API URLs are:
@@ -91,8 +91,7 @@ has recorded a vulnerability for a release you fetch, Mix prints the advisory
 during `deps.get`, because the registry index carries it.
 
 If the repository was registered with the wrong public key, or the key was
-rotated (below), every fetch fails with a signature error rather than
-returning data.
+rotated (below), every fetch fails with a signature error.
 
 ## Publish
 
@@ -110,7 +109,7 @@ mix hex.publish --yes
 `mix.exs` must match the name being published, and the version must be a
 strict semantic version; a mismatch is refused before anything is stored.
 Publishing an existing version again is refused unless you pass `--replace`
-**and** your organization allows version overwrite.
+and your organization allows version overwrite.
 
 With Rebar3, once the repository above carries `api_key`:
 

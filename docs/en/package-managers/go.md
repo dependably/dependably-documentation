@@ -8,7 +8,7 @@ order: 6
 Point the Go toolchain at Dependably so `go get` and `go mod download` resolve
 and download modules through Dependably's module proxy cache.
 
-You will need your **base URL**. See [Getting started](../getting-started.md).
+You will need your base URL. See [Getting started](../getting-started.md).
 The examples below use `repo.example.com`; substitute your own.
 
 Dependably implements the standard Go module proxy (GOPROXY) protocol under the
@@ -33,7 +33,7 @@ go env -w GOPROXY=https://repo.example.com/go,direct
 
 Dependably also proxies the Go checksum database, so the default checksum
 verification keeps working untouched. Leave `GOSUMDB` at its default
-(`sum.golang.org`). You do **not** need to disable sum verification for a normal
+(`sum.golang.org`). You do not need to disable sum verification for a normal
 deployment.
 
 > **Air-gapped instances** with upstream proxying turned off cannot reach the
@@ -61,7 +61,7 @@ Go modules are published the Go-native way, by tagging a release in the
 module's source repository (a VCS tag like `v1.2.3`). The first time anyone
 requests that version, Dependably discovers it, fetches it, verifies it, and
 caches it automatically, so your internal modules flow through the same proxy as
-everything else. Tag the release in source and Dependably handles the rest.
+everything else.
 
 ## Revert
 

@@ -5,7 +5,7 @@ order: 5
 
 # Cargo
 
-Point Cargo (Rust) at your Dependably instance. Dependably exposes a **sparse**
+Point Cargo (Rust) at your Dependably instance. Dependably exposes a sparse
 registry index, so it works with stable Cargo (1.70 and newer) with no extra
 protocol configuration.
 
@@ -68,8 +68,8 @@ pull-through cache of the upstream your operator configured (crates.io by
 default). Cargo does not know or care which side a crate came from. A crate the
 organization has not seen before is fetched from the upstream on first use,
 verified, cached, and served; later builds hit the cache. If your organization
-publishes a name and version that also exists upstream, **the local version
-wins**: the sparse index shadows the upstream line and the download serves your
+publishes a name and version that also exists upstream, the local version
+wins: the sparse index shadows the upstream line and the download serves your
 bytes.
 
 `cargo search` covers both sides too. Whether reading needs a token at all
@@ -79,8 +79,8 @@ answered `401` with a `WWW-Authenticate: Bearer realm="cargo"` challenge.
 
 > **Tokens are organization-scoped.** A token minted in one organization is
 > treated as absent by another one's endpoints. It does not partially
-> authenticate, so the anonymous-pull rule governs and you get a `401` rather
-> than another organization's data.
+> authenticate: the anonymous-pull rule governs, and a token from the wrong
+> organization gets a `401`.
 
 ## Publishing
 
@@ -101,9 +101,9 @@ action done in the web UI (open the package's version list and select
 **Access is managed centrally.** Who can publish is governed by your Dependably
 [roles and tokens](../admin/users-and-tokens.md), so there are no per-crate owner
 lists to maintain. Change access once, in one place, instead of crate by crate.
-`cargo owner --list` reports your members. (Because access lives in Dependably
-rather than on the crate, Cargo's `cargo owner --add` / `--remove` return
-`501 Not Implemented`.)
+`cargo owner --list` reports your members. (Cargo's `cargo owner --add` /
+`--remove` return `501 Not Implemented`: ownership lives in Dependably's
+roles, not on the crate.)
 
 ## Yanking
 

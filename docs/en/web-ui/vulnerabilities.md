@@ -75,7 +75,7 @@ Select a row to expand it. From the top:
 ## Fix it with an AI assistant
 
 A skill is a Markdown playbook an AI coding assistant follows. Your instance
-serves nine, and shows the ones that match what the advisory carries:
+serves the skills below, and shows the ones that match what the advisory carries:
 
 | Skill | Applies when |
 | ----- | ------------ |
