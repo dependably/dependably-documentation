@@ -10,8 +10,8 @@ which packages carry a critical advisory, what version fixes it, whether a
 package you are about to add clears the licence policy and what command
 installs it through Dependably. It speaks the
 [Model Context Protocol](https://modelcontextprotocol.io/), so it works with
-Claude Desktop, Claude Code, Cursor, Windsurf, VS Code, Zed, Codex CLI, Gemini
-CLI and anything else that runs a stdio MCP server.
+Claude Desktop, Claude Code, Cursor, VS Code, Codex CLI, Gemini CLI and
+anything else that runs a stdio MCP server.
 
 Every tool is read-only. Nothing the assistant can call changes or deletes
 anything in the registry, reads a file on your machine, or runs a command. The
@@ -99,25 +99,6 @@ Edit `~/.cursor/mcp.json` for every project, or your project's
 }
 ```
 
-### Windsurf
-
-Edit `~/.codeium/windsurf/mcp_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "dependably": {
-      "command": "npx",
-      "args": ["-y", "dependably-mcp"],
-      "env": {
-        "DEPENDABLY_BASE_URL": "https://repo.example.com",
-        "DEPENDABLY_TOKEN": "<token>"
-      }
-    }
-  }
-}
-```
-
 ### VS Code
 
 Edit your project's `.vscode/mcp.json`. The `inputs` entry makes VS Code
@@ -142,25 +123,6 @@ never written into the file:
       "env": {
         "DEPENDABLY_BASE_URL": "https://repo.example.com",
         "DEPENDABLY_TOKEN": "${input:dependably-token}"
-      }
-    }
-  }
-}
-```
-
-### Zed
-
-Open the settings file (the `zed: open settings file` command) and add:
-
-```json
-{
-  "context_servers": {
-    "dependably": {
-      "command": "npx",
-      "args": ["-y", "dependably-mcp"],
-      "env": {
-        "DEPENDABLY_BASE_URL": "https://repo.example.com",
-        "DEPENDABLY_TOKEN": "<token>"
       }
     }
   }
