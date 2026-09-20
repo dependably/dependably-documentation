@@ -30,10 +30,11 @@ create for themselves, and it is the only scope this server needs.
 
 ## Install
 
-Pick your client. Each one needs the same two values, the base URL and the
-token, passed as the environment variables described under
-[Configure](#configure). Keep the token out of files you commit; use your client's secret
-prompt or credential store where it offers one.
+Pick your client. Claude Desktop asks for the base URL and the token in its
+install dialog. Every other client passes the same values as the environment
+variables described under [Configure](#configure). Keep the token out of files
+you commit: prefer the user-level file over the project one, and use a secret
+prompt where the client offers one, as the VS Code example does.
 
 ### Claude Desktop
 
@@ -234,8 +235,9 @@ Then ask a real question, such as *which of our packages have critical
 vulnerabilities?* The assistant answers it with `list_vulnerabilities`.
 
 If a call fails, the error names the cause: the URL it tried and the
-connection error, a 401 for a token the instance rejects, a 403 naming the
-capability the token lacks, or a 429 with the number of seconds to wait.
+connection error; a 401 when the token is unset, expired, for a different
+instance, or was not created with the capability the endpoint needs; a 403
+naming the capability the token lacks; or a 429 with the `Retry-After` value.
 
 ## Tools
 
@@ -251,7 +253,7 @@ Every tool is read-only and works on a pull only token; the ones marked
 | `get_license_policy` | The enforcement mode (`off`, `warn` or `block`) plus the SPDX allowlist and blocklist. |
 | `list_vulnerabilities` | The organization-wide report: every package affected by a known advisory, paginated. |
 | `get_vulnerability` | Full detail for one advisory by OSV id, including remediation guidance. |
-| `check_dependencies` | Scopes the report to one project's dependency list and names the version to bump each package to. Reports `clean: true` only when nothing matched and the scan was complete. |
+| `check_dependencies` | Scopes the report to one project's dependency list and names the version to bump each package to. Give the assistant the lockfile, or point it at the file; it reads the entries and sends them as the package list. Reports `clean: true` only when nothing matched and the scan was complete. |
 | `get_remediation` | The fixed version for up to 200 advisories at once, chosen for the release line you have installed, without the advisory prose. |
 | `list_projects` | The projects and folders on the [Projects](../../web-ui/projects.md) page, paginated. A project's row carries its latest version, component count, severity counts and policy verdict. Only the top level is listed unless you search with `q`, which matches at any depth. |
 | `get_project` | One project or folder: its versions newest first, its ancestors, and for a folder its children plus a rollup over everything inside it. |
@@ -263,16 +265,19 @@ Every tool is read-only and works on a pull only token; the ones marked
 | `get_publish_command` | The shell command that publishes an artefact through your instance, returned as text with a `<token>` placeholder. Fill it with a token that has a push scope, which needs the Admin or Owner role; the pull only token the server runs on cannot publish. |
 
 The read tools cover every ecosystem the registry serves: npm, PyPI, NuGet,
-Maven, RPM, OCI, Go, Cargo, Alpine (apk), Terraform and Hex. The two command
-tools cover npm, PyPI, NuGet, Maven, RPM, OCI, Go and Cargo, the ecosystems
-they know how to write a command for. Go modules are published by tagging a
+Maven, RPM, OCI, Go, Cargo, Alpine (apk), Terraform, and Hex. The exception is
+`lookup_package`, which resolves a candidate against its upstream and so covers
+npm, PyPI, NuGet, Maven, Go, Cargo, and Hex only. The command tools cover npm,
+PyPI, NuGet, Maven, RPM, OCI, Go, and Cargo, the ecosystems they know how to
+write a command for. Go modules are published by tagging a
 release in source, so `get_publish_command` returns that guidance for Go
 rather than a command.
 
-Advisory text, upstream package metadata and remediation guides come from
+Advisory text, upstream package metadata, and remediation guides come from
 public vulnerability databases, from the package's own publisher, and from
-whoever operates your instance. The server passes them through as data for
-the assistant to report, and says so in each tool's description.
+whoever operates your instance. The server passes them through unchanged, and
+the tools that return advisory text tell the assistant to treat it as data to
+report, not as instructions.
 
 ## Example prompts
 
