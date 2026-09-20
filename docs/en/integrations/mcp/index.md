@@ -211,17 +211,16 @@ gives it. The Claude Desktop dialog fills these in for you.
 | `DEPENDABLY_TIMEOUT_MS` | no | `30000` | Per-request timeout, as a whole number of milliseconds from 1 to 2147483647. |
 | `NODE_EXTRA_CA_CERTS` | only behind a private CA | unset | Path to a PEM file holding the certificate chain of the private or self-signed certificate authority your instance uses. |
 
-An instance on your own network works two ways. Plain `http://` is accepted,
-so a LAN instance needs no certificate. For HTTPS behind an internal
-certificate authority, point `NODE_EXTRA_CA_CERTS` at the PEM bundle and Node
-trusts it for this process alone. There is no switch to turn certificate
-verification off, because this server carries a token that can read your whole
-registry. A TLS failure names the host it could not verify and both options.
+The server accepts plain `http://`, so an instance on your own network needs
+no certificate. For HTTPS behind an internal certificate authority, point
+`NODE_EXTRA_CA_CERTS` at the PEM bundle and Node trusts it for this process
+alone. There is no switch to turn certificate verification off, because this
+server carries a token that can read your whole registry. A TLS failure names
+the host it could not verify and the two fixes above.
 
 ## Verify
 
-Restart your client, then ask it to run these three tools in order. Each one
-proves something the previous one did not.
+Restart your client, then ask it to run these tools in order.
 
 1. `readiness_check` needs no token. It answers once the URL is right and the
    instance is reachable, with `status` of `ready` or `degraded` and one
@@ -240,8 +239,8 @@ capability the token lacks, or a 429 with the number of seconds to wait.
 
 ## Tools
 
-Seventeen tools. Every one is read-only and works on a pull only token; the
-three marked *no token* answer without one.
+Every tool is read-only and works on a pull only token; the ones marked
+*no token* answer without one.
 
 | Tool | What it does |
 | ---- | ------------ |
