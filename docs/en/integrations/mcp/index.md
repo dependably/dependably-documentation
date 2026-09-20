@@ -30,8 +30,9 @@ create for themselves, and it is the only scope this server needs.
 
 ## Install
 
-Pick your client. Each one needs the same two values: the base URL and the
-token. Keep the token out of files you commit; use your client's secret
+Pick your client. Each one needs the same two values, the base URL and the
+token, passed as the environment variables described under
+[Configure](#configure). Keep the token out of files you commit; use your client's secret
 prompt or credential store where it offers one.
 
 ### Claude Desktop
@@ -208,7 +209,7 @@ gives it. The Claude Desktop dialog fills these in for you.
 | `DEPENDABLY_BASE_URL` | yes | | Base URL of your instance. On a multi-tenant host, use your organization's address; tenancy comes from the host name, so no organization slug is needed. |
 | `DEPENDABLY_TOKEN` | yes | | Your personal access token, sent as a bearer token. |
 | `DEPENDABLY_TIMEOUT_MS` | no | `30000` | Per-request timeout, as a whole number of milliseconds from 1 to 2147483647. |
-| `NODE_EXTRA_CA_CERTS` | no | unset | Path to a PEM file, for an instance behind a private or self-signed certificate. |
+| `NODE_EXTRA_CA_CERTS` | only behind a private CA | unset | Path to a PEM file holding the certificate chain of the private or self-signed certificate authority your instance uses. |
 
 An instance on your own network works two ways. Plain `http://` is accepted,
 so a LAN instance needs no certificate. For HTTPS behind an internal
@@ -257,7 +258,7 @@ three marked *no token* answer without one.
 | `get_remediation_skill` | The full guide for up to five skills per call, as Markdown. *No token.* |
 | `readiness_check` | Readiness with per-subsystem detail. *No token.* |
 | `get_install_command` | The shell command that installs a package through your instance, returned as text for you to run. |
-| `get_publish_command` | The shell command that publishes an artefact through your instance, returned as text with a `<token>` placeholder for you to fill in. |
+| `get_publish_command` | The shell command that publishes an artefact through your instance, returned as text with a `<token>` placeholder. Fill it with a token that has a push scope, which needs the Admin or Owner role; the pull only token the server runs on cannot publish. |
 
 The read tools cover every ecosystem the registry serves: npm, PyPI, NuGet,
 Maven, RPM, OCI, Go, Cargo, Alpine (apk), Terraform and Hex. The two command
