@@ -282,10 +282,3 @@ the assistant to report, and says so in each tool's description.
   what do I bump it to?*
 - *What's the pip install command for requests through our registry?*
 - *Is the registry up? If something is degraded, which part?*
-
-## Revert
-
-Remove the `dependably` entry from your client's configuration, or remove the
-extension from the Extensions pane in Claude Desktop, then restart the client.
-Revoke the token on the [Tokens](../../web-ui/tokens.md) page if nothing else
-uses it.
