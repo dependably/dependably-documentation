@@ -240,7 +240,7 @@ capability the token lacks, or a 429 with the number of seconds to wait.
 
 ## Tools
 
-Fourteen tools. Every one is read-only and works on a pull only token; the
+Seventeen tools. Every one is read-only and works on a pull only token; the
 three marked *no token* answer without one.
 
 | Tool | What it does |
@@ -254,6 +254,9 @@ three marked *no token* answer without one.
 | `get_vulnerability` | Full detail for one advisory by OSV id, including remediation guidance. |
 | `check_dependencies` | Scopes the report to one project's dependency list and names the version to bump each package to. Reports `clean: true` only when nothing matched and the scan was complete. |
 | `get_remediation` | The fixed version for up to 200 advisories at once, chosen for the release line you have installed, without the advisory prose. |
+| `list_projects` | The projects and folders on the [Projects](../../web-ui/projects.md) page, paginated. A project's row carries its latest version, component count, severity counts and policy verdict. Only the top level is listed unless you search with `q`, which matches at any depth. |
+| `get_project` | One project or folder: its versions newest first, its ancestors, and for a folder its children plus a rollup over everything inside it. |
+| `get_project_version` | The components a version's SBOM records, each with its advisories and a priority of `act`, `attend`, `track` or `suppressed`, plus a rollup with the policy verdict and counts by severity, scope and priority. The version defaults to the one marked latest. Filters by scope, severity, reachability, registry presence and policy violations; paginated, at most 200 per page. |
 | `list_remediation_skills` | The index of curated how-to-fix guides, one per vulnerability class. *No token.* |
 | `get_remediation_skill` | The full guide for up to five skills per call, as Markdown. *No token.* |
 | `readiness_check` | Readiness with per-subsystem detail. *No token.* |
@@ -282,3 +285,5 @@ the assistant to report, and says so in each tool's description.
   what do I bump it to?*
 - *What's the pip install command for requests through our registry?*
 - *Is the registry up? If something is degraded, which part?*
+- *What does the latest version of the billing service ship, and which of
+  those packages are we supposed to act on?*
