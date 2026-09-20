@@ -110,7 +110,9 @@ Connect Dependably to your existing monitoring stack. Metrics are published in
 Prometheus format, and a ready-made [**Grafana dashboard**](integrations/grafana/index.md)
 gives a single-instance admin an at-a-glance health view. Structured logs go to
 stdout for your aggregator to pick up. See [**Log output**](integrations/logging.md).
-Both are covered in [**Integrations**](integrations/index.md).
+An AI assistant can query the registry through the read-only
+[**MCP server**](integrations/mcp/index.md). [**Integrations**](integrations/index.md)
+covers each of these.
 
 ---
 

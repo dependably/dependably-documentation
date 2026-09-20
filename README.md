@@ -53,6 +53,8 @@ docs/
     └── integrations/                ← monitoring & third-party integrations
         ├── index.md
         ├── logging.md                ← structured log output & shipping
+        ├── mcp/
+        │   └── index.md             ← dependably-mcp for Claude and other MCP clients
         └── grafana/                 ← one folder per integration
             ├── index.md             ← Grafana dashboard guide
             ├── dashboards/          ← downloadable dashboard JSON
