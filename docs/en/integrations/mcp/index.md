@@ -7,11 +7,11 @@ order: 3
 
 `dependably-mcp` lets an AI assistant answer questions about your registry:
 which packages carry a critical advisory, what version fixes it, whether a
-package you are about to add clears the licence policy, and what command
+package you are about to add clears the licence policy and what command
 installs it through Dependably. It speaks the
 [Model Context Protocol](https://modelcontextprotocol.io/), so it works with
 Claude Desktop, Claude Code, Cursor, Windsurf, VS Code, Zed, Codex CLI, Gemini
-CLI, and anything else that runs a stdio MCP server.
+CLI and anything else that runs a stdio MCP server.
 
 Every tool is read-only. Nothing the assistant can call changes or deletes
 anything in the registry, reads a file on your machine, or runs a command. The
@@ -203,7 +203,7 @@ Edit `~/.gemini/settings.json`, or your project's `.gemini/settings.json`:
 ## Configure
 
 The server reads its whole configuration from the environment your client
-gives it. The Claude Desktop dialog fills these in for you.
+gives it.
 
 | Variable | Required | Default | Purpose |
 | -------- | -------- | ------- | ------- |
@@ -234,22 +234,23 @@ Restart your client, then ask it to run these tools in order.
 Then ask a real question, such as *which of our packages have critical
 vulnerabilities?* The assistant answers it with `list_vulnerabilities`.
 
-If a call fails, the error names the cause: the URL it tried and the
-connection error; a 401 when the token is unset, expired, for a different
-instance, or was not created with the capability the endpoint needs; a 403
-naming the capability the token lacks; or a 429 with the `Retry-After` value.
+If a call fails, the error names the cause. On a connection failure it gives
+the URL it tried and the connection error. A 401 means the token is unset,
+expired, for a different instance, or was not created with the capability the
+endpoint needs. A 403 names the capability the token lacks, and a 429 carries
+the `Retry-After` value.
 
 ## Tools
 
-Every tool is read-only and works on a pull only token; the ones marked
-*no token* answer without one.
+Every tool works on a pull only token; the ones marked *no token* answer
+without one.
 
 | Tool | What it does |
 | ---- | ------------ |
 | `list_packages` | Paginated inventory, with ecosystem and name filters. Pages are at most 200 items. |
-| `get_package` | One package: its versions, the SPDX licence of each, and links to affecting advisories. |
+| `get_package` | One package: its versions, the SPDX licence of each and links to affecting advisories. |
 | `search_packages` | Quick search across the registry by name. Queries shorter than two characters return nothing. |
-| `lookup_package` | Pre-adoption check of a package that need not be in the registry: upstream metadata, OSV advisories, and the policy verdict. Ingests nothing. |
+| `lookup_package` | Pre-adoption check of a package that need not be in the registry: upstream metadata, OSV advisories and the policy verdict. Ingests nothing. |
 | `get_license_policy` | The enforcement mode (`off`, `warn` or `block`) plus the SPDX allowlist and blocklist. |
 | `list_vulnerabilities` | The organization-wide report: every package affected by a known advisory, paginated. |
 | `get_vulnerability` | Full detail for one advisory by OSV id, including remediation guidance. |
@@ -265,16 +266,16 @@ Every tool is read-only and works on a pull only token; the ones marked
 | `get_publish_command` | The shell command that publishes an artefact through your instance, returned as text with a `<token>` placeholder. Fill it with a token that has a push scope, which needs the Admin or Owner role; the pull only token the server runs on cannot publish. |
 
 The read tools cover every ecosystem the registry serves: npm, PyPI, NuGet,
-Maven, RPM, OCI, Go, Cargo, Alpine (apk), Terraform, and Hex. The exception is
-`lookup_package`, which resolves a candidate against its upstream and so covers
-npm, PyPI, NuGet, Maven, Go, Cargo, and Hex only. The command tools cover npm,
-PyPI, NuGet, Maven, RPM, OCI, Go, and Cargo, the ecosystems they know how to
-write a command for. Go modules are published by tagging a
-release in source, so `get_publish_command` returns that guidance for Go
-rather than a command.
+Maven, RPM, OCI, Go, Cargo, Alpine (apk), Terraform and Hex. Only
+`lookup_package` is narrower: it resolves a candidate against its upstream, so
+it covers npm, PyPI, NuGet, Maven, Go, Cargo and Hex. The two command tools,
+`get_install_command` and `get_publish_command`, cover npm, PyPI, NuGet,
+Maven, RPM, OCI, Go and Cargo. Go modules are published by tagging a release
+in source, so `get_publish_command` returns that guidance for Go rather than a
+command.
 
-Advisory text, upstream package metadata, and remediation guides come from
-public vulnerability databases, from the package's own publisher, and from
+Advisory text, upstream package metadata and remediation guides come from
+public vulnerability databases, from the package's own publisher and from
 whoever operates your instance. The server passes them through unchanged, and
 the tools that return advisory text tell the assistant to treat it as data to
 report, not as instructions.

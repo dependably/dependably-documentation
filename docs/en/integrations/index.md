@@ -15,7 +15,7 @@ stack can watch the registry the same way it watches everything else.
 | ---- | ------ |
 | [Grafana dashboard](grafana/index.md) | A ready-made Grafana dashboard for a single Dependably instance, plus how to expose metrics to Prometheus |
 | [Log output](logging.md) | The structured-log formats Dependably writes to stdout, and how to ship them to CloudWatch or an OTLP collector |
-| [MCP server](mcp/index.md) | Connect Claude Desktop, Claude Code, Cursor, VS Code and other MCP clients to the registry with the read-only `dependably-mcp` server, and what each of its tools answers |
+| [MCP server](mcp/index.md) | The read-only `dependably-mcp` server for Claude Desktop, Claude Code, Cursor, VS Code and other MCP clients, and what each of its tools answers |
 | [SIEM and SOC integration](siem/index.md) | What security telemetry Dependably emits, which transport carries which events, and how to build a collector that does not silently lose data |
 
 Dependably publishes metrics in Prometheus exposition format at `/metrics`. Any
