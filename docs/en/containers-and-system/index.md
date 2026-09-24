@@ -19,5 +19,5 @@ every guide needs.
 | **docker** / podman | Container images (OCI) | [Docker](docker.md) |
 | **dnf** / yum | RPM packages (Linux) | [RPM](rpm.md) |
 
-For developer package managers (npm, PyPI, NuGet, Maven, Cargo, Go), see
-[Package managers](../package-managers/index.md).
+For developer package managers (npm, PyPI, NuGet, Maven, Cargo, Go, Terraform,
+and Hex), see [Package managers](../package-managers/index.md).

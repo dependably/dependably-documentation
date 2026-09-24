@@ -12,19 +12,19 @@ and keeps a full audit trail. The same build works tomorrow even if a package
 disappears from the internet, and nothing enters your codebase unnoticed.
 
 It speaks the native protocol of each tool you already use. Point npm, pip,
-NuGet, Maven, Cargo, `go`, `dnf`, or `docker` at your Dependably URL and they
-behave exactly as before. The only difference is that they talk to your
-registry instead of the public one.
+NuGet, Maven, Cargo, `go`, Terraform, `mix`, `docker`, or `dnf` at your
+Dependably URL and they work as before; the only difference is that they talk to
+your registry instead of the public one.
 
 ---
 
 ## What it does
 
-- Supply-chain controls add first-fetch detection, allowlists, and policy
-  gates for vulnerabilities, malware, deprecation, and unsigned artefacts on
-  top of that.
-- There is one URL per ecosystem: npm, PyPI, NuGet, Maven, Cargo, Go, RPM, and
-  Docker, all from a single self-hosted instance.
+- Each ecosystem gets its own URL on a single self-hosted instance. The table
+  below lists the guides.
+- Supply-chain controls sit on top of the cache: first-fetch detection,
+  allowlists, and policy gates for vulnerabilities, malware, deprecation, and
+  unsigned artefacts.
 - It runs on your own infrastructure as a container (or a single self-contained
   binary), with no cloud account, no per-seat licence, and no external services
   required.
@@ -83,19 +83,26 @@ for a tour of every page:
 [Lookup](web-ui/lookup.md) ·
 [Vulnerabilities](web-ui/vulnerabilities.md) ·
 [Risk](web-ui/risk.md) ·
-[Licences](web-ui/license-policy.md) ·
+[Licence policy](web-ui/license-policy.md) ·
 [Tokens](web-ui/tokens.md) ·
 [Setup](web-ui/setup.md) ·
 [Profile](web-ui/profile.md)
+
+Admins and owners also have [Quarantine](web-ui/quarantine.md), and the
+[Audit log](web-ui/audit.md) is open to admins, owners, and auditors.
 
 ---
 
 ## Running Dependably
 
 If you operate the instance or administer an organization, see
-[**Administration**](admin/index.md): deployment and configuration, access
-control (RBAC), users and tokens, organization settings, authentication
-(SAML SSO), and upstream registries.
+[**Administration**](admin/index.md):
+[Configuration](admin/configuration.md) ·
+[Access control (RBAC)](admin/rbac.md) ·
+[Users & tokens](admin/users-and-tokens.md) ·
+[Settings](admin/settings.md) ·
+[Authentication](admin/authentication.md) ·
+[Upstreams](admin/upstreams.md)
 
 ---
 
@@ -105,10 +112,11 @@ Connect Dependably to your existing monitoring stack. Metrics are published in
 Prometheus format, and a ready-made [**Grafana dashboard**](integrations/grafana/index.md)
 shows request rate, tracked advisories, critical findings, supply-chain
 blocks, and registry storage at a glance. Structured logs go to stdout for
-your aggregator to pick up. See [**Log output**](integrations/logging.md).
-An AI assistant can query the registry through the read-only
-[**MCP server**](integrations/mcp/index.md). [**Integrations**](integrations/index.md)
-covers each of these.
+your aggregator to pick up; see [**Log output**](integrations/logging.md).
+[**SIEM and SOC integration**](integrations/siem/index.md) covers feeding
+security events to a SIEM, and an AI assistant can query the registry through
+the read-only [**MCP server**](integrations/mcp/index.md).
+[**Integrations**](integrations/index.md) is the overview.
 
 ---
 
