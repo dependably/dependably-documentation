@@ -1,4 +1,5 @@
 ---
+description: "Choose between ECS JSON and text log output, read the JSON fields and levels, and ship Dependably logs to CloudWatch or an OTLP collector."
 order: 2
 ---
 
@@ -17,7 +18,8 @@ choice is the format.
 
 ## Choose a format
 
-Set `LOG_FORMAT` (see [Configuration](../admin/configuration.md)):
+Set the `LOG_FORMAT` environment variable on the container, the same way as the
+settings in [Configuration](../admin/configuration.md):
 
 | Value | Use it for |
 | ----- | ---------- |
@@ -28,7 +30,7 @@ Text format looks like this, with exception stack traces on the lines
 immediately following:
 
 ```
-[2026-06-15 12:00:00.000 INF] Dependably.Api.NuGetController: Package pushed: my-pkg 1.0.0
+[2026-06-15 12:00:00.000 INF] Dependably.Infrastructure.FirstBootService: First boot detected — initializing instance.
 ```
 
 ## The JSON fields
@@ -44,18 +46,22 @@ With `LOG_FORMAT=json`, each event conforms to the
 | `ecs.version` | yes | ECS schema version. |
 | `log.logger` | when set | Full type name of the logger. |
 | `trace.id`, `span.id` | when set | Trace and span IDs from the current activity. |
-| `labels` | varies | Every remaining property. Sensitive values are already redacted to `[REDACTED]` before the formatter sees them. |
+| `labels` | varies | Remaining properties with string values. Sensitive values are already redacted to `[REDACTED]` before the formatter sees them. |
+| `metadata` | varies | Remaining properties with non-string values, such as numbers. |
 
-One event, formatted here for readability. Real output is a single line:
+The formatter also adds standard ECS objects such as `host` and `process`.
+
+One event, formatted here for readability and trimmed to the fields above. Real
+output is a single line:
 
 ```json
 {
   "@timestamp": "2026-06-15T12:00:00.000+00:00",
-  "log.level": "Information",
-  "message": "Package pushed: my-pkg 1.0.0",
+  "log.level": "Warning",
+  "message": "Checksum mismatch fetching hex \"jason\" \"1.4.1\".",
   "ecs.version": "9.0.0",
-  "log": { "logger": "Dependably.Api.NuGetController" },
-  "labels": { "OrgId": "default", "Ecosystem": "nuget", "PackageName": "my-pkg", "Version": "1.0.0" }
+  "log": { "logger": "Dependably.Api.HexController" },
+  "labels": { "Name": "jason", "Version": "1.4.1" }
 }
 ```
 
@@ -63,12 +69,16 @@ One event, formatted here for readability. Real output is a single line:
 
 | Level | Used for |
 | ----- | -------- |
-| `Verbose` | Fine-grained diagnostics. Off in production by default. |
-| `Debug` | Periodic heartbeats and operational ticks, such as a cleanup pass starting or a stats refresh finishing. |
-| `Information` | Normal operational events: pushes, proxy hits, first boot. |
-| `Warning` | Recoverable anomalies: upstream timeouts, checksum mismatches, skipped schema migrations. |
+| `Verbose` | Fine-grained diagnostics. |
+| `Debug` | Operational ticks, such as a stats refresh pass skipped because another instance holds the lock. |
+| `Information` | Normal operational events, such as first boot. |
+| `Warning` | Recoverable anomalies: upstream timeouts, checksum mismatches. |
 | `Error` | Failed requests and exceptions caught at the boundary. |
 | `Fatal` | Unrecoverable startup failures. |
+
+The minimum level is `Information`, so `Verbose` and `Debug` events are not written
+unless you lower it, for example with `Serilog__MinimumLevel__Default=Debug`.
+Framework logs from `Microsoft` and `System` start at `Warning`.
 
 ## Ship them to CloudWatch
 
@@ -86,8 +96,10 @@ fields `@timestamp`, `log.level`, message, `log.logger`
 ## Ship them over OTLP
 
 Set `OTEL_EXPORTER_OTLP_ENDPOINT` and logs are forwarded to that collector in
-addition to the always-on stdout sink, which never stops. Air-gapped
-deployments leave the variable unset and consume stdout only.
+addition to stdout, which is always on. The records carry `service.name`
+(`OTEL_SERVICE_NAME`, default `dependably`) and `deployment.environment`
+(`DEPLOYMENT_ENVIRONMENT`, default `unknown`). Air-gapped deployments leave the
+endpoint unset and consume stdout only.
 
 Metrics have their own path: see the
 [Grafana dashboard](grafana/index.md) guide.
