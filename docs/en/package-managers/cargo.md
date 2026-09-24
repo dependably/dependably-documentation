@@ -6,8 +6,7 @@ order: 5
 # Cargo
 
 Point Cargo (Rust) at your Dependably instance. Dependably exposes a sparse
-registry index, so it works with stable Cargo (1.70 and newer) with no extra
-protocol configuration.
+registry index, which Cargo reads without extra protocol configuration.
 
 You will need your instance's base URL and a token. Create a token in the web
 UI (see [Getting started](../getting-started.md)). The examples below use
@@ -23,34 +22,47 @@ discover the download and publish endpoints automatically.
 
 ## Configure
 
-Cargo has no command to define a registry, so add this one block to your global
+Cargo has no command to define a registry, so add this block to your global
 `~/.cargo/config.toml` (on Windows, `%USERPROFILE%\.cargo\config.toml`). It holds
 no secret:
 
 ```toml
 [registries.dependably]
 index = "sparse+https://repo.example.com/cargo/"
+
+[source.crates-io]
+replace-with = "dependably"
+
+[source.dependably]
+registry = "sparse+https://repo.example.com/cargo/"
 ```
 
-Then log in. Cargo prompts for the token and stores it in its own credential
-store, so there is no environment variable and no secret in a file:
+The `[source]` entries route every crates.io dependency through Dependably.
+Without them, Cargo only uses Dependably for dependencies that name it. On an
+instance served over plain `http://`, the **Setup** page in the web UI adds
+`protocol = "sparse"` to the `[registries.dependably]` block.
+
+Then log in. Cargo prompts for the token and saves it in
+`~/.cargo/credentials.toml`, outside any project:
 
 ```bash
 cargo login --registry dependably
 # paste <your token> when prompted
 ```
 
-To pull a dependency from Dependably, reference the registry by name in your
-`Cargo.toml`:
+In CI, set the token in the `CARGO_REGISTRIES_DEPENDABLY_TOKEN` environment
+variable instead.
+
+To name the registry on a dependency, for example a crate your organization
+published, add `registry = "dependably"` in your `Cargo.toml`:
 
 ```toml
 [dependencies]
 my-internal-crate = { version = "1.0", registry = "dependably" }
 ```
 
-A project can commit its own `.cargo/config.toml` with the same
-`[registries.dependably]` block so everyone who clones the repo resolves it the
-same way.
+A project can commit its own `.cargo/config.toml` with the same blocks so
+everyone who clones the repo resolves it the same way.
 
 ## Verify
 
@@ -60,27 +72,26 @@ cargo build                                 # resolve and fetch dependencies
 ```
 
 `cargo build` resolves your `[dependencies]` against the sparse index and
-downloads any `registry = "dependably"` crates. Your first download records an
-entry on the **Activity** page in the web UI.
+downloads the crates through Dependably.
 
-One registry URL covers both sides: crates your organization published and a
+One registry URL covers the crates your organization published and a
 pull-through cache of the upstream your operator configured (crates.io by
-default). Cargo does not know or care which side a crate came from. A crate the
-organization has not seen before is fetched from the upstream on first use,
-verified, cached, and served; later builds hit the cache. If your organization
-publishes a name and version that also exists upstream, the local version
-wins: the sparse index shadows the upstream line and the download serves your
-bytes.
+default). A crate your organization has not fetched before comes from the
+upstream on first use, is checked against the index checksum, cached, and
+served; later builds hit the cache. Once your organization publishes a crate
+name, Dependably serves that name only from your organization's own versions
+and does not fetch it from the upstream.
 
-`cargo search` covers both sides too. Whether reading needs a token at all
-depends on the organization: with **anonymous pull** enabled, index and download
-requests work without one; with it disabled, an unauthenticated request is
-answered `401` with a `WWW-Authenticate: Bearer realm="cargo"` challenge.
+`cargo search` covers the crates your organization published and the upstream
+crates it has already cached. Whether reading needs a token at all depends on
+the organization: with **Anonymous pull** enabled, index and download requests
+work without one; with it disabled, an unauthenticated request is answered
+`401` with a `WWW-Authenticate: Bearer realm="cargo"` challenge.
 
-> **Tokens are organization-scoped.** A token minted in one organization is
+> **Tokens are organization-scoped.** A token created in one organization is
 > treated as absent by another one's endpoints. It does not partially
-> authenticate: the anonymous-pull rule governs, and a token from the wrong
-> organization gets a `401`.
+> authenticate: the **Anonymous pull** setting decides whether a read succeeds,
+> and publishing, yanking and `cargo owner` answer `401`.
 
 ## Publishing
 
@@ -91,19 +102,19 @@ cargo publish --registry dependably
 ```
 
 Publishing requires a token with a push scope (**push only** or
-**push & pull**). See [Access tokens](../web-ui/tokens.md). The published
-version appears in the sparse index immediately; re-publishing an existing
-version is rejected. Removing a bad version outright is an Admin or Owner
-action done in the web UI (open the package's version list and select
-**Delete**); to hide a version without breaking existing lockfiles, see
-[Yanking](#yanking) below.
+**push & pull**), which only an Admin or Owner can create. See
+[Access tokens](../web-ui/tokens.md). The published version appears in the
+sparse index immediately. Publishing a version that already exists is refused
+with `409` unless your organization has turned on **Allow version overwrite**.
+To take a bad version out of resolution without breaking existing lockfiles,
+see [Yanking](#yanking) below.
 
-**Access is managed centrally.** Who can publish is governed by your Dependably
-[roles and tokens](../admin/users-and-tokens.md), so there are no per-crate owner
-lists to maintain. Change access once, in one place, instead of crate by crate.
-`cargo owner --list` reports your members. (Cargo's `cargo owner --add` /
-`--remove` return `501 Not Implemented`: ownership lives in Dependably's
-roles, not on the crate.)
+**Access is managed centrally.** Your Dependably
+[roles and tokens](../admin/users-and-tokens.md) decide who can publish. There
+are no per-crate owner lists to maintain. `cargo owner --list` reports your
+organization's members and needs a token even when anonymous pull is on. `cargo owner --add` and
+`--remove` return `501 Not Implemented`, because ownership lives in
+Dependably's roles, not on the crate.
 
 ## Yanking
 
@@ -117,10 +128,10 @@ cargo yank --registry dependably --version 1.2.3 --undo my-crate
 ```
 
 > **Yanking needs a capability the token presets do not grant.** The
-> presets in the web UI (**pull only**, **push only**, **push & pull**) cover
-> reading and publishing only. A token that may yank needs `yank:cargo` (or `yank:*`), which
-> is minted through the management API rather than the token screen. See the
-> API docs at `/api/v1/docs/` on your instance.
+> presets on the **Access tokens** page (**pull only**, **push only**,
+> **push & pull**) cover reading and publishing only. A token that may yank
+> needs `yank:cargo` (or `yank:*`). An Admin or Owner creates it through the
+> management API (`POST /api/v1/tokens`) rather than the token screen.
 
 ## Revert
 
@@ -130,5 +141,6 @@ Stop publishing or resolving against Dependably:
 cargo logout --registry dependably
 ```
 
-Then remove the `[registries.dependably]` block from `~/.cargo/config.toml`, and
-drop the `registry = "dependably"` keys from each `Cargo.toml`.
+Then remove the `[registries.dependably]`, `[source.crates-io]` and
+`[source.dependably]` blocks from `~/.cargo/config.toml`, and drop the
+`registry = "dependably"` keys from each `Cargo.toml`.
