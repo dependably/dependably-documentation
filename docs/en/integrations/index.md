@@ -1,13 +1,14 @@
 ---
-description: "Connect Dependably to the monitoring and dashboard tools you already run; operational data is exposed in standard formats."
+description: "Connect Dependably to the monitoring, logging, SIEM and AI tools you already run, using standard formats such as Prometheus metrics and ECS logs."
 order: 5
 ---
 
 # Integrations
 
 Connect Dependably to the tools you already run alongside it. Dependably exposes
-operational data in standard formats, so your existing monitoring and dashboard
-stack can watch the registry the same way it watches everything else.
+operational and security data in standard formats, so your existing monitoring,
+logging and SIEM stack can watch the registry the same way it watches everything
+else.
 
 ## Pages
 

@@ -1,45 +1,66 @@
 ---
+description: "The Audit page of the Dependably web console: search, filter, and export your organization's activity and configuration events."
 order: 12
 ---
 
 # Audit log
 
-The **Audit log** is a searchable, exportable record of what happened in your
-organization: every fetch, push, block, login, and configuration change.
+The **Audit** page is a searchable, exportable record of what happened in your
+organization: fetches, pushes, blocks, sign-ins, and configuration changes.
 
-> This page is for the **Admin** and **Owner** roles. It appears under **Admin**
-> in their sidebar; a member's sidebar does not list it, and a member who opens
-> its address is returned to the Overview. An **Auditor** reads the log through
-> a token with the **audit** scope rather than this page. See
+> This page is for the **Admin**, **Owner**, and **Auditor** roles. It appears
+> under **Admin** in their sidebar (an Auditor's **Admin** section holds only
+> **Audit**). A member's sidebar does not list it, and a member who opens its
+> address is returned to the Overview. See
 > [Access control (RBAC)](../admin/rbac.md).
 
 ## Activity and Configuration
 
-The page has two tabs:
+The **Activity** tab holds package and access events:
 
-- **Activity**: package- and access-level events. It lists first fetches,
-  pushes, imports, downloads, vulnerability scans, deletes, and manual
-  block / unblock, plus every kind of supply-chain policy block (the gates
-  are defined in [Settings](../admin/settings.md)) and login success /
-  failure / lockout.
-- **Configuration**: administrative changes.
-  It lists organization, retention, and proxy settings; SAML configuration and
-  logins; token and service-token lifecycle; member role changes, removals, and
-  invites; allow/block-list and licence-policy edits; package claims; and
-  security events such as a blocked SSRF attempt or an upstream checksum
-  mismatch.
+- first fetches, pushes, imports, downloads, vulnerability scans, and deletes
+- manual blocks and unblocks, and every download a policy gate refused (the
+  gates are set in [Settings](../admin/settings.md))
+- sign-ins that succeed, fail, or lock the account, and sign-ins that skipped
+  the second factor on a remembered device or used a recovery code
+
+The **Configuration** tab holds administrative changes:
+
+- organization, retention, and proxy settings
+- failed sign-ins, lockouts, and password and language changes
+- two-factor enrolment, removal, recovery-code regeneration, and remembered
+  devices
+- SAML configuration and logins
+- token and service-token lifecycle
+- member role changes, removals, and invites
+- allow-list, block-list, and licence-policy edits, and package claims
+- security events such as a blocked SSRF attempt or an upstream checksum
+  mismatch
+
+A push also appears here, under **Packages**, as well as on **Activity**.
 
 ## Find an event
 
-Search by PURL, event, actor, or detail (the Configuration tab searches
-action, actor, PURL, and detail). Filter by event type with the dropdown.
-Events are sorted by **Time**, newest first.
+On the **Activity** tab, search by PURL, event, actor, or detail. Narrow the
+list with the event-type filter (**Blocked (all)** covers every refused
+download) and the time window: **All time** or the last 24 hours, 7, 30, or 90
+days. The window starts at **Last 30 days**.
 
-Each row records the **time**, the **event** or **action**, the **PURL** it
-concerns (where relevant), a **detail** string, and the **actor** who triggered
-it.
+On the **Configuration** tab, search by action, actor, PURL, or detail, and
+filter to one action, picked from a list grouped under headings such as
+**Authentication** and **Licence policy**.
+
+When a search finds nothing in the most recent events, the page says so: older
+events were not searched. Narrow by event type or action to reach further back,
+or export to CSV.
+
+Events are sorted by **Time**, newest first. The **Activity** table shows
+**Time**, **Event**, **PURL**, **Detail**, and **Actor**; the **Configuration**
+table shows **Time**, **Action**, **Ecosystem**, **PURL**, **Actor**, and
+**Detail**.
 
 ## Export
 
-Select **Export CSV** to download the current view for offline analysis or to
-hand to a compliance process.
+Select **Export CSV** to download every event that matches the tab's current
+search and filters, up to 50,000 rows, rather than just the page on screen. The
+file also carries the source IP address of each event.

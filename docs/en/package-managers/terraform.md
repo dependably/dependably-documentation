@@ -55,9 +55,8 @@ terraform init
 ```
 
 If your organization has anonymous pull disabled, the mirror answers `401` with
-a `WWW-Authenticate: Bearer` challenge. Terraform's network mirror sends no
-credentials of its own, so put them in the URL's userinfo. The username is
-ignored; only the token is checked:
+a `WWW-Authenticate: Bearer` challenge. Put the token in the URL's userinfo.
+The username is ignored; only the token is checked:
 
 ```hcl
 url = "https://user:<your token>@repo.example.com/terraform/"
@@ -69,8 +68,10 @@ url = "https://user:<your token>@repo.example.com/terraform/"
 terraform init
 ```
 
-Providers download through Dependably. Each first download records an entry on
-the **Activity** page in the web UI.
+Providers download through Dependably. The first download of each provider
+archive is recorded as a **First fetch** event on the **Activity** tab of the
+**Audit** page, which admins, owners and auditors can open. See
+[Audit log](../web-ui/audit.md).
 
 A committed `.terraform.lock.hcl` needs no change and no `-upgrade` run:
 Terraform recomputes each provider's `h1:` hash from the archive it downloads
@@ -86,20 +87,19 @@ arm64 archive; the next `init` on that platform is what fetches it.
 
 ## What is mirrored
 
-Terraform's module registry is a separate protocol with no network-mirror
-equivalent, so `terraform init` still reaches the public registry for any
-`module` block sourced from a registry. Provider archives are where the bytes
-are, so this still removes the large majority of egress. A deployment that
-must eliminate registry traffic entirely needs to vendor modules or source
-them from Git.
+Only providers are mirrored. Terraform's module registry is a separate
+protocol with no network-mirror equivalent, so `terraform init` still reaches
+the public registry for any `module` block sourced from a registry. Provider
+archives are where the bytes are, so this still removes the large majority of
+egress. A deployment that must eliminate registry traffic entirely needs to
+vendor modules or source them from Git.
 
-A provider is addressed by its own source address
-(`{hostname}/{namespace}/{type}`), and Dependably matches that hostname
-against your organization's configured upstreams instead of fetching from
-whatever host the address names, so only configured registry hosts are
-mirrored. To mirror a provider from a private registry, open **Settings**,
-then **Proxy**, and add that registry under **Upstream registries** (see
-[Upstreams](../admin/upstreams.md)).
+Only configured registry hosts are mirrored. A provider is addressed by its
+own source address (`{hostname}/{namespace}/{type}`), and Dependably matches
+that hostname against your organization's configured upstreams instead of
+fetching from whatever host the address names. To mirror a provider from a
+private registry, open **Settings**, then **Proxy**, and add that registry
+under **Upstream registries** (see [Upstreams](../admin/upstreams.md)).
 
 ## Supply-chain controls
 
@@ -110,16 +110,16 @@ first served it. The policy gate runs on first fetch and on every cache hit, and
 reserved namespaces never pull from upstream. See
 [Settings](../admin/settings.md) for the gates themselves.
 
-Two controls behave differently for Terraform, both deliberately.
+Advisory scanning and the licence gate behave differently for Terraform.
 
 OSV publishes no Terraform provider ecosystem, so providers are never queried
 and never stamped as scanned. The UI reports them as **No advisory feed**,
 never as clean, so an artefact with zero advisory coverage is not mistaken for
 one screened against a live feed. Every other gate still applies.
 
-Provider archives carry no license manifest, so recording zero licenses is the
-normal case here, not an unknown-license signal, and it does not block under a
-blocking license policy.
+Provider archives carry no licence manifest, so recording zero licences is the
+normal case here, not an unknown-licence signal, and it does not block under a
+blocking licence policy.
 
 ## Troubleshooting
 

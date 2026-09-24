@@ -41,6 +41,10 @@ page that was once true.
 - **No numbers from memory.** Windows ("last 30 days"), thresholds, limits,
   counts of anything (recovery codes, page sizes, skills) are copied from the
   code that produces them, with the file noted in your working notes.
+- **No set sizes in prose.** A number that is itself a product fact (a limit, a
+  retry count) stays. A count of the items the sentence then lists or the page
+  already shows ("Three risk indicators sit side by side", "both tabs", "two
+  cases") does not: describe the set. `--docs` on the linter warns on these.
 - **No "coming soon", "planned", "will".** Document what ships. If a page in
   the UI is a placeholder, say it is a placeholder, quoting its own text.
 - **No role guesses.** "Requires elevated permissions" is not a claim; name the
@@ -135,11 +139,11 @@ and the sidebar gating.
    lychee --no-progress --exclude '^https?://' docs/ README.md
    ```
 
-   Then the readability floor from the global `documentation` skill, on every
-   page you touched (errors fail; each kept warning gets a stated reason):
+   Then the readability floor from the global `natural-writing` skill, on
+   every page you touched (errors fail; each kept warning gets a stated reason):
 
    ```bash
-   node ~/.claude/skills/natural-writing/scripts/tells-lint.mjs docs/en/<page>.md
+   node ~/.claude/skills/natural-writing/scripts/tells-lint.mjs --docs docs/en/<page>.md
    ```
 
    (`pip install codespell` fails here — the private index needs auth; `uvx` works.)

@@ -38,15 +38,16 @@ prompt where the client offers one, as the VS Code example does.
 
 ### Claude Desktop
 
-Install the extension bundle rather than editing JSON. Download
-`dependably-<version>.mcpb` from the
+On macOS or Windows, install the extension bundle rather than editing JSON.
+Download `dependably-<version>.mcpb` from the
 [dependably-mcp releases](https://github.com/dependably/dependably-mcp/releases)
 and check it against the `.sha256` file beside it. Then double-click the
 bundle, or drag it onto the Extensions pane in Settings.
 
 The install dialog asks for your Dependably URL and your token, and stores the
-token in your operating system's keychain. Two optional fields cover the
-request timeout and a private certificate authority bundle.
+token in your operating system's keychain. An optional field takes a private
+certificate authority bundle, for an instance whose certificate a public
+authority did not issue.
 
 ### Claude Code
 
@@ -179,7 +180,7 @@ no certificate. For HTTPS behind an internal certificate authority, point
 `NODE_EXTRA_CA_CERTS` at the PEM bundle and Node trusts it for this process
 alone. There is no switch to turn certificate verification off, because this
 server carries a token that can read your whole registry. A TLS failure names
-the host it could not verify and the two fixes above.
+the host it could not verify and the fixes above.
 
 ## Verify
 
@@ -197,23 +198,27 @@ Then ask a real question, such as *which of our packages have critical
 vulnerabilities?* The assistant answers it with `list_vulnerabilities`.
 
 If a call fails, the error names the cause. On a connection failure it gives
-the URL it tried and the connection error. A 401 means the token is unset,
-expired, for a different instance, or was not created with the capability the
-endpoint needs. A 403 names the capability the token lacks, and a 429 carries
+the URL it tried and the connection error. On macOS, an instance on your local
+network is unreachable until the client app is allowed under **System
+Settings**, then **Privacy & Security**, then **Local Network**. A 401 means
+the token is unset, expired, for a different instance, or was not created with
+the capability the endpoint needs. A 403 names the capability the token lacks, and a 429 carries
 the `Retry-After` value.
 
 ## Tools
 
-Every tool works on a pull only token; the ones marked *no token* answer
-without one.
+Every tool works on a pull only token. The server still needs the token set
+to start, but the instance answers the tools marked *no token* without
+checking it.
 
 | Tool | What it does |
 | ---- | ------------ |
 | `list_packages` | Paginated inventory, with ecosystem and name filters. Pages are at most 200 items. |
 | `get_package` | One package: its versions, the SPDX licence of each and links to affecting advisories. |
-| `search_packages` | Quick search across the registry by name. Queries shorter than two characters return nothing. |
+| `search_packages` | Quick search across the registry by name. The query must be at least two characters. |
 | `lookup_package` | Pre-adoption check of a package that need not be in the registry: upstream metadata, OSV advisories and the policy verdict. Ingests nothing. |
-| `get_license_policy` | The enforcement mode (`off`, `warn` or `block`) plus the SPDX allowlist and blocklist. |
+| `get_license_policy` | The licence rules only: the enforcement mode (`off`, `warn` or `block`) plus the SPDX allowlist and blocklist. |
+| `get_policies` | The organization's whole package policy: the licence rules plus every control that can refuse a download (malicious packages, KEV, SSVC exploitation, CVSS and EPSS ceilings, release age, deprecated and revoked versions, install scripts, signature checks), each with its effect and any threshold. Against an instance that predates this policy view, it returns the licence policy with a note that other controls may still apply. |
 | `list_vulnerabilities` | The organization-wide report: every package affected by a known advisory, paginated. |
 | `get_vulnerability` | Full detail for one advisory by OSV id, including remediation guidance. |
 | `check_dependencies` | Scopes the report to one project's dependency list and names the version to bump each package to. Give the assistant the lockfile, or point it at the file; it reads the entries and sends them as the package list. Reports `clean: true` only when nothing matched and the scan was complete. |
@@ -230,7 +235,7 @@ without one.
 The read tools cover every ecosystem the registry serves: npm, PyPI, NuGet,
 Maven, RPM, OCI, Go, Cargo, Alpine (apk), Terraform and Hex. Only
 `lookup_package` is narrower: it resolves a candidate against its upstream, so
-it covers npm, PyPI, NuGet, Maven, Go, Cargo and Hex. The two command tools,
+it covers npm, PyPI, NuGet, Maven, Go, Cargo and Hex. The command tools,
 `get_install_command` and `get_publish_command`, cover npm, PyPI, NuGet,
 Maven, RPM, OCI, Go and Cargo. Go modules are published by tagging a release
 in source, so `get_publish_command` returns that guidance for Go rather than a
@@ -244,10 +249,14 @@ report, not as instructions.
 
 ## Example prompts
 
+![Claude Desktop answering "Does django 5.0.6 have any known vulnerabilities?" through Dependably: 41 advisories against Django 5.0.6, a table of the critical and high ones with GHSA id, CVSS score, issue and fixed-in version, and advice to upgrade to the 5.2 LTS line.](images/mcp-package-vulnerabilities.png)
+
 - *Which of our npm packages have a critical CVE right now, and what version
   fixes the worst one?*
 - *Can we use lodash 4.17.21? Don't add it, just tell me if it clears our
   licence policy.*
+- *What is our policy for third-party packages? Which controls block a
+  download, and which only warn?*
 - *Here's our package-lock.json. What in here has a known vulnerability, and
   what do I bump it to?*
 - *What's the pip install command for requests through our registry?*

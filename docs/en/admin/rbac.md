@@ -4,11 +4,11 @@ order: 2
 
 # Access control (RBAC)
 
-Dependably's permission model is built from two pre-defined sets, so there is
-nothing to design or maintain yourself. Every member of an organization has
-exactly one of four roles, which determines everything they may do. Every
-access token carries one of six pre-defined token scopes, and a token never
-grants more than the role of the person who created it; see
+Dependably's permission model is built from pre-defined roles and token scopes,
+so there is nothing to design or maintain yourself. Every member of an
+organization has exactly one role, which determines everything they may do.
+Every access token carries one pre-defined scope, and a token never grants more
+than the role of the person who created it; see
 [Users & tokens](users-and-tokens.md) for the scopes and how to create tokens.
 
 ## Roles
@@ -16,9 +16,9 @@ grants more than the role of the person who created it; see
 | Role | What it allows |
 | ---- | -------------- |
 | **Member** | Read-only consumer: browse, search, install, and download packages; manage their own access tokens. |
-| **Admin** | Day-to-day administrator: everything a Member can, plus publish, import, and yank packages in every ecosystem, manage package claims, manage members and invitations, change organization settings, and read the audit log. |
-| **Owner** | Everything an Admin can, plus managing Owners: promoting someone to Owner, or changing an existing Owner's role, is reserved to Owners. An organization always keeps at least one Owner. |
-| **Auditor** | Compliance role: read the audit log and manage their own access tokens, with no other permissions and no package access. The web console's Audit page is open to Admins and Owners only; an Auditor reads the log through a token with the **audit** scope. |
+| **Admin** | Day-to-day administrator: everything a Member can, plus publish, import, and yank packages in every ecosystem, upload SBOM, VEX, and SARIF documents, manage package claims, manage members and invitations, change organization settings, and read the audit log. |
+| **Owner** | Everything an Admin can, plus managing Owners: promoting someone to Owner, or changing or removing an existing Owner, is reserved to Owners. An organization always keeps at least one Owner. |
+| **Auditor** | Compliance role: read the audit log on the **Audit** page and manage their own access tokens, with no other permissions and no package access. |
 
 Assign and change roles on the **Users** page (see
 [Users & tokens](users-and-tokens.md)). With SAML single sign-on, roles can

@@ -16,14 +16,12 @@ account type (Forms or SAML), MFA status, and join date.
 
 A member's role is one of **Member**, **Admin**, **Owner**, or **Auditor**;
 see [Access control](rbac.md) for what each allows. To change a role, select
-**Change role** on the member's row, pick the new role, and **Save**. Role
-changes follow a two-tier rule:
+**Change role** on the member's row, pick the new role, and **Save**.
 
-- **Admins** can manage Member, Admin, and Auditor rows.
-- **Owners**: changing an existing Owner's role, or promoting someone to
-  Owner, is reserved to Owners. Admins cannot promote someone to Owner.
-
-Remove a member from the same row (same two-tier rule).
+Admins can change and remove Member, Admin, and Auditor rows. Changing or
+removing an Owner, and promoting someone to Owner, is reserved to Owners, so an
+Admin sees no **Change role** control on an Owner's row. Remove a member with
+**Remove** on their row.
 
 > **Last-owner rule.** An organization must always keep at least one Owner.
 > Demoting or removing the last remaining Owner is rejected. Promote a
@@ -35,20 +33,23 @@ On the **Users** page, select **Invite user**, enter the person's email, and
 choose their role. Admins can invite Members, Admins, and Auditors; inviting
 at the Owner role is reserved to Owners.
 
-The **Pending Invites** tab shows each invite's status (pending, accepted, or
-expired). Each organization has a cap on outstanding pending invites. If you
-hit it, cancel unused ones from this tab.
+The **Pending Invites** tab lists invites with their status (pending,
+accepted, or expired). Each organization has a cap on outstanding pending
+invites; if you hit it, cancel unused ones from this tab.
 
-When SMTP is configured the invite is emailed automatically. If SMTP is
-unconfigured or delivery fails, the page shows the invite link so you can send
-it yourself. The invitee follows the link to validate the invite and set their
-password.
+When the instance has an email relay configured (see
+[Configuration](configuration.md#invite-email)), the invite is emailed
+automatically. If no relay is configured or delivery fails, the page shows the
+invite link so you can send it yourself. The invitee opens the link, chooses a
+password of at least 12 characters, and selects **Accept Invite**, which
+creates the account and signs them in.
 
 ## Personal tokens vs service tokens
 
-Both are registry credentials. The raw token value is shown once, at creation
-time. It is stored only as a hash and cannot be retrieved again, so store it in
-your credential store or CI secret manager immediately.
+Personal and service tokens are registry credentials that work the same way on
+the wire. The raw token value is shown once, at creation time. It is stored
+only as a hash and cannot be retrieved again, so store it in your credential
+store or CI secret manager immediately.
 
 Every token carries one of the pre-defined scopes:
 
@@ -56,20 +57,20 @@ Every token carries one of the pre-defined scopes:
 | ----- | ------ |
 | **pull only** | Install and download packages. |
 | **push only** | Publish packages. |
-| **push & pull** | Both. |
-| **admin** | Read and change organization settings. |
+| **push & pull** | Install, download, and publish packages. |
+| **admin** | Change organization settings and manage members, invitations, and service tokens. |
 | **audit** | Read the audit log, for SIEM and logging integrations. |
 | **SBOM upload** | Upload SBOM, VEX, and SARIF documents to Projects, for CI. |
 
-A token never grants more than the role of the person who created it allows:
-scopes that publish (**push only**, **push & pull**) or manage the
-organization (**admin**, **SBOM upload**) require the Admin or Owner role, and
-**audit** requires the Admin, Owner, or Auditor role.
+A token never grants more than the role of the person who created it allows.
+The scopes that publish (**push only**, **push & pull**), **admin**, and
+**SBOM upload** require the Admin or Owner role. The **Tokens** page offers
+**admin**, **audit**, and **SBOM upload** only to Admins and Owners.
 
 Set an **Expires at** to bound a token's lifetime, and a description (up to
 200 characters) to tell tokens apart. The organization enforces a maximum
-number of active tokens (personal and service tokens share this cap); revoke
-unused tokens before creating new ones.
+number of active tokens, shared by personal and service tokens; expired tokens
+don't count toward it. Revoke unused tokens before creating new ones.
 
 ### Personal tokens
 
@@ -77,12 +78,11 @@ A personal token is tied to a person's account, and is best for day-to-day CLI
 access (`npm install`, `npm publish`, and so on) from their own machine. It
 lives and dies with that account: removing the user from the organization (or
 the user changing their password) revokes their personal tokens. Everyone
-manages their own on the **Tokens** page; see
-[Access tokens](../web-ui/tokens.md) for the walkthrough.
+manages and revokes their own on the **Tokens** page; see
+[Access tokens](../web-ui/tokens.md) for the walkthrough. The page lists only
+your own tokens.
 
-Members can revoke their own tokens; Admins and Owners can revoke any token in
-the organization. `npm whoami` against a personal token reports the owner's
-email.
+`npm whoami` against a personal token reports the owner's email.
 
 ### Service tokens
 
@@ -94,7 +94,7 @@ or Owner role). Select **New token** and enter:
 
 1. A **Name** (required; for example, *GitHub Actions*).
 2. An optional **Description** (for example, *Build server in us-east-1*).
-3. A **Scope**, any of the six scopes above.
+3. A **Scope**, any of the scopes above.
 4. An optional **Expires at**.
 
 The table lists each service token's name, description, scope, creation and

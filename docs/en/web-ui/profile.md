@@ -1,5 +1,5 @@
 ---
-description: "The Profile page of the Dependably web console: change your password, set up or disable two-factor authentication, and choose your theme, language, and timezone."
+description: "The Dependably Profile page: change your password, set up or disable two-factor authentication, and choose your theme, language, and timezone."
 order: 10
 ---
 
@@ -14,16 +14,18 @@ your password, two-factor authentication, and how the console looks to you.
 ## Change your password
 
 Select **Change password**, then enter your current password and the new one
-twice. A password must be at least 12 characters, must not be the one you are
-replacing, and is rejected when it is easy to guess or contains your email
-name, your organization's name, or the word "dependably".
+twice. A password must be at least 12 characters and no more than 72 bytes,
+and must not be the one you are replacing. It is also rejected when it is easy
+to guess or contains the part of your email address before the @, your
+organization's short name from its web address, or the word "dependably".
 
 Changing your password signs out your other sessions and revokes your API
 tokens, so create fresh [tokens](tokens.md) afterwards. The browser you changed
 it from stays signed in.
 
-If an administrator set your current password, the console brings you here
-first and will not let you continue until you have chosen your own.
+If your password was generated when the instance or your organization was set
+up (the organization's first owner account), the console brings you here first
+and will not let you continue until you have chosen your own.
 
 ## Two-factor authentication
 
@@ -35,14 +37,14 @@ one-time passwords (TOTP):
    key** by hand.
 3. Enter the 6-digit code your app shows and select **Enable two-factor
    authentication**.
-4. Dependably shows **10 recovery codes**. Save them somewhere safe. Each
+4. Dependably shows 10 recovery codes. Save them somewhere safe. Each
    works once and lets you sign in if you lose your authenticator. They are
    shown only this once; **Copy** puts them on your clipboard.
 
 From then on you enter a code at sign-in, or tick **Remember this device for
 30 days**. Without your authenticator, choose **Use a recovery code instead**
-on the sign-in screen and enter one of the saved codes. The row shows how many recovery codes you have left, with two more
-actions:
+on the sign-in screen and enter one of the saved codes. The row shows how many
+recovery codes you have left, with two more actions:
 
 - **Regenerate recovery codes**: enter a code from your app or an unused
   recovery code to get a new set of 10. The old set stops working.
@@ -75,5 +77,5 @@ list. This too is saved to your account.
 ## Open-source notices
 
 The list of third-party components Dependably is built from, with each
-version and licence, is under **Notices** at the bottom of the sidebar rather
-than on this page. It is useful for your own compliance records.
+version, licence, and copyright, is under **Notices** at the bottom of the
+sidebar rather than on this page.

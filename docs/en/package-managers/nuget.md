@@ -8,8 +8,8 @@ order: 3
 Point `dotnet` at Dependably to restore private packages, proxy public ones, and
 publish your own.
 
-You will need your **base URL** and a **token**. See
-[Getting started](../getting-started.md) for both. The examples use `repo.example.com`;
+You will need your **base URL** and a **token**; see
+[Getting started](../getting-started.md). The examples use `repo.example.com`;
 substitute your own. Your NuGet v3 service index is:
 
 ```
@@ -48,9 +48,10 @@ dotnet new console -n smoke && cd smoke
 dotnet add package Newtonsoft.Json
 ```
 
-A successful restore confirms the source, credentials, and service index are all
-wired up. Your first restore records an entry on the **Activity** page in the web
-UI. Check there to confirm packages are flowing through Dependably.
+A successful restore confirms that the source, credentials and service index
+work. The first download of each package version is recorded as a
+**First fetch** event on the **Activity** tab of the **Audit** page, which
+admins, owners and auditors can open. See [Audit log](../web-ui/audit.md).
 
 ## Publishing
 
@@ -69,8 +70,9 @@ with a push scope (**push only** or **push & pull**). See
 
 ### Unlisting a version
 
-Deleting a version **unlists** (soft-deletes) it. The package data is retained,
-but the version stops appearing in restore metadata:
+Deleting a version with `dotnet nuget delete` **unlists** it. The package stays
+stored, but Dependably leaves the version out of the version lists that
+restore reads:
 
 ```bash
 dotnet nuget delete MyPackage 1.0.0 \
@@ -78,10 +80,14 @@ dotnet nuget delete MyPackage 1.0.0 \
   --api-key <your token>
 ```
 
-Unlisting needs removal permission that the pre-defined token scopes do not
-include. An Admin or Owner can instead delete the version in the web UI (open
-the package's version list and select **Delete**). Deleting removes the
-version entirely rather than unlisting it.
+Unlisting needs a removal permission that the token scopes in the web UI do
+not include. If your organization sets **Purge unlisted after (days)**, unlisted
+versions are deleted once that many days pass (see
+[Settings](../admin/settings.md#storage)).
+
+An admin or owner can instead delete the version in the web UI: open the
+package, open the version's **Actions** menu, and select **Delete**. This
+removes the version and its files.
 
 ## Revert
 

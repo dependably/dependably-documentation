@@ -17,10 +17,10 @@ or config files are needed for day-to-day administration.
 
 | Page | Covers |
 | ---- | ------ |
-| [Configuration](configuration.md) | Deploy the instance and set its base URL |
-| [Access control (RBAC)](rbac.md) | The four roles, token scopes, and how permissions are enforced |
+| [Configuration](configuration.md) | Deploy the instance, set its base URL, and the environment variable reference |
+| [Access control (RBAC)](rbac.md) | Roles, token scopes, and how permissions are enforced |
 | [Users & tokens](users-and-tokens.md) | Members, invitations, personal vs service tokens, account actions |
-| [Settings](settings.md) | Org settings, retention, proxy & supply-chain security gates |
+| [Settings](settings.md) | Organization settings: retention, proxy, supply-chain security gates, signatures, alerts, and webhooks |
 | [Authentication](authentication.md) | Forms login, MFA, SAML 2.0 single sign-on, role mapping |
 | [Upstreams](upstreams.md) | Upstream registries Dependably proxies, and OCI routing |
 

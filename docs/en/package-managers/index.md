@@ -5,10 +5,10 @@ order: 1
 
 # Package managers
 
-Point your developer package managers at Dependably and they work exactly as
-before. They pull, and publish, through your registry instead of the public
-one. Each guide covers configuring the client, verifying it, publishing,
-and reverting.
+Point your developer package managers at Dependably and they work as before,
+pulling through your registry instead of the public one. Each guide covers
+configuring the client, verifying it, publishing where the ecosystem supports
+it, and reverting.
 
 [**Getting started**](../getting-started.md) gathers the base URL and token
 every guide needs.
