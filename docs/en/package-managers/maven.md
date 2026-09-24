@@ -24,8 +24,8 @@ package can never be silently replaced by a public one of the same coordinates.
 ## Configure
 
 Maven and Gradle have no CLI config command, so they are configured through
-files. The blocks below are the minimum you need. The token lives in a user-level file
-outside your project (so it is never committed); put it there directly.
+files. The blocks below are the minimum you need. The token lives in a
+user-level file outside your project, so it is never committed.
 
 ### Maven
 
@@ -68,9 +68,20 @@ To route every dependency through Dependably, add a catch-all `<mirror>` to
 </mirrors>
 ```
 
+> **Plain HTTP:** Maven 3.8.1 and later block plain-HTTP repositories. Serve
+> Dependably over HTTPS, or add a `<mirror>` for it that declares
+> `<blocked>false</blocked>`.
+
 ### Gradle
 
-In `build.gradle`:
+Put the token in your user `~/.gradle/gradle.properties`:
+
+```properties
+dependablyToken=<your token>
+```
+
+Then reference the repository in `build.gradle`. The build reads the token from
+that property, or from the `DEPENDABLY_TOKEN` environment variable in CI:
 
 ```groovy
 repositories {
@@ -78,7 +89,7 @@ repositories {
         url = uri("https://repo.example.com/maven/")
         credentials {
             username = "user"
-            password = "<your token>"
+            password = findProperty("dependablyToken") ?: System.getenv("DEPENDABLY_TOKEN")
         }
     }
 }
@@ -94,8 +105,9 @@ mvn dependency:resolve     # or: ./gradlew dependencies
 mvn -U dependency:resolve  # or: ./gradlew --refresh-dependencies build
 ```
 
-The first download for a coordinate appears on the **Activity** page in the web
-UI.
+The first download of each file is recorded as a **First fetch** event on the
+**Activity** tab of the **Audit** page, which admins, owners and auditors can
+open. See [Audit log](../web-ui/audit.md).
 
 ## Publishing
 
@@ -118,19 +130,36 @@ URL, reusing the `<server>` credentials from `settings.xml`, then `mvn deploy`:
 </distributionManagement>
 ```
 
-For Gradle, apply the `maven-publish` plugin with a repository pointed at the
-same URL, then `./gradlew publish`.
+For Gradle, apply the `maven-publish` plugin and add a publishing repository
+with the same URL and credentials, then run `./gradlew publish`:
 
-Dependably validates every uploaded checksum (`.sha1`, `.md5`) against the bytes
-it received and rejects a mismatch. Versions ending in `-SNAPSHOT` are mutable:
-each deploy stores a new timestamped build, and a request for the plain
-`-SNAPSHOT` filename always resolves to the latest. For release versions, whether
-re-publishing the same version overwrites the existing one is governed by your
-organization's same-version push policy (`versionOverwritePolicy`, `block` by
-default); see [Settings](../admin/settings.md).
+```groovy
+publishing {
+    repositories {
+        maven {
+            url = uri("https://repo.example.com/maven/")
+            credentials {
+                username = "user"
+                password = findProperty("dependablyToken") ?: System.getenv("DEPENDABLY_TOKEN")
+            }
+        }
+    }
+}
+```
+
+Dependably validates each uploaded checksum file (`.sha1`, `.md5`, `.sha256`)
+against the bytes it received and rejects a mismatch. Versions ending in
+`-SNAPSHOT` are mutable: each deploy stores a new timestamped build, and the
+metadata Dependably serves for that version points Maven and Gradle at the
+latest one.
+
+Maven publishes do not apply your organization's **Version overwrite policy**
+(see [Settings](../admin/settings.md#gates)). Deploying a file that already
+exists under a release version replaces it.
 
 ## Revert
 
-Remove the `dependably` repository (and any `<mirror>` or
-`distributionManagement` / `maven-publish` block) from your `pom.xml` /
-`build.gradle`, and delete the matching `<server>` entry from `settings.xml`.
+Remove the `dependably` repository, and any `<mirror>`,
+`distributionManagement` or `publishing` block, from your `pom.xml` or
+`build.gradle`. Then delete the matching `<server>` entry from `settings.xml`
+and the `dependablyToken` line from `gradle.properties`.

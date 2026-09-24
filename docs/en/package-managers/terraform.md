@@ -55,9 +55,8 @@ terraform init
 ```
 
 If your organization has anonymous pull disabled, the mirror answers `401` with
-a `WWW-Authenticate: Bearer` challenge. Terraform's network mirror sends no
-credentials of its own, so put them in the URL's userinfo. The username is
-ignored; only the token is checked:
+a `WWW-Authenticate: Bearer` challenge. Put the token in the URL's userinfo.
+The username is ignored; only the token is checked:
 
 ```hcl
 url = "https://user:<your token>@repo.example.com/terraform/"
@@ -69,8 +68,10 @@ url = "https://user:<your token>@repo.example.com/terraform/"
 terraform init
 ```
 
-Providers download through Dependably. Each first download records an entry on
-the **Activity** page in the web UI.
+Providers download through Dependably. The first download of each provider
+archive is recorded as a **First fetch** event on the **Activity** tab of the
+**Audit** page, which admins, owners and auditors can open. See
+[Audit log](../web-ui/audit.md).
 
 A committed `.terraform.lock.hcl` needs no change and no `-upgrade` run:
 Terraform recomputes each provider's `h1:` hash from the archive it downloads
@@ -109,7 +110,7 @@ first served it. The policy gate runs on first fetch and on every cache hit, and
 reserved namespaces never pull from upstream. See
 [Settings](../admin/settings.md) for the gates themselves.
 
-Two controls behave differently for Terraform, both deliberately.
+Advisory scanning and the licence gate behave differently for Terraform.
 
 OSV publishes no Terraform provider ecosystem, so providers are never queried
 and never stamped as scanned. The UI reports them as **No advisory feed**,

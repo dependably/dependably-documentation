@@ -8,8 +8,8 @@ order: 1
 Point npm (and yarn / pnpm, which read the same config) at Dependably to install
 private packages, proxy public ones, and publish your own.
 
-You will need your **base URL** and a **token**. See
-[Getting started](../getting-started.md) for both. The examples use `repo.example.com`;
+You will need your **base URL** and a **token**; see
+[Getting started](../getting-started.md). The examples use `repo.example.com`;
 substitute your own. Your npm registry URL is:
 
 ```
@@ -46,8 +46,9 @@ confirm your token authenticates. `npm ping` is always anonymous; if it succeeds
 but `npm whoami` returns `ENEEDAUTH`, the token was not set. A service token
 reports its identity as `service:<name>` rather than an email.
 
-Your first install records an entry on the **Activity** page in the web UI.
-Check there to confirm packages are flowing through Dependably.
+The first download of each package version is recorded as a **First fetch**
+event on the **Activity** tab of the **Audit** page, which admins, owners and
+auditors can open. See [Audit log](../web-ui/audit.md).
 
 ## Publishing
 
@@ -55,11 +56,11 @@ Check there to confirm packages are flowing through Dependably.
 npm publish --registry https://repo.example.com/npm/
 ```
 
-Both scoped (`@scope/name`) and unscoped packages are supported. Publishing
+Scoped (`@scope/name`) and unscoped packages publish the same way. Publishing
 requires a token with a push scope (**push only** or **push & pull**). See
 [Access tokens](../web-ui/tokens.md).
 
-You can also manage dist-tags with a publish-capable token:
+The same token manages dist-tags:
 
 ```bash
 npm dist-tag add <pkg>@<version> <tag>
@@ -67,12 +68,14 @@ npm dist-tag ls  <pkg>
 npm dist-tag rm  <pkg> <tag>          # the 'latest' tag cannot be removed
 ```
 
-## Revert
+### Removing a version
 
-Removing a published version is an Admin or Owner action done in the web UI:
-open the package's version list and select **Delete**. The npm CLI's
-`npm unpublish` needs removal permission that the pre-defined token scopes do
-not include.
+Removing a published version is an admin or owner action in the web UI: open
+the package, open the version's **Actions** menu, and select **Delete**.
+`npm unpublish` needs a removal permission that the token scopes in the web UI
+do not include.
+
+## Revert
 
 To stop using Dependably as your registry:
 
