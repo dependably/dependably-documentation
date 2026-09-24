@@ -83,7 +83,7 @@ for a tour of every page:
 [Lookup](web-ui/lookup.md) ·
 [Vulnerabilities](web-ui/vulnerabilities.md) ·
 [Risk](web-ui/risk.md) ·
-[Licence policy](web-ui/license-policy.md) ·
+[Policies](web-ui/license-policy.md) ·
 [Tokens](web-ui/tokens.md) ·
 [Setup](web-ui/setup.md) ·
 [Profile](web-ui/profile.md)

@@ -9,7 +9,7 @@ The **Overview** is the first page after sign-in and the page the **Dependably**
 logo returns you to. It answers, at a glance: how much is in the registry, what
 is being pulled, what is being blocked, and where the risk sits.
 
-![The Overview page: a New vulnerabilities detected ribbon, thirteen metric cards, and a packages-by-ecosystem table beside a doughnut chart, with the downloads chart starting beneath.](images/overview.png)
+![The Overview page: a New vulnerabilities detected ribbon, the metric cards, and a packages-by-ecosystem table beside a doughnut chart, with the downloads chart starting beneath.](images/overview.png)
 
 All numbers cover your organization only. The scoring terms (CVSS, EPSS,
 KEV) are defined in the [Glossary](../glossary.md).
