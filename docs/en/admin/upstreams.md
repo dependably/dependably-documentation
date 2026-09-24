@@ -10,13 +10,17 @@ held locally, Dependably consults the configured upstream list for the matching
 ecosystem, fetches and verifies the artefact, caches it, and serves it.
 
 If an ecosystem has **no upstream configured**, proxying for that ecosystem is
-disabled, and Dependably serves only locally published packages.
+disabled: Dependably serves packages published to it and packages already in
+its cache, and fetches nothing new.
 
 ## Configuring upstreams
 
-Each upstream is a priority-ordered entry per ecosystem. Entries are tried in
-order; on a miss or an unreachable upstream, Dependably falls through to the
-next.
+Manage upstreams in **Settings**: open the **Proxy** tab, then the **Upstream
+registries** section, and select **Add registry**. Upstreams are
+priority-ordered per ecosystem; drag a row by its handle to reorder.
+Entries are tried in order; on a miss or an unreachable upstream, Dependably
+falls through to the next. RPM is the exception: only the top RPM entry is
+used.
 
 A new organization is seeded with the standard public upstream for each
 ecosystem, so proxying works without adding an upstream yourself:
@@ -29,11 +33,23 @@ ecosystem, so proxying works without adding an upstream yourself:
 | Maven | `https://repo1.maven.org/maven2` |
 | Go | `https://proxy.golang.org` |
 | Cargo | `https://index.crates.io` (sparse index) |
+| Alpine apk | `https://dl-cdn.alpinelinux.org/alpine` |
+| Terraform | `https://registry.terraform.io` |
+| Hex | `https://repo.hex.pm` |
 | RPM | *(none; see below)* |
-| OCI | MCR + Docker Hub (see below) |
+| OCI (**Docker** in the UI) | MCR + Docker Hub (see below) |
 
 RPM has no built-in default (RPM repos are distro-specific): an RPM upstream
 must be added explicitly.
+
+### Upstream credentials
+
+An upstream can use **Anonymous**, **Bearer (token)**, or **Basic (username +
+password/token)** authentication; RPM upstreams are anonymous only, and OCI
+upstreams have their own auth types (below). An upstream with credentials must
+use an `https://` URL. The password or token is write-only: the API never
+returns it after saving. Storing one, for any ecosystem, requires the operator
+to set `DEPENDABLY_MASTER_KEY` (see [Configuration](configuration.md)).
 
 ## OCI upstream routing & auth
 
@@ -41,17 +57,21 @@ OCI upstreams live in the same per-organization store as every other ecosystem.
 An organization can have **multiple** OCI upstreams, routed by repository-name
 prefix: Dependably selects the first upstream (in priority order) whose prefix
 list matches the requested repository name. An empty-string prefix (`""`) is the
-catch-all, so it belongs on your last-resort upstream.
+catch-all, so it belongs on your last-resort upstream; upstreams listed below a
+catch-all are never reached.
 
-A new organization is seeded with two OCI upstreams:
+A new organization is seeded with these OCI upstreams, in this order:
 
 1. `mcr.microsoft.com` (anonymous): prefixes `dotnet/` and `playwright`.
 2. `registry-1.docker.io` (Docker Hub token exchange): prefixes `library/`
    and `""` (catch-all). Anything not matched by MCR routes here.
 
 Each OCI upstream carries an auth type: `anonymous` (public images), `basic`
-(static username + password), `dockerhub_token_exchange` (Docker Hub's
-bearer-token flow), or `aws_ecr` (Amazon ECR). A `401` from an upstream causes
-Dependably to evict the cached token and retry once. Every proxied blob is
-streamed through a SHA-256 verifier; if the bytes do not hash to the requested
-digest, the fetch fails closed and nothing is cached or served.
+(static username + password or token), or `dockerhub_token_exchange` (Docker
+Hub's bearer-token flow). For Amazon ECR, use `basic` with a password obtained
+from ECR's `GetAuthorizationToken`. A `401` from an upstream causes Dependably
+to evict the cached token and retry once.
+
+Every proxied blob is streamed through a SHA-256 verifier. If the bytes do not
+hash to the requested digest, Dependably resets the connection and caches
+nothing.
