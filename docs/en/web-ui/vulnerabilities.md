@@ -1,5 +1,5 @@
 ---
-description: "The Vulnerabilities page of the Dependably web console: every advisory affecting a cached version, ranked by exploitation risk, with a fix recipe for your AI assistant."
+description: "The Dependably Vulnerabilities page: every advisory affecting a cached version, ranked by exploitation risk, with a fix recipe for your AI assistant."
 order: 5
 ---
 
@@ -22,14 +22,15 @@ CVSS, EPSS, KEV, and other terms, see the [Glossary](../glossary.md).
   exploitation probability, then by CVSS score. That order is not a column
   sort, so no header is highlighted until you choose one.
 - Page through results at the bottom; choose 20, 50, 100, or 200 rows per
-  page. Filters and sort are kept in the page address, so a copied link opens
-  the same view.
+  page. The search, filters, sort, and page are kept in the page address, so
+  a copied link opens the same view. **Revoked only** is the exception: it is
+  not kept, and it narrows only the rows already on the current page.
 
 | Column | Meaning |
 | ------ | ------- |
 | **Package** | The affected package, with its ecosystem badge. |
 | **Version** | The specific cached version the advisory applies to. A **revoked** badge means the version has disappeared from the upstream registry. That is a lifecycle signal rather than a vulnerability, though a takedown can indicate a compromised release. |
-| **Severity** | **Critical** (CVSS 9.0 and above), **High** (7.0 to 8.9), **Medium** (4.0 to 6.9), or **Low**. Two more badges can appear here: **KEV**, for an advisory in the CISA Known Exploited Vulnerabilities Catalog, or **KEV · Ransomware** for entries CISA has tied to ransomware campaigns; and **MALICIOUS** for an OSV `MAL-` report, a verdict that the package itself is malicious, not a score. Remove such a package rather than looking for a fix. |
+| **Severity** | **Critical** (CVSS 9.0 and above), **High** (7.0 to 8.9), **Medium** (4.0 to 6.9), or **Low** (below 4.0). A **KEV** badge marks an advisory in the CISA Known Exploited Vulnerabilities Catalog, and **KEV · Ransomware** an entry CISA has tied to ransomware campaigns. **MALICIOUS** marks an OSV `MAL-` report, a verdict that the package itself is malicious, not a score: remove such a package rather than looking for a fix. |
 | **Score** | The CVSS base score, taken from the advisory or computed from its vector, or a dash when the advisory has none. |
 | **EPSS** | The probability, as a percentage, that the vulnerability is exploited in the wild within the next 30 days. Refreshed daily. Use it to rank *which* High you fix first. |
 | **OSV ID** | The advisory identifier (for example `GHSA-…`), linking to its record on osv.dev. |
@@ -53,8 +54,8 @@ Select a row to expand it. From the top:
   badge, and links to the OSV record and, for a CVE, to NVD.
 - **Applications affected**: which projects ship the package.
 - **Aliases** and **Related** advisories, each linked to its home database:
-  GHSA to the GitHub Advisory Database, CVE to NVD, RUSTSEC, GO, and PYSEC to
-  theirs.
+  GHSA to the GitHub Advisory Database, CVE to NVD, RUSTSEC to rustsec.org, GO
+  to pkg.go.dev, and PYSEC to osv.dev.
 - **References**, then the **Remediation** section described below, then the
   **Affected** ranges, **Credits**, the advisory's full **Details**, and the
   raw database-specific data.
@@ -101,9 +102,9 @@ remediation section and the install command adapts:
 The **Install skill** one-liner needs no token, because the endpoint it
 fetches from is anonymous. The **Prompt** beside it is pre-filled with the
 advisory ID, the affected package, your installed version, and the resolved
-fixed version; paste it into the assistant after installing. Using no assistant is fine too:
-the playbooks are plain Markdown, so open the same URL and follow the recipe
-by hand.
+fixed version; paste it into the assistant after installing. Without an
+assistant, open the same URL and follow the recipe by hand: the playbooks are
+plain Markdown.
 
 ## What an advisory does and does not do
 
@@ -111,11 +112,13 @@ Seeing an advisory here does not by itself stop the version being served.
 Whether a vulnerable version is blocked depends on your organization's
 supply-chain gates (vulnerability score, KEV, EPSS, malware). Those gates, and
 the scores they key on, are set by an administrator in
-[Settings](../admin/settings.md). Versions a gate has blocked wait in the
-Quarantine queue for an administrator's decision; a package manager refused a
-download sees [a blocked package](../package-managers/blocked-packages.md).
-This page has no block or allow controls; administrators and owners use them
-on the [package page](packages.md). A member cannot block a version.
+[Settings](../admin/settings.md#gates). Versions a gate has blocked wait in
+the [Quarantine](quarantine.md) queue for an administrator's decision; a
+package manager refused a download sees
+[a blocked package](../package-managers/blocked-packages.md). This page has no
+block or allow controls: administrators and owners block or allow a version on
+the [package page](packages.md).
 
-On an air-gapped instance, advisories come from the local OSV mirror, and the
-KEV and EPSS columns stay empty because those feeds are not fetched.
+On an air-gapped instance, advisories come from the local OSV mirror. The KEV
+and EPSS feeds are not fetched there, so no KEV badges appear and the **EPSS**
+column stays empty.

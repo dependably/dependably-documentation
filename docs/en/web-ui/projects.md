@@ -1,5 +1,5 @@
 ---
-description: "The Projects page of the Dependably web console: the applications you build, described by uploaded SBOMs, with the components and findings of every version."
+description: "The Projects page of the Dependably web console: the applications you build, described by uploaded SBOMs, with each version's components and findings."
 order: 3
 ---
 
@@ -13,8 +13,8 @@ advisories, and whether the version passes your organization's policy.
 
 ![The Projects page: a search box and a table of projects with Name, Components, Severity, Policy, Latest, and Last upload columns.](images/projects.png)
 
-Every signed-in user can browse projects, open any version, and export its
-documents. Creating, uploading, and triaging are administrator actions, listed
+Members, admins, and owners can browse projects, open any version, and export
+its documents. Creating, uploading, and triaging are administrator actions, listed
 under [What needs an administrator](#what-needs-an-administrator).
 
 ## Browse projects
@@ -31,6 +31,7 @@ indented under its folder.
 | **Policy** | The latest version's verdict: **Pass**, **Warn**, **Violation**, or **Not scanned** when it has not been evaluated. |
 | **Latest** | The version marked latest. |
 | **Last upload** | When a document was last uploaded to the project. |
+| **Active** | **Active**, or **Retired** for an application taken out of service. Retired applications are left out of the counts of affected applications elsewhere in the console. Hidden on narrow screens. |
 
 Select a row to open it.
 
@@ -47,7 +48,9 @@ evaluated* when some projects have never been scanned.
 
 The project page shows **Versions**, **Components (latest)**, and **Policy
 (latest)**, then a **Versions** table with each version's component count,
-policy verdict, and upload date. The version marked **Latest** carries a badge.
+policy verdict, upload date, and whether it is **Active** or **Retired**. The
+version marked **Latest** carries a badge, and a retired latest version shows
+**Retired (latest)** because the latest release always counts as in service.
 Select a version to open it.
 
 ## A version's components
@@ -58,7 +61,7 @@ A **Policy** ribbon shows the verdict, with the component total split by
 production and development scope, and a priority breakdown. When the verdict
 is **Violation**, select the ribbon to show only the violating components.
 
-The risk indicators sit side by side: the worst advisory severity, the licence
+Beside it sit the risk indicators: the worst advisory severity, the licence
 findings, and the policy verdict.
 
 The filters search by name and narrow by scope (All, Prod, Dev), by severity,
@@ -90,12 +93,15 @@ Members read; administrators and owners change. The following controls do not
 appear for a member:
 
 - **Upload** an SBOM, VEX, or SARIF document, from the page or through the
-  API. The upload accepts CycloneDX 1.4 to 1.7 JSON, OpenVEX, and SARIF 2.1.0;
-  VEX and SARIF enrich the SBOM already uploaded for that version. Uploads are
+  API. The upload accepts a CycloneDX 1.4 to 1.7 JSON or SPDX 2.3 SBOM,
+  OpenVEX, and SARIF 2.1.0; VEX and SARIF enrich the SBOM already uploaded for
+  that version. Uploads are
   capped at 50 MB unless the operator raises the limit.
 - **New folder**, and **Edit…** or **Delete** on a project or folder. <!-- tells: allow -->
-  Deleting a folder removes everything inside it.
-- **Promote to latest** and **Delete** on a version.
+  Deleting a folder removes everything inside it. **Edit…** also retires or <!-- tells: allow -->
+  reinstates a project or folder.
+- **Promote to latest**, **Retire** or **Reinstate**, and **Delete** on a
+  version.
 - **Rescan** a version against current advisories, at most once an hour.
 - Record a triage decision on a finding.
 - **Export** from a folder page, which bundles every project in the folder at

@@ -6,8 +6,8 @@ order: 8
 # Access tokens
 
 Your package managers authenticate to Dependably with a token. The **Tokens**
-page is where you create your personal tokens and revoke ones you no longer
-need. The [Setup](setup.md) wizard can create one for you as its first step;
+page is where you create your personal tokens and revoke the ones you stop
+using. The [Setup](setup.md) wizard can create one for you as its first step;
 this page is for managing them afterwards.
 
 A personal token is tied to your account and is best for your own machine. For
@@ -25,7 +25,7 @@ belongs to the organization rather than to a person. See
 3. Choose a **Scope**:
    - **pull only**: install and download packages.
    - **push only**: publish packages.
-   - **push & pull**: both.
+   - **push & pull**: install and publish.
 
    A token can never do more than your own role allows. A member's role can
    only pull, so choosing a push scope is refused when you select **Create**;
@@ -46,18 +46,23 @@ and create a new one.
 > per machine or pipeline so you can revoke one without disrupting the others.
 
 Each organization has a ceiling on active tokens, personal and service
-combined. If you hit it, the dialog says so; revoke tokens you no longer use.
+combined; expired tokens do not count. At the ceiling, **Create** fails with
+an error that names the limit. Revoke tokens you do not use, then try again.
 
 ## Review and revoke
 
 ![The Access Tokens page: a table of tokens with ID, Description, Scope, Created, Expires, and Last used columns, a Revoke button on each row, and a New token button.](images/tokens.png)
 
 The table lists your tokens with their **ID**, **Description**, **Scope**,
-**Created**, **Expires**, and **Last used** time. The **Last used** column
-reads **never** for a token that has not been used, and the **Expires** column
-shows an **expired** badge once the expiry has passed, so you can spot a token
-that is unused or past its purpose. Select **Revoke** and confirm the browser prompt. Revocation
-is immediate.
+**Created**, **Expires**, and **Last used** time. **Last used** reads
+**never** for a token that has not been used, and **Expires** shows an
+**expired** badge once the expiry has passed, so you can spot a token that is
+unused or past its purpose. A token created through the API with a set of
+permissions that matches no scope above shows **custom**, with its
+capabilities listed underneath.
+
+To revoke a token, select **Revoke** on its row and confirm the browser
+prompt. Revocation is immediate.
 
 Changing your [password](profile.md) or disabling two-factor authentication
 also revokes every token you own.
