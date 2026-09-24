@@ -58,7 +58,7 @@ A **Policy** ribbon shows the verdict, with the component total split by
 production and development scope, and a priority breakdown. When the verdict
 is **Violation**, select the ribbon to show only the violating components.
 
-Three risk indicators sit side by side: the worst advisory severity, the licence
+The risk indicators sit side by side: the worst advisory severity, the licence
 findings, and the policy verdict.
 
 The filters search by name and narrow by scope (All, Prod, Dev), by severity,

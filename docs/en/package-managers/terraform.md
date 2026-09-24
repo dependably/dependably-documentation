@@ -86,20 +86,19 @@ arm64 archive; the next `init` on that platform is what fetches it.
 
 ## What is mirrored
 
-Terraform's module registry is a separate protocol with no network-mirror
-equivalent, so `terraform init` still reaches the public registry for any
-`module` block sourced from a registry. Provider archives are where the bytes
-are, so this still removes the large majority of egress. A deployment that
-must eliminate registry traffic entirely needs to vendor modules or source
-them from Git.
+Only providers are mirrored. Terraform's module registry is a separate
+protocol with no network-mirror equivalent, so `terraform init` still reaches
+the public registry for any `module` block sourced from a registry. Provider
+archives are where the bytes are, so this still removes the large majority of
+egress. A deployment that must eliminate registry traffic entirely needs to
+vendor modules or source them from Git.
 
-A provider is addressed by its own source address
-(`{hostname}/{namespace}/{type}`), and Dependably matches that hostname
-against your organization's configured upstreams instead of fetching from
-whatever host the address names, so only configured registry hosts are
-mirrored. To mirror a provider from a private registry, open **Settings**,
-then **Proxy**, and add that registry under **Upstream registries** (see
-[Upstreams](../admin/upstreams.md)).
+Only configured registry hosts are mirrored. A provider is addressed by its
+own source address (`{hostname}/{namespace}/{type}`), and Dependably matches
+that hostname against your organization's configured upstreams instead of
+fetching from whatever host the address names. To mirror a provider from a
+private registry, open **Settings**, then **Proxy**, and add that registry
+under **Upstream registries** (see [Upstreams](../admin/upstreams.md)).
 
 ## Supply-chain controls
 
@@ -117,9 +116,9 @@ and never stamped as scanned. The UI reports them as **No advisory feed**,
 never as clean, so an artefact with zero advisory coverage is not mistaken for
 one screened against a live feed. Every other gate still applies.
 
-Provider archives carry no license manifest, so recording zero licenses is the
-normal case here, not an unknown-license signal, and it does not block under a
-blocking license policy.
+Provider archives carry no licence manifest, so recording zero licences is the
+normal case here, not an unknown-licence signal, and it does not block under a
+blocking licence policy.
 
 ## Troubleshooting
 

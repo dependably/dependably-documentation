@@ -34,7 +34,7 @@ are no files to edit and nothing to set up on the server:
 | ----- | ---------- | -------- | ---------- |
 | **Setup** wizard | Personal, generated with ready-made configuration for your package manager | First-time setup | You |
 | **Tokens** | Personal, tied to your account | Your own machine | You |
-| **Settings** → **Service tokens** | Long-lived, not tied to a person | CI and shared automation | An administrator |
+| **Settings**, then **Service tokens** | Long-lived, not tied to a person | CI and shared automation | An administrator |
 
 Each tool then stores the token in its own credential store when you log in or
 configure it; the guides show the exact command. You never need to paste a token
